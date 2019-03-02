@@ -1,6 +1,7 @@
 ---
 title: Spring源码解析---AOP
-tags: spring,AOP,BeanPostProcessor
+tags: [spring,aop,BeanPostProcessor]
+categories: spring源码分析
 grammar_cjkRuby: true
 ---
 

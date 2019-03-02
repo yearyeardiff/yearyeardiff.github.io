@@ -1,6 +1,7 @@
 --- 
 title: SpringMVC DispatcherServlet初始化
-tags: spring,springMVC,DispatcherServlet
+tags: [spring,springMVC,DispatcherServlet]
+categories: spring源码分析
 grammar_cjkRuby: true
 ---
 

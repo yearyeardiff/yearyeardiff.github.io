@@ -1,6 +1,7 @@
 ---
 title: spring--ioc getBean
-tags: spring,ioc
+tags: [spring,ioc]
+categories: spring源码分析
 grammar_cjkRuby: true
 ---
 

@@ -1,6 +1,7 @@
 ---
 title: SpringMVC容器初始化 ContextLoaderListener
-tags: spring,springMVC,ContextLoaderListener
+tags: [spring,springMVC,ContextLoaderListener]
+categories: spring源码分析
 grammar_cjkRuby: true
 ---
  ContextLoaderListener的作用就是启动Web容器时，自动装配ApplicationContext的配置信息。

@@ -1,6 +1,7 @@
 ---
 title: spring--框架扩展清单之原理
-tags: spring,aware,BeanPostProcessor,Aware
+tags: [spring,aware,BeanPostProcessor]
+categories: spring源码分析
 grammar_cjkRuby: true
 ---
 

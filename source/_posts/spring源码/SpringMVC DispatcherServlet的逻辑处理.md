@@ -1,6 +1,7 @@
 ---
 title: SpringMVC DispatcherServlet的逻辑处理
-tags: spring,springMVC,DispatcherServlet
+tags: [spring,springMVC,DispatcherServlet]
+categories: spring源码分析
 grammar_cjkRuby: true
 ---
 

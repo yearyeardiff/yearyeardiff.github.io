@@ -1,6 +1,7 @@
 ---
 title: spring事件驱动模型
-tags: spring,事件驱动模型
+tags: [spring,事件驱动模型,观察者模式,设计模式]
+categories: spring源码分析
 grammar_cjkRuby: true
 ---
 

@@ -1,6 +1,7 @@
 ---
 title: spring--ioc bean的循环依赖
-tags: spring,ioc
+tags: [spring,ioc]
+categories: spring源码分析
 grammar_cjkRuby: true
 ---
 

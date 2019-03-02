@@ -1,6 +1,7 @@
 ---
 title: spring--aop AOP的四种实现
-tags: spring,aop
+tags: [spring,aop]
+categories: spring源码分析
 grammar_cjkRuby: true
 ---
 

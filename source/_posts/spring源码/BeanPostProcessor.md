@@ -1,6 +1,7 @@
 ---
 title: BeanPostProcessor
-tags: spring,BeanPostProcessor
+tags: [spring,BeanPostProcessor]
+categories: spring源码分析
 grammar_cjkRuby: true
 ---
 # BeanPostProcessor接口

@@ -1,6 +1,7 @@
 ---
 title: spring--aop ProxyFactory
-tags: spring,aop,ProxyFactory
+tags: [spring,aop,ProxyFactory]
+categories: spring源码分析
 grammar_cjkRuby: true
 ---
 

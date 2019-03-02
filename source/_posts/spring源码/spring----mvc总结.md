@@ -1,6 +1,7 @@
 ---
 title: spring----mvc总结
-tags: spring,mvc
+tags: [spring,springMVC]
+categories: spring源码分析
 grammar_cjkRuby: true
 ---
 

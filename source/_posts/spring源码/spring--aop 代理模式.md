@@ -1,6 +1,7 @@
 ---
 title: spring--aop 代理模式
-tags: spring,aop
+tags: [spring,aop]
+categories: spring源码分析
 grammar_cjkRuby: true
 ---
 

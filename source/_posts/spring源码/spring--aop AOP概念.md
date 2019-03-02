@@ -1,6 +1,7 @@
 ---
 title: spring--aop AOP概念
-tags: 新建,模板,小书匠
+tags: [spring,aop]
+categories: spring源码分析
 grammar_cjkRuby: true
 ---
 

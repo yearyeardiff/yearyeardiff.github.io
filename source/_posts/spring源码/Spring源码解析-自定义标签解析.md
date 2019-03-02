@@ -1,6 +1,7 @@
 ---
 title: Spring源码解析-自定义标签解析
-tags: spring,自定义标签
+tags: [spring,spring自定义标签]
+categories: spring源码分析
 grammar_cjkRuby: true
 ---
 # 自定义标签配置步骤
