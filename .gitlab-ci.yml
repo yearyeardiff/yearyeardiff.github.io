@@ -1,0 +1,21 @@
+before_script:
+  - apt-get update -qq && apt-get install -y -qq pandoc
+image: node:4.2.2
+pages:
+  cache:
+    paths:
+    - node_modules/
+  script:
+  - npm install hexo-cli -g
+  - npm install
+  - npm uninstall hexo-renderer-marked --save
+  - npm install hexo-renderer-pandoc --save
+  - npm install hexo-generator-sitemap --save
+  - npm install hexo-generator-baidu-sitemap --save
+  - npm install hexo-util --save
+  - hexo deploy
+  artifacts:
+    paths:
+    - public
+  only:
+  - master
