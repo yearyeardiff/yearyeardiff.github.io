@@ -24,7 +24,7 @@ grammar_cjkRuby: true
 - 使用本地路径：在hexo/source目录下新建一个images文件夹，将图片放入该文件夹下，插入图片时链接即为/images/图片名称。 
 - 使用微博图床，地址http://weibotuchuang.sinaapp.com/，将图片拖入区域中，会生成图片的URL，这就是链接地址。
 
-## 本地路径
+### 本地路径
 
 使用本地路径的方法要求图片的路径必须是绝对路径。可是，当图片比较多的时候不容易管理。而且，对于我自己而言，我习惯使用相对路径，如下：
 
@@ -32,7 +32,7 @@ grammar_cjkRuby: true
 
 这是我在用hexo之前就养成的习惯。同时，我的很多博客都使用的相对路径，不可能把每个图片的引用改一遍。为了解决这个问题，只有另辟蹊径了。
 
-stop1：
+step1：
 利用shell脚本，把图片都拷贝到source/images下面：
 ``` shell
 #!/bin/bash
@@ -79,8 +79,8 @@ getdir $root_dir
 在每次执行`hexo g`前执行shell脚本`sh copy_images.sh `
 
 
-stop2:
-使用[hexo-change-img-url插件](https://github.com/yearyeardiff/hexo-change-img-url)插件，在执行`hexo g`的时候会自动地把html中的相对路径改成绝对路径。如下：
+step2:
+使用[hexo-change-img-url插件](https://github.com/yearyeardiff/hexo-change-img-url)，在执行`hexo g`的时候会自动地把html中的相对路径改成绝对路径。如下：
 ``` xml
 <img src="./imags/hh.jpg"></img>
 
@@ -122,6 +122,9 @@ ps: hexo-change-img-url插件只支持这种使用方式![enter description here
 
 ## RSS
 [GitHub+Hexo搭建个人博客（四）Hexo高阶之第三方插件](https://www.jianshu.com/p/dda25ffcfd43)
+
+## 绑定个人域名
+[Hexo 博客绑定个人域名](https://blog.csdn.net/wgshun616/article/details/81019739)
 
 
   [1]: ./images/1551530441279.jpg "1551530441279.jpg"
