@@ -1,6 +1,7 @@
 ---
 title: spring cloud--eureka
 tags: [spring cloud, eureka]
+categories: spring cloud
 grammar_cjkRuby: true
 ---
 # eureka如何管理服务调用
