@@ -350,6 +350,9 @@ SELECT * FROM t WHERE id = 1; # 得到的列c的值仍为'刘备'
 
 从上边的描述中我们可以看出来，所谓的MVCC（Multi-Version Concurrency Control ，多版本并发控制）指的就是在使用READ COMMITTD、REPEATABLE READ这两种隔离级别的事务在执行普通的SEELCT操作时访问记录的版本链的过程，这样子可以使不同事务的读-写、写-读操作并发执行，从而提升系统性能。READ COMMITTD、REPEATABLE READ这两个隔离级别的一个很大不同就是生成ReadView的时机不同，READ COMMITTD在每一次进行普通SELECT操作前都会生成一个ReadView，而REPEATABLE READ只在第一次进行普通SELECT操作前生成一个ReadView，之后的查询操作都重复这个ReadView就好了。
 
+### 参考
+- 转自：[mysql事务隔离级别和MVCC](https://mp.weixin.qq.com/s/Jeg8656gGtkPteYWrG5_Nw)
+
 
   [1]: ./images/1554284117827.jpg "1554284117827.jpg"
   [2]: ./images/1554284456244.jpg "1554284456244.jpg"
