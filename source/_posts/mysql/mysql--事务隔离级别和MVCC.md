@@ -1,6 +1,6 @@
 ---
 title: mysql--事务隔离级别和MVCC
-tags: [mysql,事务,隔离级别]
+tags: [mysql,事务,隔离级别, MVCC]
 grammar_cjkRuby: true
 categories: mysql
 ---
