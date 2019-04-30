@@ -134,7 +134,7 @@ typedef struct dictht{
 所以在删除、查找、更新时会在两张表中操作，在查询时会现在第一张表中查询，如果第一张表中没有，则会在第二张表中查询。但新增时一律会在 ht[1] 中进行，确保 ht[0] 中的数据只会减少不会增加。
 
 # 跳跃表
-Zset 是一个有序的链表结构，其底层的数据结构是跳跃表 skiplist，其结构如下:
+Zset 是一个有序的链表结构，其底层的数据结构是[跳跃表 skiplist](https://www.cnblogs.com/acfox/p/3688607.html)，其结构如下:
 ``` c
 typedef struct zskiplistNode {
     //成员对象
@@ -359,8 +359,10 @@ Zset 中的 zsl 跳跃表适合范围操作，比如 ZRANK、ZRANGE 等，程序
 # 参考
 
 - 转自： [一文揭秘单线程的Redis为什么这么快?](https://mp.weixin.qq.com/s/4ndQI4CyqtjaYJKts8ChdA)
+- [为什么说Redis是单线程的以及Redis为什么这么快!](https://blog.csdn.net/chenyao1994/article/details/79491337)
 - [Redis 教程](http://www.redis.net.cn/tutorial/3501.html)
 - [Redis 命令参考](http://doc.redisfans.com/index.html)
+- [Redis的数据结构—1.简单介绍，序集合SortedSet的实现，跳表的实现](https://blog.csdn.net/Happy_wu/article/details/79866087)
 
 
   [1]: ./images/1556446047628.jpg "1556446047628.jpg"

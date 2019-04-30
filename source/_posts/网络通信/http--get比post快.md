@@ -1,6 +1,6 @@
 ---
 title: http--get比post快
-tags: http,get,post
+tags: [http, get, post]
 grammar_cjkRuby: true
 ---
 
