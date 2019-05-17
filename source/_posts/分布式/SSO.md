@@ -1,6 +1,6 @@
 ---
 title: SSO
-tags: [分布式, SSO]
+tags: [分布式, SSO, 分布式session]
 categories: [分布式]
 grammar_cjkRuby: true
 ---
