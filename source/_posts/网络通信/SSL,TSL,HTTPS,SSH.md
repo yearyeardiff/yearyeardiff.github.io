@@ -1,12 +1,12 @@
 ---
 title: SSL,TSL,HTTPS,SSH
-tags: [ssl,tsl,https,ssh]
-categories: 网络通信
+tags: 新建,模板,小书匠
 grammar_cjkRuby: true
 ---
 
 
-
+[SSL工作原理](https://www.cnblogs.com/bhlsheji/p/4586597.html)
+[公钥，私钥和数字证书关系](https://blog.csdn.net/lihuang319/article/details/79970774)
 [SSL/TLS 双向认证(一) -- SSL/TLS工作原理][1]
 [SSL/TLS协议运行机制的概述][2]
 [图解SSL/TLS协议][3]
