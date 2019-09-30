@@ -17,6 +17,13 @@
     </url>
 
     <url>
+        <loc>http://yoursite.com/tags/%E5%9E%83%E5%9C%BE%E6%94%B6%E9%9B%86%E5%99%A8/</loc>
+        <lastmod>2019-06-08T09:14:13.687Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
         <loc>http://yoursite.com/tags/%E7%B1%BB%E5%8A%A0%E8%BD%BD%E5%99%A8/</loc>
         <lastmod>2019-06-08T09:14:13.687Z</lastmod>
         <changefreq>weekly</changefreq>
@@ -25,13 +32,6 @@
 
     <url>
         <loc>http://yoursite.com/tags/%E7%B1%BB%E5%8A%A0%E8%BD%BD%E8%BF%87%E7%A8%8B/</loc>
-        <lastmod>2019-06-08T09:14:13.687Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>http://yoursite.com/tags/%E5%9E%83%E5%9C%BE%E6%94%B6%E9%9B%86%E5%99%A8/</loc>
         <lastmod>2019-06-08T09:14:13.687Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
@@ -171,14 +171,14 @@
     </url>
 
     <url>
-        <loc>http://yoursite.com/tags/%E7%BA%BF%E7%A8%8B%E6%B1%A0/</loc>
+        <loc>http://yoursite.com/tags/AQS/</loc>
         <lastmod>2019-06-08T09:14:13.726Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
-        <loc>http://yoursite.com/tags/AQS/</loc>
+        <loc>http://yoursite.com/tags/%E7%BA%BF%E7%A8%8B%E6%B1%A0/</loc>
         <lastmod>2019-06-08T09:14:13.726Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
@@ -451,14 +451,14 @@
     </url>
 
     <url>
-        <loc>http://yoursite.com/tags/configserver/</loc>
+        <loc>http://yoursite.com/tags/stream/</loc>
         <lastmod>2019-06-08T09:14:13.955Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
-        <loc>http://yoursite.com/tags/stream/</loc>
+        <loc>http://yoursite.com/tags/configserver/</loc>
         <lastmod>2019-06-08T09:14:13.955Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
@@ -493,14 +493,14 @@
     </url>
 
     <url>
-        <loc>http://yoursite.com/tags/ContextLoaderListener/</loc>
+        <loc>http://yoursite.com/tags/DispatcherServlet/</loc>
         <lastmod>2019-06-08T09:14:13.956Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
-        <loc>http://yoursite.com/tags/DispatcherServlet/</loc>
+        <loc>http://yoursite.com/tags/ContextLoaderListener/</loc>
         <lastmod>2019-06-08T09:14:13.956Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
@@ -584,14 +584,14 @@
     </url>
 
     <url>
-        <loc>http://yoursite.com/tags/Paxos/</loc>
+        <loc>http://yoursite.com/tags/%E6%95%B0%E6%8D%AE%E4%B8%80%E8%87%B4%E6%80%A7/</loc>
         <lastmod>2019-06-08T09:14:14.108Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
-        <loc>http://yoursite.com/tags/%E6%95%B0%E6%8D%AE%E4%B8%80%E8%87%B4%E6%80%A7/</loc>
+        <loc>http://yoursite.com/tags/Paxos/</loc>
         <lastmod>2019-06-08T09:14:14.108Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>

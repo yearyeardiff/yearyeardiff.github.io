@@ -625,7 +625,7 @@ Threa
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/06/08/java并发/java并发---volatile关键字/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/06/08/java并发/java并发---线程池/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="zch">
@@ -644,7 +644,7 @@ Threa
         
           <h2 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2019/06/08/java并发/java并发---volatile关键字/" itemprop="url">java并发---volatile关键字</a></h2>
+                <a class="post-title-link" href="/2019/06/08/java并发/java并发---线程池/" itemprop="url">java并发---线程池</a></h2>
         
 
         <div class="post-meta">
@@ -697,8 +697,8 @@ Threa
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/2019/06/08/java并发/java并发---volatile关键字/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count valine-comment-count" data-xid="/2019/06/08/java并发/java并发---volatile关键字/" itemprop="commentCount"></span>
+                <a href="/2019/06/08/java并发/java并发---线程池/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2019/06/08/java并发/java并发---线程池/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -728,15 +728,13 @@ Threa
       
         
           
-          volatile的特性
-可见性:对一个volatile变量的读，总是能看到（任意线程）对这个volatile变量最后的写入
-原子性:对任意单个volatile变量的读/写具有原子性，但类似于volatile++这种复合操作不具有原子性
+          线程池的实现原理当向线程池提交一个任务之后，线程池是如何处理这个任务的呢？本节来看一下线程池的主要处理流程，处理流程图如图所示。从图中可以看出，当提交一个新任务到线程池时，线程池的处理流程如下。
 
-volatile写-读建立的happens-before关系从
+线程池判断核心线程池里的线程是否都在执行任务。如果不是，则创建一个新的工作线程来执行任务。如果核心线程
           ...
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2019/06/08/java并发/java并发---volatile关键字/#more" rel="contents">
+            <a class="btn" href="/2019/06/08/java并发/java并发---线程池/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>

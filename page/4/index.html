@@ -306,7 +306,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/06/08/分布式/分布式--Paxos/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/06/08/分布式/关于【缓存穿透、缓存击穿、缓存雪崩、热点数据失效】问题的解决方案/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="zch">
@@ -325,7 +325,7 @@
         
           <h2 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2019/06/08/分布式/分布式--Paxos/" itemprop="url">分布式--Paxos</a></h2>
+                <a class="post-title-link" href="/2019/06/08/分布式/关于【缓存穿透、缓存击穿、缓存雪崩、热点数据失效】问题的解决方案/" itemprop="url">关于【缓存穿透、缓存击穿、缓存雪崩、热点数据失效】问题的解决方案</a></h2>
         
 
         <div class="post-meta">
@@ -356,8 +356,8 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/2019/06/08/分布式/分布式--Paxos/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count valine-comment-count" data-xid="/2019/06/08/分布式/分布式--Paxos/" itemprop="commentCount"></span>
+                <a href="/2019/06/08/分布式/关于【缓存穿透、缓存击穿、缓存雪崩、热点数据失效】问题的解决方案/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2019/06/08/分布式/关于【缓存穿透、缓存击穿、缓存雪崩、热点数据失效】问题的解决方案/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -387,12 +387,175 @@
       
         
           
-          http://hedengcheng.com/?p=970
-
-          
+          1 缓存穿透1.1 什么是缓存穿透正常情况下，我们去查询数据都是存在。
+那么请求去查询一条压根儿数据库中根本就不存在的数据，也就是缓存和数据库都查询不到这条数据，但是请求每次都会打到数据库上面去。
+这种查询不存在数据的现象我们称为缓存穿透。
+1.2 穿透带来的问题试想一下，如果有黑客会对你的系统进行
+          ...
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2019/06/08/分布式/分布式--Paxos/#more" rel="contents">
+            <a class="btn" href="/2019/06/08/分布式/关于【缓存穿透、缓存击穿、缓存雪崩、热点数据失效】问题的解决方案/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/06/08/分布式/RPC框架几行代码就够了/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="zch">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ZCH NOTES">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/06/08/分布式/RPC框架几行代码就够了/" itemprop="url">RPC框架几行代码就够了</a></h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-06-08T17:14:13+08:00">
+                2019-06-08
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/分布式/" itemprop="url" rel="index">
+                    <span itemprop="name">分布式</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/06/08/分布式/RPC框架几行代码就够了/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2019/06/08/分布式/RPC框架几行代码就够了/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+          实现
+简易RPC框架
+
+123456789101112131415161718192021222324252627282930313233343536373839404142434445464748495051525354555657585960616263646566676869707172737
+          ...
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2019/06/08/分布式/RPC框架几行代码就够了/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -606,7 +769,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/06/08/分布式/RPC框架几行代码就够了/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/06/08/spring源码/spring--ioc bean的循环依赖/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="zch">
@@ -625,7 +788,7 @@
         
           <h2 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2019/06/08/分布式/RPC框架几行代码就够了/" itemprop="url">RPC框架几行代码就够了</a></h2>
+                <a class="post-title-link" href="/2019/06/08/spring源码/spring--ioc bean的循环依赖/" itemprop="url">spring--ioc bean的循环依赖</a></h2>
         
 
         <div class="post-meta">
@@ -660,8 +823,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/分布式/" itemprop="url" rel="index">
-                    <span itemprop="name">分布式</span>
+                  <a href="/categories/spring源码分析/" itemprop="url" rel="index">
+                    <span itemprop="name">spring源码分析</span>
                   </a>
                 </span>
 
@@ -678,8 +841,8 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/2019/06/08/分布式/RPC框架几行代码就够了/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count valine-comment-count" data-xid="/2019/06/08/分布式/RPC框架几行代码就够了/" itemprop="commentCount"></span>
+                <a href="/2019/06/08/spring源码/spring--ioc bean的循环依赖/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2019/06/08/spring源码/spring--ioc bean的循环依赖/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -709,14 +872,15 @@
       
         
           
-          实现
-简易RPC框架
+          循环依赖的产生和解决的前提循环依赖的产生可能有很多种情况，例如：
 
-123456789101112131415161718192021222324252627282930313233343536373839404142434445464748495051525354555657585960616263646566676869707172737
+A的构造方法中依赖了B的实例对象，同时B的构造方法中依赖了A的实例对象
+A的构造方法中依赖了B的实例对象，同时B的某个field或者setter需要A的实例对象，以及反之
+A的某个field或者setter依赖了B的实例对象，同时B
           ...
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2019/06/08/分布式/RPC框架几行代码就够了/#more" rel="contents">
+            <a class="btn" href="/2019/06/08/spring源码/spring--ioc bean的循环依赖/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -878,166 +1042,6 @@ ref
           <!--noindex-->
           <div class="post-button text-center">
             <a class="btn" href="/2019/06/08/spring源码/spring--框架扩展清单之原理/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/06/08/spring源码/spring--ioc getBean时序图/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="zch">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/images/avatar.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="ZCH NOTES">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/06/08/spring源码/spring--ioc getBean时序图/" itemprop="url">spring--ioc getBean时序图</a></h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-06-08T17:14:13+08:00">
-                2019-06-08
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/spring源码分析/" itemprop="url" rel="index">
-                    <span itemprop="name">spring源码分析</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/2019/06/08/spring源码/spring--ioc getBean时序图/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count valine-comment-count" data-xid="/2019/06/08/spring源码/spring--ioc getBean时序图/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-          "
-Ending"
-
-          
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2019/06/08/spring源码/spring--ioc getBean时序图/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>

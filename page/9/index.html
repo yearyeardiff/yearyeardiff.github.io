@@ -465,7 +465,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/06/08/redis/redis--单线程的Redis为什么这么快/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/06/08/redis/redis--分布式锁/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="zch">
@@ -484,7 +484,7 @@
         
           <h2 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2019/06/08/redis/redis--单线程的Redis为什么这么快/" itemprop="url">分布式锁</a></h2>
+                <a class="post-title-link" href="/2019/06/08/redis/redis--分布式锁/" itemprop="url">redis--分布式锁</a></h2>
         
 
         <div class="post-meta">
@@ -526,6 +526,17 @@
 
                 
                 
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/分布式/redis/" itemprop="url" rel="index">
+                    <span itemprop="name">redis</span>
+                  </a>
+                </span>
+
+                
+                
               
             </span>
           
@@ -537,8 +548,8 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/2019/06/08/redis/redis--单线程的Redis为什么这么快/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count valine-comment-count" data-xid="/2019/06/08/redis/redis--单线程的Redis为什么这么快/" itemprop="commentCount"></span>
+                <a href="/2019/06/08/redis/redis--分布式锁/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2019/06/08/redis/redis--分布式锁/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -568,12 +579,14 @@
       
         
           
-          分布式锁现状目前几乎很多大型网站及应用都是分布式部署的，分布式场景中的数据一致性问题一直是一个比较重要的话题。
-分布式的CAP理论告诉我们“任何一个分布式系统都无法同时满足一致性（Consistency）、可用性（Availability）和分区容错性（Partition tolerance），最多
+          
+本博客使用第三方开源组件Jedis实现Redis客户端，且只考虑Redis服务端单机部署的场景。
+
+前言分布式锁一般有三种实现方式：1. 数据库乐观锁；2. 基于Redis的分布式锁；3. 基于ZooKeeper的分布式锁。本篇博客将介绍第二种方式，基于Redis实现分布式锁。虽然网上已经有各种介
           ...
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2019/06/08/redis/redis--单线程的Redis为什么这么快/#more" rel="contents">
+            <a class="btn" href="/2019/06/08/redis/redis--分布式锁/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -764,7 +777,7 @@ https://blog.csdn.net/it_faquir/article/details/80869578
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/06/08/redis/redis--分布式锁/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/06/08/redis/redis--单线程的Redis为什么这么快/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="zch">
@@ -783,7 +796,7 @@ https://blog.csdn.net/it_faquir/article/details/80869578
         
           <h2 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2019/06/08/redis/redis--分布式锁/" itemprop="url">redis--分布式锁</a></h2>
+                <a class="post-title-link" href="/2019/06/08/redis/redis--单线程的Redis为什么这么快/" itemprop="url">分布式锁</a></h2>
         
 
         <div class="post-meta">
@@ -825,17 +838,6 @@ https://blog.csdn.net/it_faquir/article/details/80869578
 
                 
                 
-                  ， 
-                
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/分布式/redis/" itemprop="url" rel="index">
-                    <span itemprop="name">redis</span>
-                  </a>
-                </span>
-
-                
-                
               
             </span>
           
@@ -847,8 +849,8 @@ https://blog.csdn.net/it_faquir/article/details/80869578
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/2019/06/08/redis/redis--分布式锁/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count valine-comment-count" data-xid="/2019/06/08/redis/redis--分布式锁/" itemprop="commentCount"></span>
+                <a href="/2019/06/08/redis/redis--单线程的Redis为什么这么快/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2019/06/08/redis/redis--单线程的Redis为什么这么快/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -878,14 +880,12 @@ https://blog.csdn.net/it_faquir/article/details/80869578
       
         
           
-          
-本博客使用第三方开源组件Jedis实现Redis客户端，且只考虑Redis服务端单机部署的场景。
-
-前言分布式锁一般有三种实现方式：1. 数据库乐观锁；2. 基于Redis的分布式锁；3. 基于ZooKeeper的分布式锁。本篇博客将介绍第二种方式，基于Redis实现分布式锁。虽然网上已经有各种介
+          分布式锁现状目前几乎很多大型网站及应用都是分布式部署的，分布式场景中的数据一致性问题一直是一个比较重要的话题。
+分布式的CAP理论告诉我们“任何一个分布式系统都无法同时满足一致性（Consistency）、可用性（Availability）和分区容错性（Partition tolerance），最多
           ...
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2019/06/08/redis/redis--分布式锁/#more" rel="contents">
+            <a class="btn" href="/2019/06/08/redis/redis--单线程的Redis为什么这么快/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
