@@ -465,7 +465,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/06/08/java并发/java并发---乐观锁与悲观锁/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/06/08/java并发/java并发---队列同步器(AbstractQueuedSynchronizer)/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="zch">
@@ -484,7 +484,7 @@
         
           <h2 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2019/06/08/java并发/java并发---乐观锁与悲观锁/" itemprop="url">java并发---乐观锁与悲观锁</a></h2>
+                <a class="post-title-link" href="/2019/06/08/java并发/java并发---队列同步器(AbstractQueuedSynchronizer)/" itemprop="url">java并发---队列同步器(AbstractQueuedSynchronizer)</a></h2>
         
 
         <div class="post-meta">
@@ -537,8 +537,8 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/2019/06/08/java并发/java并发---乐观锁与悲观锁/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count valine-comment-count" data-xid="/2019/06/08/java并发/java并发---乐观锁与悲观锁/" itemprop="commentCount"></span>
+                <a href="/2019/06/08/java并发/java并发---队列同步器(AbstractQueuedSynchronizer)/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2019/06/08/java并发/java并发---队列同步器(AbstractQueuedSynchronizer)/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -569,41 +569,13 @@
         
           
           
-乐观锁与悲观锁
-悲观锁
-乐观锁
+队列同步器AbstractQueuedSynchronizer（以下简称同步器），是用来构建锁或者其他同步组件的基础框架，它使用了一个int成员变量表示同步状态，通过内置的FIFO队列来完成资源获取线程的排队工作，并发包的作者（Doug Lea）期望它能够成为实现大部分同步需求的基础
 
-
-Synchronized
-synchronized实现原理
-Java对象头
-monitor
-
-
-锁优化
-自旋锁
-适应自旋锁
-锁消除
-锁粗化
-轻量级锁
-偏向锁
-重量级锁
-
-
-
-
-CAS
-CAS原理
-CAS缺点
-CAS与Synchronized的使用情景：　
-
-
-
-
+以下博客写
           ...
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2019/06/08/java并发/java并发---乐观锁与悲观锁/#more" rel="contents">
+            <a class="btn" href="/2019/06/08/java并发/java并发---队列同步器(AbstractQueuedSynchronizer)/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
