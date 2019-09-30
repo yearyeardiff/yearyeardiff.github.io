@@ -306,7 +306,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/06/08/java并发/java并发---队列同步器(AbstractQueuedSynchronizer)/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/06/08/java并发/java并发---公平锁和非公平锁实现详解/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="zch">
@@ -325,7 +325,7 @@
         
           <h2 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2019/06/08/java并发/java并发---队列同步器(AbstractQueuedSynchronizer)/" itemprop="url">java并发---队列同步器(AbstractQueuedSynchronizer)</a></h2>
+                <a class="post-title-link" href="/2019/06/08/java并发/java并发---公平锁和非公平锁实现详解/" itemprop="url">java并发---公平锁和非公平锁实现详解</a></h2>
         
 
         <div class="post-meta">
@@ -378,8 +378,8 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/2019/06/08/java并发/java并发---队列同步器(AbstractQueuedSynchronizer)/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count valine-comment-count" data-xid="/2019/06/08/java并发/java并发---队列同步器(AbstractQueuedSynchronizer)/" itemprop="commentCount"></span>
+                <a href="/2019/06/08/java并发/java并发---公平锁和非公平锁实现详解/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2019/06/08/java并发/java并发---公平锁和非公平锁实现详解/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -409,14 +409,12 @@
       
         
           
-          
-队列同步器AbstractQueuedSynchronizer（以下简称同步器），是用来构建锁或者其他同步组件的基础框架，它使用了一个int成员变量表示同步状态，通过内置的FIFO队列来完成资源获取线程的排队工作，并发包的作者（Doug Lea）期望它能够成为实现大部分同步需求的基础
+          Java中的公平锁和非公平锁实现详解
 
-以下博客写
-          ...
+          
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2019/06/08/java并发/java并发---队列同步器(AbstractQueuedSynchronizer)/#more" rel="contents">
+            <a class="btn" href="/2019/06/08/java并发/java并发---公平锁和非公平锁实现详解/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -467,7 +465,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/06/08/java/java--四种引用介绍及使用场景/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/06/08/java并发/java并发---乐观锁与悲观锁/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="zch">
@@ -486,7 +484,7 @@
         
           <h2 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2019/06/08/java/java--四种引用介绍及使用场景/" itemprop="url">java--四种引用介绍及使用场景</a></h2>
+                <a class="post-title-link" href="/2019/06/08/java并发/java并发---乐观锁与悲观锁/" itemprop="url">java并发---乐观锁与悲观锁</a></h2>
         
 
         <div class="post-meta">
@@ -521,8 +519,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/java/" itemprop="url" rel="index">
-                    <span itemprop="name">java</span>
+                  <a href="/categories/java并发/" itemprop="url" rel="index">
+                    <span itemprop="name">java并发</span>
                   </a>
                 </span>
 
@@ -539,8 +537,8 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/2019/06/08/java/java--四种引用介绍及使用场景/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count valine-comment-count" data-xid="/2019/06/08/java/java--四种引用介绍及使用场景/" itemprop="commentCount"></span>
+                <a href="/2019/06/08/java并发/java并发---乐观锁与悲观锁/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2019/06/08/java并发/java并发---乐观锁与悲观锁/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -570,11 +568,42 @@
       
         
           
-          Java中的四种引用类型（强、软、弱、虚）为什么需要不同的引用类型从Java1.2开始，JVM开发团队发现，单一的强引用类型，无法很好的管理对象在JVM里面的生命周期，垃圾回收策略过于简单，无法适用绝大多数场景。为了更好的管理对象的内存，更好的进行垃圾回收，JVM团队扩展了引用类型，从最早的强引用类
+          
+乐观锁与悲观锁
+悲观锁
+乐观锁
+
+
+Synchronized
+synchronized实现原理
+Java对象头
+monitor
+
+
+锁优化
+自旋锁
+适应自旋锁
+锁消除
+锁粗化
+轻量级锁
+偏向锁
+重量级锁
+
+
+
+
+CAS
+CAS原理
+CAS缺点
+CAS与Synchronized的使用情景：　
+
+
+
+
           ...
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2019/06/08/java/java--四种引用介绍及使用场景/#more" rel="contents">
+            <a class="btn" href="/2019/06/08/java并发/java并发---乐观锁与悲观锁/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -625,7 +654,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/06/08/java/java并发--示例/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/06/08/java并发/java并发---线程池/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="zch">
@@ -644,7 +673,7 @@
         
           <h2 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2019/06/08/java/java并发--示例/" itemprop="url">java并发--示例</a></h2>
+                <a class="post-title-link" href="/2019/06/08/java并发/java并发---线程池/" itemprop="url">java并发---线程池</a></h2>
         
 
         <div class="post-meta">
@@ -667,6 +696,28 @@
           </span>
 
           
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/java并发/" itemprop="url" rel="index">
+                    <span itemprop="name">java并发</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
 
           
             
@@ -675,8 +726,8 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/2019/06/08/java/java并发--示例/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count valine-comment-count" data-xid="/2019/06/08/java/java并发--示例/" itemprop="commentCount"></span>
+                <a href="/2019/06/08/java并发/java并发---线程池/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2019/06/08/java并发/java并发---线程池/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -706,12 +757,176 @@
       
         
           
-          https://blog.csdn.net/xlgen157387/article/details/78298840
+          线程池的实现原理当向线程池提交一个任务之后，线程池是如何处理这个任务的呢？本节来看一下线程池的主要处理流程，处理流程图如图所示。从图中可以看出，当提交一个新任务到线程池时，线程池的处理流程如下。
 
-          
+线程池判断核心线程池里的线程是否都在执行任务。如果不是，则创建一个新的工作线程来执行任务。如果核心线程
+          ...
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2019/06/08/java/java并发--示例/#more" rel="contents">
+            <a class="btn" href="/2019/06/08/java并发/java并发---线程池/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/06/08/java并发/java并发---ConcurrentHashMap/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="zch">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ZCH NOTES">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/06/08/java并发/java并发---ConcurrentHashMap/" itemprop="url">java并发---ConcurrentHashMap</a></h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-06-08T17:14:13+08:00">
+                2019-06-08
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/java并发/" itemprop="url" rel="index">
+                    <span itemprop="name">java并发</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/06/08/java并发/java并发---ConcurrentHashMap/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2019/06/08/java并发/java并发---ConcurrentHashMap/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+          为什么要使用ConcurrentHashMap
+线程不安全的HashMap
+ 在多线程环境下，使用HashMap进行put操作会引起死循环，导致CPU利用率接近100%，所以在并发情况下不能使用HashMap。例如，执行以下代码会引起死循环。
+
+
+1234567891011121314151617f
+          ...
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2019/06/08/java并发/java并发---ConcurrentHashMap/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -886,173 +1101,11 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/06/08/index/优秀的博客导航/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="zch">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/images/avatar.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="ZCH NOTES">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/06/08/index/优秀的博客导航/" itemprop="url">优秀的博客导航</a></h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-06-08T17:14:13+08:00">
-                2019-06-08
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/导航/" itemprop="url" rel="index">
-                    <span itemprop="name">导航</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/2019/06/08/index/优秀的博客导航/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count valine-comment-count" data-xid="/2019/06/08/index/优秀的博客导航/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-          springspring iocSrping IOC
-spring aopSpring AOP
-spring 事务管理Spring事务管理
-spring bootspringboot社区Spring Boot 中文索引
-
-          
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2019/06/08/index/优秀的博客导航/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/18/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/18/">18</a><span class="page-number current">19</span><a class="page-number" href="/page/20/">20</a><span class="space">&hellip;</span><a class="page-number" href="/page/22/">22</a><a class="extend next" rel="next" href="/page/20/"><i class="fa fa-angle-right"></i></a>
+    <a class="extend prev" rel="prev" href="/page/18/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/18/">18</a><span class="page-number current">19</span><a class="page-number" href="/page/20/">20</a><span class="space">&hellip;</span><a class="page-number" href="/page/23/">23</a><a class="extend next" rel="next" href="/page/20/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -1100,7 +1153,7 @@ spring bootspringboot社区Spring Boot 中文索引
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">110</span>
+                  <span class="site-state-item-count">113</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -1111,7 +1164,7 @@ spring bootspringboot社区Spring Boot 中文索引
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">20</span>
+                  <span class="site-state-item-count">21</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -1122,7 +1175,7 @@ spring bootspringboot社区Spring Boot 中文索引
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">102</span>
+                  <span class="site-state-item-count">104</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

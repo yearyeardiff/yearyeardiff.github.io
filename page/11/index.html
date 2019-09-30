@@ -306,7 +306,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/06/08/operating_system/linux/linux---文件管理那些事/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/06/08/oracle/Oracle---数据库、实例、用户、表空间、表之间的关系讲解/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="zch">
@@ -325,7 +325,7 @@
         
           <h2 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2019/06/08/operating_system/linux/linux---文件管理那些事/" itemprop="url">linux--文件管理那些事</a></h2>
+                <a class="post-title-link" href="/2019/06/08/oracle/Oracle---数据库、实例、用户、表空间、表之间的关系讲解/" itemprop="url">Oracle---数据库、实例、用户、表空间、表之间的关系讲解</a></h2>
         
 
         <div class="post-meta">
@@ -360,8 +360,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/操作系统/" itemprop="url" rel="index">
-                    <span itemprop="name">操作系统</span>
+                  <a href="/categories/Oracle/" itemprop="url" rel="index">
+                    <span itemprop="name">Oracle</span>
                   </a>
                 </span>
 
@@ -378,8 +378,8 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/2019/06/08/operating_system/linux/linux---文件管理那些事/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count valine-comment-count" data-xid="/2019/06/08/operating_system/linux/linux---文件管理那些事/" itemprop="commentCount"></span>
+                <a href="/2019/06/08/oracle/Oracle---数据库、实例、用户、表空间、表之间的关系讲解/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2019/06/08/oracle/Oracle---数据库、实例、用户、表空间、表之间的关系讲解/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -409,13 +409,18 @@
       
         
           
-          文件权限改变权限, chmod文件权限的改变使用的是chmod这个指令，但是，权限的设定方法有两种， 分别可以使用数字或者是符号来进行权限的变更。我们就来谈一谈：
-数字类型改变文件权限我们可以使用数字来代表各个权限，各权限的分数对照表如下：123r:4w:2x:1
-每种身份(owner/group/
+          基本概念
+数据库
+
+Oracle数据库是数据的物理存储。这就包括（数据文件ORA或者DBF、控制文件、联机日志、参数文件）,它是物理文件的集合。
+
+实例
+
+实例是访问Oracle数据库所需的一部分计算机内存和辅助处理后台进程，是由进程和这些进程所使用的内存(SGA)所构成一个集合。一个数据库可以有n
           ...
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2019/06/08/operating_system/linux/linux---文件管理那些事/#more" rel="contents">
+            <a class="btn" href="/2019/06/08/oracle/Oracle---数据库、实例、用户、表空间、表之间的关系讲解/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -624,7 +629,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/06/08/operating_system/linux/shell scripts in action -- 提取nginx数据生成sql脚本/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/06/08/operating_system/linux/linux--shell scripts那些事/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="zch">
@@ -643,7 +648,7 @@
         
           <h2 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2019/06/08/operating_system/linux/shell scripts in action -- 提取nginx数据生成sql脚本/" itemprop="url">shell scripts in action -- 提取nginx数据生成sql脚本</a></h2>
+                <a class="post-title-link" href="/2019/06/08/operating_system/linux/linux--shell scripts那些事/" itemprop="url">linux--shell scripts那些事</a></h2>
         
 
         <div class="post-meta">
@@ -696,8 +701,8 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/2019/06/08/operating_system/linux/shell scripts in action -- 提取nginx数据生成sql脚本/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count valine-comment-count" data-xid="/2019/06/08/operating_system/linux/shell scripts in action -- 提取nginx数据生成sql脚本/" itemprop="commentCount"></span>
+                <a href="/2019/06/08/operating_system/linux/linux--shell scripts那些事/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2019/06/08/operating_system/linux/linux--shell scripts那些事/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -727,11 +732,14 @@
       
         
           
-          背景公司开发了一个基于openresty的网关系统，可以可视化配置nginx 的一些参数，例如：ip,port,weight,location,server,server_name;在nginx—-&gt;openresty网关,迁移过程中，需要根据nginx的配置写初始化脚本。这项工作够无聊，够没
+          什么是 Shell Script
+shell script 是利用 shell 的功能所写的一个『程序 (program)』，这个程序是使用纯文字档，将一些 shell 的语法与命令(含外部命令)写在里面， 搭配正规表示法、管线命令与数据流重导向等功能，以达到我们所想要的处理目的。
+
+撰写与运行在 
           ...
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2019/06/08/operating_system/linux/shell scripts in action -- 提取nginx数据生成sql脚本/#more" rel="contents">
+            <a class="btn" href="/2019/06/08/operating_system/linux/linux--shell scripts那些事/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -782,7 +790,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/06/08/operating_system/linux/io多路复用/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/06/08/operating_system/linux/linux---文件管理那些事/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="zch">
@@ -801,168 +809,7 @@
         
           <h2 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2019/06/08/operating_system/linux/io多路复用/" itemprop="url">io多路复用</a></h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-06-08T17:14:13+08:00">
-                2019-06-08
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/linux/" itemprop="url" rel="index">
-                    <span itemprop="name">linux</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/2019/06/08/operating_system/linux/io多路复用/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count valine-comment-count" data-xid="/2019/06/08/operating_system/linux/io多路复用/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-          
-IO多路复用—由Redis的IO多路复用
-
-
-          
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2019/06/08/operating_system/linux/io多路复用/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/06/08/operating_system/linux/linux---shell那些事/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="zch">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/images/avatar.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="ZCH NOTES">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/06/08/operating_system/linux/linux---shell那些事/" itemprop="url">linux--shell那些事</a></h2>
+                <a class="post-title-link" href="/2019/06/08/operating_system/linux/linux---文件管理那些事/" itemprop="url">linux--文件管理那些事</a></h2>
         
 
         <div class="post-meta">
@@ -1015,8 +862,168 @@ IO多路复用—由Redis的IO多路复用
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/2019/06/08/operating_system/linux/linux---shell那些事/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count valine-comment-count" data-xid="/2019/06/08/operating_system/linux/linux---shell那些事/" itemprop="commentCount"></span>
+                <a href="/2019/06/08/operating_system/linux/linux---文件管理那些事/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2019/06/08/operating_system/linux/linux---文件管理那些事/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+          文件权限改变权限, chmod文件权限的改变使用的是chmod这个指令，但是，权限的设定方法有两种， 分别可以使用数字或者是符号来进行权限的变更。我们就来谈一谈：
+数字类型改变文件权限我们可以使用数字来代表各个权限，各权限的分数对照表如下：123r:4w:2x:1
+每种身份(owner/group/
+          ...
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2019/06/08/operating_system/linux/linux---文件管理那些事/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/06/08/operating_system/linux/linux--shell那些事/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="zch">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ZCH NOTES">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/06/08/operating_system/linux/linux--shell那些事/" itemprop="url">linux--shell那些事</a></h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-06-08T17:14:13+08:00">
+                2019-06-08
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/操作系统/" itemprop="url" rel="index">
+                    <span itemprop="name">操作系统</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/06/08/operating_system/linux/linux--shell那些事/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2019/06/08/operating_system/linux/linux--shell那些事/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -1051,7 +1058,7 @@ IO多路复用—由Redis的IO多路复用
           ...
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2019/06/08/operating_system/linux/linux---shell那些事/#more" rel="contents">
+            <a class="btn" href="/2019/06/08/operating_system/linux/linux--shell那些事/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -1093,7 +1100,7 @@ IO多路复用—由Redis的IO多路复用
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/10/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/10/">10</a><span class="page-number current">11</span><a class="page-number" href="/page/12/">12</a><span class="space">&hellip;</span><a class="page-number" href="/page/22/">22</a><a class="extend next" rel="next" href="/page/12/"><i class="fa fa-angle-right"></i></a>
+    <a class="extend prev" rel="prev" href="/page/10/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/10/">10</a><span class="page-number current">11</span><a class="page-number" href="/page/12/">12</a><span class="space">&hellip;</span><a class="page-number" href="/page/23/">23</a><a class="extend next" rel="next" href="/page/12/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -1141,7 +1148,7 @@ IO多路复用—由Redis的IO多路复用
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">110</span>
+                  <span class="site-state-item-count">113</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -1152,7 +1159,7 @@ IO多路复用—由Redis的IO多路复用
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">20</span>
+                  <span class="site-state-item-count">21</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -1163,7 +1170,7 @@ IO多路复用—由Redis的IO多路复用
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">102</span>
+                  <span class="site-state-item-count">104</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
