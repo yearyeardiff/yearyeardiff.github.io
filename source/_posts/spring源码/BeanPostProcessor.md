@@ -55,7 +55,7 @@ public interface BeanPostProcessor {
  2. doCreateBean之前调用InstantiationAwareBeanPostProcessor
  
 ```java
-protected Object resolveBeforeInstantiation(String beanName, RootBeanDefinition mbd) {
+	protected Object resolveBeforeInstantiation(String beanName, RootBeanDefinition mbd) {
 		Object bean = null;
 		if (!Boolean.FALSE.equals(mbd.beforeInstantiationResolved)) {
 			// Make sure bean class is actually resolved at this point.
@@ -75,7 +75,7 @@ protected Object resolveBeforeInstantiation(String beanName, RootBeanDefinition 
 ```
 
 ``` java
-protected Object applyBeanPostProcessorsBeforeInstantiation(Class<?> beanClass, String beanName)
+	protected Object applyBeanPostProcessorsBeforeInstantiation(Class<?> beanClass, String beanName)
 			throws BeansException {
 
 		for (BeanPostProcessor bp : getBeanPostProcessors()) {
@@ -92,10 +92,9 @@ protected Object applyBeanPostProcessorsBeforeInstantiation(Class<?> beanClass, 
 ```
 
 ``` java
-@Override
-public Object applyBeanPostProcessorsAfterInitialization(Object existingBean, String beanName)
+	@Override
+	public Object applyBeanPostProcessorsAfterInitialization(Object existingBean, String beanName)
 		throws BeansException {
-
 	Object result = existingBean;
 	for (BeanPostProcessor beanProcessor : getBeanPostProcessors()) {
 		result = beanProcessor.postProcessAfterInitialization(result, beanName);
@@ -104,7 +103,7 @@ public Object applyBeanPostProcessorsAfterInitialization(Object existingBean, St
 		}
 	}
 	return result;
-}
+	}
 ```
 
  3. createBeanInstance中在调用构造器之前调用Constructor<?>[] ctors = determineConstructorsFromBeanPostProcessors(beanClass, beanName)

@@ -38,28 +38,23 @@ grammar_cjkRuby: true
 这个责任链部分，时序图不知道怎么画，所以贴了代码(ps:会的教教我)。更多责任链的实现方法,[责任链3中实现方法案例](https://github.com/yearyeardiff/Blogs/blob/master/Design%20Pattern/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F--%E8%B4%A3%E4%BB%BB%E9%93%BE.md)
 
 ``` java
-
-//class ReflectiveMethodInvocation implements ProxyMethodInvocation
-
-@Override
-public Object proceed() throws Throwable {
-	//	如果是chain中最后一个所以，调用被代理的方法;interceptorsAndDynamicMethodMatchers就是责任链中的chain
-	if (this.currentInterceptorIndex == this.interceptorsAndDynamicMethodMatchers.size() - 1) {
-		// 其实就是反射（Mehtod.invoke）
-		return invokeJoinpoint();
+	//class ReflectiveMethodInvocation implements ProxyMethodInvocation
+	@Override
+	public Object proceed() throws Throwable {
+		//	如果是chain中最后一个所以，调用被代理的方法;interceptorsAndDynamicMethodMatchers就是责任链中的chain
+		if (this.currentInterceptorIndex == this.interceptorsAndDynamicMethodMatchers.size() - 1) {
+			// 其实就是反射（Mehtod.invoke）
+			return invokeJoinpoint();
+		}
+		//获取责任链中的第currentInterceptorIndex拦截器，并把索引加1
+		Object interceptorOrInterceptionAdvice =
+						this.interceptorsAndDynamicMethodMatchers.get(++this.currentInterceptorIndex);
+		....此处省略非重点.....
+		// 调用链中的一个拦截器
+		return ((MethodInterceptor) interceptorOrInterceptionAdvice).invoke(this);
 	}
-
-	//获取责任链中的第currentInterceptorIndex拦截器，并把索引加1
-	Object interceptorOrInterceptionAdvice =
-					this.interceptorsAndDynamicMethodMatchers.get(++this.currentInterceptorIndex);
-
-....此处省略非重点.....
-
-	// 调用链中的一个拦截器
-	return ((MethodInterceptor) interceptorOrInterceptionAdvice).invoke(this);
-}
-
 ```
+
 
 ``` java
 public class AfterReturningAdviceInterceptor implements MethodInterceptor, AfterAdvice, Serializable {

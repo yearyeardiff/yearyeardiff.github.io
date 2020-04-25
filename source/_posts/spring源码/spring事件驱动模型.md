@@ -36,7 +36,7 @@ public abstract class ApplicationEvent extends EventObject {
         return this.timestamp;
     }
 }
-```
+```![image/自定义标签的解析_1.jpg]()
 
 　　ApplicationEvent继承自jdk的EventObject,所有的事件都需要继承ApplicationEvent,并且通过source得到事件源.该类的实现类ApplicationContextEvent表示ApplicaitonContext的容器事件.
 
