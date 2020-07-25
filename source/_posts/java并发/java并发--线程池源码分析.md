@@ -477,4 +477,4 @@ public boolean awaitTermination(long timeout, TimeUnit unit)
 # 参考
 
 - [interrupt、interrupted和isInterrupted的区别](https://www.cnblogs.com/lujiango/p/7641983.html)
-- [Java并发包中线程池ThreadPoolExecutor原理探究]([https://github.com/afkbrb/java-concurrency-note/blob/master/08Java%E5%B9%B6%E5%8F%91%E5%8C%85%E4%B8%AD%E7%BA%BF%E7%A8%8B%E6%B1%A0ThreadPoolExecutor%E5%8E%9F%E7%90%86%E6%8E%A2%E7%A9%B6.md)
+- [Java并发包中线程池ThreadPoolExecutor原理探究](https://github.com/afkbrb/java-concurrency-note/blob/master/08Java%E5%B9%B6%E5%8F%91%E5%8C%85%E4%B8%AD%E7%BA%BF%E7%A8%8B%E6%B1%A0ThreadPoolExecutor%E5%8E%9F%E7%90%86%E6%8E%A2%E7%A9%B6.md)
