@@ -1,0 +1,1373 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+<meta name="google-site-verification" content="6pSprQE3BiN_wM4uIQnTSoO5EAKab52jQ86zdl_VH84">
+<meta name="google-site-verification" content="pa5VzMThwxpvSOgHS15kDjiLdeww7kHG5LcJjH6EQko">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/science-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/science-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="spring,aop,">
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="ZCH NOTES" type="application/atom+xml">
+
+
+
+
+
+
+<meta name="description" content="Spring AOP 源码解析系列，建议大家按顺序阅读，欢迎讨论  Spring源码-AOP(一)-代理模式 Spring源码-AOP(二)-AOP概念 Spring源码-AOP(三)-Spring AOP的四种实现 Spring源码-AOP(四)-ProxyFactory Spring源码-AOP(五)-ProxyFactoryBean Spring源码-AOP(六)-自动代理与DefaultA">
+<meta name="keywords" content="spring,aop">
+<meta property="og:type" content="article">
+<meta property="og:title" content="spring--aop AOP的四种实现">
+<meta property="og:url" content="http://yoursite.com/2020/07/25/spring源码/spring--aop AOP的四种实现/index.html">
+<meta property="og:site_name" content="ZCH NOTES">
+<meta property="og:description" content="Spring AOP 源码解析系列，建议大家按顺序阅读，欢迎讨论  Spring源码-AOP(一)-代理模式 Spring源码-AOP(二)-AOP概念 Spring源码-AOP(三)-Spring AOP的四种实现 Spring源码-AOP(四)-ProxyFactory Spring源码-AOP(五)-ProxyFactoryBean Spring源码-AOP(六)-自动代理与DefaultA">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2020-07-25T08:52:41.698Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="spring--aop AOP的四种实现">
+<meta name="twitter:description" content="Spring AOP 源码解析系列，建议大家按顺序阅读，欢迎讨论  Spring源码-AOP(一)-代理模式 Spring源码-AOP(二)-AOP概念 Spring源码-AOP(三)-Spring AOP的四种实现 Spring源码-AOP(四)-ProxyFactory Spring源码-AOP(五)-ProxyFactoryBean Spring源码-AOP(六)-自动代理与DefaultA">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"right","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2020/07/25/spring源码/spring--aop AOP的四种实现/">
+
+
+
+
+
+  <title>spring--aop AOP的四种实现 | ZCH NOTES</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-right page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">ZCH NOTES</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <h1 class="site-subtitle" itemprop="description">博学笃志 切问近思</h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404.html" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br>
+            
+            公益404
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/07/25/spring源码/spring--aop AOP的四种实现/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="zch">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ZCH NOTES">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">spring--aop AOP的四种实现</h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-07-25T16:52:41+08:00">
+                2020-07-25
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/spring源码分析/" itemprop="url" rel="index">
+                    <span itemprop="name">spring源码分析</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2020/07/25/spring源码/spring--aop AOP的四种实现/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2020/07/25/spring源码/spring--aop AOP的四种实现/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>Spring AOP 源码解析系列，建议大家按顺序阅读，欢迎讨论</p>
+<ol>
+<li><a href="https://my.oschina.net/u/2377110/blog/1504596" target="_blank" rel="noopener">Spring源码-AOP(一)-代理模式</a></li>
+<li><a href="https://my.oschina.net/u/2377110/blog/1506098" target="_blank" rel="noopener">Spring源码-AOP(二)-AOP概念</a></li>
+<li><a href="https://my.oschina.net/u/2377110/blog/1507532" target="_blank" rel="noopener">Spring源码-AOP(三)-Spring AOP的四种实现</a></li>
+<li><a href="https://my.oschina.net/u/2377110/blog/1510684" target="_blank" rel="noopener">Spring源码-AOP(四)-ProxyFactory</a></li>
+<li><a href="https://my.oschina.net/u/2377110/blog/1512222" target="_blank" rel="noopener">Spring源码-AOP(五)-ProxyFactoryBean</a></li>
+<li><a href="https://my.oschina.net/u/2377110/blog/1517915" target="_blank" rel="noopener">Spring源码-AOP(六)-自动代理与DefaultAdvisorAutoProxyCreator</a></li>
+<li><a href="https://my.oschina.net/u/2377110/blog/1529575" target="_blank" rel="noopener">Spring源码-AOP(七)-整合AspectJ</a></li>
+</ol>
+<p>Spring AOP的实现从Spring自身的实现到集成AspectJ的实现，从硬编码到xml配置再到注解的方式，都是随着Spring的更新而不断演进。这一章我将介绍多种不同的实现方式，既为Spring AOP的实现及配置做一个粗略的指南，同时为后续源码的解析做一个引子。</p>
+<h1 id="1-硬编码-ProxyFactory"><a href="#1-硬编码-ProxyFactory" class="headerlink" title="1.硬编码(ProxyFactory)"></a>1.硬编码(ProxyFactory)</h1><p>以之前的浏览器举例，有一个Browser接口</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">public interface Browser &#123;</span><br><span class="line"></span><br><span class="line">	void visitInternet();</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>它的实现ChromeBrowser</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">public class ChromeBrowser implements Browser&#123;</span><br><span class="line"></span><br><span class="line">	public void visitInternet() &#123;</span><br><span class="line">		System.out.println(&quot;visit YouTube&quot;);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>众所周知，为了更自由的上网，需要一个境外服务器作为中转，这里就通过加密(encrypt)和解密(decrypt)两个方法模拟visitInternet方法执行前后的额外动作。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">// 加密</span><br><span class="line">private void encrypt()&#123;</span><br><span class="line">	System.out.println(&quot;encrypt ...&quot;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// 解密</span><br><span class="line">private void decrypt()&#123;</span><br><span class="line">	System.out.println(&quot;decrypt ...&quot;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>而真正访问时通过一个代理类来操作，使用Spring AOP最原始也是最底层的方式ProxyFactory来实现。另外还需要封装上面两个方法的增强类，分别实现Spring定义的MethodBeforeAdvice和AfterReturningAdvice两个Advice增强接口。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">public class BrowserBeforeAdvice implements MethodBeforeAdvice&#123;</span><br><span class="line"></span><br><span class="line">	public void before(Method method, Object[] args, Object target) throws Throwable &#123;</span><br><span class="line">		encrypt();</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	//加密</span><br><span class="line">	private void encrypt()&#123;</span><br><span class="line">		System.out.println(&quot;encrypt ...&quot;);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">public class BrowserAfterReturningAdvice implements AfterReturningAdvice&#123;</span><br><span class="line"></span><br><span class="line">	public void afterReturning(Object returnValue, Method method, Object[] args, Object target) throws Throwable &#123;</span><br><span class="line">		decrypt();</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	//解密</span><br><span class="line">	private void decrypt()&#123;</span><br><span class="line">		System.out.println(&quot;decrypt ...&quot;);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>我们使用硬编码的方式来实现代理</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">public class ProxyFactoryTest &#123;</span><br><span class="line"></span><br><span class="line">	public static void main(String[] args) &#123;</span><br><span class="line">		// 1.创建代理工厂</span><br><span class="line">		ProxyFactory factory = new ProxyFactory();</span><br><span class="line">		// 2.设置目标对象</span><br><span class="line">		factory.setTarget(new ChromeBrowser());</span><br><span class="line">		// 3.设置代理实现接口</span><br><span class="line">		factory.setInterfaces(new Class[]&#123;Browser.class&#125;);</span><br><span class="line">		// 4.添加前置增强</span><br><span class="line">		factory.addAdvice(new BrowserBeforeAdvice());</span><br><span class="line">		// 5.添加后置增强</span><br><span class="line">		factory.addAdvice(new BrowserAfterReturningAdvice());</span><br><span class="line">		// 6.获取代理对象</span><br><span class="line">		Browser browser = (Browser) factory.getProxy();</span><br><span class="line"></span><br><span class="line">		browser.visitInternet();</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>以上的前置增强和后置增强可以通过环绕增强统一处理，不过需要实现org.aopalliance.intercept.MethodInterceptor,它并不是Spring定义的接口，而是来自AOP联盟提供的API。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">public class BrowserAroundAdvice implements MethodInterceptor&#123;</span><br><span class="line"></span><br><span class="line">	public Object invoke(MethodInvocation invocation) throws Throwable &#123;</span><br><span class="line">		encrypt();</span><br><span class="line">		Object retVal = invocation.proceed();</span><br><span class="line">		decrypt();</span><br><span class="line">		return retVal;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	// 加密</span><br><span class="line">	private void encrypt()&#123;</span><br><span class="line">		System.out.println(&quot;encrypt ...&quot;);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	// 解密</span><br><span class="line">	private void decrypt()&#123;</span><br><span class="line">		System.out.println(&quot;decrypt ...&quot;);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>上面的</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">// 3.添加前置增强</span><br><span class="line">factory.addAdvice(new BrowserBeforeAdvice());</span><br><span class="line">// 4.添加后置增强</span><br><span class="line">factory.addAdvice(new BrowserAfterReturningAdvice());</span><br></pre></td></tr></table></figure>
+<p>可以改为</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">// 添加环绕增强</span><br><span class="line">factory.addAdvice(new BrowserAroundAdvice());</span><br></pre></td></tr></table></figure>
+<p>另外在上面的测试类中，并没有增强(Advice)类的作用范围，也就是说只要Browser接口中的方法都会被代理。如果在Browser接口中增加一个听音乐的方法。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">public interface Browser &#123;</span><br><span class="line"></span><br><span class="line">	void visitInternet();</span><br><span class="line"></span><br><span class="line">	void listenToMusic();</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">public class ChromeBrowser implements Browser&#123;</span><br><span class="line"></span><br><span class="line">	public void visitInternet() &#123;</span><br><span class="line">		System.out.println(&quot;visit YouTube&quot;);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	public void listenToMusic()&#123;</span><br><span class="line">		System.out.println(&quot;listen to Cranberries&quot;);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>而我只想对visitInternet进行代理，可以通过正则表达式的切面类RegexpMethodPointcutAdvisor来设置，其内部使用的Pointcut类为JdkRegexpMethodPointcut。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">// 创建正则表达式切面类</span><br><span class="line">RegexpMethodPointcutAdvisor advisor = new RegexpMethodPointcutAdvisor();</span><br><span class="line">// 添加环绕增强</span><br><span class="line">advisor.setAdvice(new BrowserAroundAdvice());</span><br><span class="line">// 设置切入点正则表达式</span><br><span class="line">advisor.setPattern(&quot;com.lcifn.spring.aop.bean.ChromeBrowser.visitInternet&quot;);</span><br></pre></td></tr></table></figure>
+<p>完整的测试类</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">public class RegexpProxyFactoryTest &#123;</span><br><span class="line"></span><br><span class="line">	public static void main(String[] args) &#123;</span><br><span class="line">		// 1.创建代理工厂</span><br><span class="line">		ProxyFactory factory = new ProxyFactory();</span><br><span class="line">		// 2.设置目标对象</span><br><span class="line">		factory.setTarget(new ChromeBrowser());</span><br><span class="line">		// 3.设置代理实现接口</span><br><span class="line">		factory.setInterfaces(new Class[]&#123;Browser.class&#125;);</span><br><span class="line">		// 4.创建正则表达式切面类</span><br><span class="line">		RegexpMethodPointcutAdvisor advisor = new RegexpMethodPointcutAdvisor();</span><br><span class="line">		// 5.添加环绕增强</span><br><span class="line">		advisor.setAdvice(new BrowserAroundAdvice());</span><br><span class="line">		// 6.设置切入点正则表达式</span><br><span class="line">		advisor.setPattern(&quot;com.lcifn.spring.aop.bean.ChromeBrowser.visitInternet&quot;);</span><br><span class="line">		// 7.工厂增加切面</span><br><span class="line">		factory.addAdvisor(advisor);</span><br><span class="line">		// 8.获取代理对象</span><br><span class="line">		Browser browser = (Browser) factory.getProxy();</span><br><span class="line">		browser.visitInternet();</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>毕竟硬编码的方式过于繁琐，也不适合项目的开发，还是配置化的方式更加便捷。</p>
+<h1 id="2-XML配置-ProxyFactoryBean"><a href="#2-XML配置-ProxyFactoryBean" class="headerlink" title="2.XML配置(ProxyFactoryBean)"></a>2.XML配置(ProxyFactoryBean)</h1><p>在写AOP概念的时候，看Spring的官方文档中对其AOP的定位不是要做最强大的AOP实现，而是通过与IOC容器的结合从而达到便捷的使用。ProxyFactoryBean实现了FactoryBean接口(关于FactoryBean见<a href="https://my.oschina.net/u/2377110/blog/918659" target="_blank" rel="noopener">FactoryBean</a>)，从而完美地结合了AOP与IOC。</p>
+<p>来看简单的例子</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span><br><span class="line">&lt;beans xmlns=&quot;http://www.springframework.org/schema/beans&quot;</span><br><span class="line">	xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; </span><br><span class="line">	xmlns:aop=&quot;http://www.springframework.org/schema/aop&quot;</span><br><span class="line">	xsi:schemaLocation=&quot;</span><br><span class="line">	http://www.springframework.org/schema/beans</span><br><span class="line">	http://www.springframework.org/schema/beans/spring-beans-3.0.xsd</span><br><span class="line">	http://www.springframework.org/schema/aop</span><br><span class="line">	http://www.springframework.org/schema/aop/spring-aop-3.0.xsd&quot;&gt;</span><br><span class="line"></span><br><span class="line">	&lt;!-- 原始对象 --&gt;</span><br><span class="line">	&lt;bean id=&quot;chromeBrowser&quot; class=&quot;com.lcifn.spring.aop.bean.ChromeBrowser&quot;/&gt;</span><br><span class="line">	&lt;!-- 环绕增强对象 --&gt;</span><br><span class="line">	&lt;bean id=&quot;browserAroundAdvice&quot; class=&quot;com.lcifn.spring.aop.advice.BrowserAroundAdvice&quot;&gt;&lt;/bean&gt;</span><br><span class="line"></span><br><span class="line">	&lt;bean id=&quot;browserProxy&quot; class=&quot;org.springframework.aop.framework.ProxyFactoryBean&quot;&gt;</span><br><span class="line">		&lt;!-- 接口 --&gt;</span><br><span class="line">		&lt;property name=&quot;interfaces&quot; value=&quot;com.lcifn.spring.aop.bean.Browser&quot;/&gt;</span><br><span class="line">		&lt;!-- 要代理的对象 --&gt;</span><br><span class="line">		&lt;property name=&quot;target&quot; ref=&quot;chromeBrowser&quot;/&gt;</span><br><span class="line">		&lt;!-- 拦截器组 --&gt;</span><br><span class="line">		&lt;property name=&quot;interceptorNames&quot;&gt;</span><br><span class="line">			&lt;list&gt;</span><br><span class="line">				&lt;value&gt;browserAroundAdvice&lt;/value&gt;</span><br><span class="line">			&lt;/list&gt;</span><br><span class="line">		&lt;/property&gt;</span><br><span class="line">	&lt;/bean&gt;</span><br><span class="line">&lt;/beans&gt;</span><br></pre></td></tr></table></figure>
+<p>ProxyFactoryBean相当于ProxyFactory实现了FactoryBean接口，通过IOC动态地创建代理对象。主要配置的属性有：</p>
+<ul>
+<li>interfaces:代理对象要实现的接口集合，其实也就是原始对象实现的接口集合。所以也可以省略掉，因为Spring会通过原始对象获取其所有的接口。</li>
+<li>target:原始对象，即要被代理的对象</li>
+<li>interceptorNames:拦截器名称集合，可以是Advice(增强)或Advisor(切面)的实现类，而最终形成拦截器链时都转化成Advisor。</li>
+</ul>
+<p>测试类如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">public class ProxyFactoryBeanTest &#123;</span><br><span class="line"></span><br><span class="line">	public static void main(String[] args) &#123;</span><br><span class="line">		ApplicationContext context = new ClassPathXmlApplicationContext(&quot;aop/proxyfactorybean.xml&quot;);</span><br><span class="line">		Browser browser = (Browser) context.getBean(&quot;browserProxy&quot;);</span><br><span class="line">		browser.visitInternet();</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>可以发现以上所有的代理都是通过接口的方式来接收，也就是说，底层是通过JDK自带的Proxy生成的代理。但是它的代理只能基于接口，如果想对未在接口中定义的方法或者类本身就没有实现接口的方法进行代理，那就要使用CGLIB的方式了。</p>
+<p>在ChromeBrowser中增加一个非接口定义的方法</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">public String seeMovie(String movie)&#123;</span><br><span class="line">	System.out.println(&quot;see a movie:&quot; + movie);</span><br><span class="line">	return movie + &quot; has bean seen&quot;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>通过正则表达式去匹配此方法进行代理，XML配置如下</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span><br><span class="line">&lt;beans xmlns=&quot;http://www.springframework.org/schema/beans&quot;</span><br><span class="line">	xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; </span><br><span class="line">	xmlns:aop=&quot;http://www.springframework.org/schema/aop&quot;</span><br><span class="line">	xsi:schemaLocation=&quot;</span><br><span class="line">	http://www.springframework.org/schema/beans</span><br><span class="line">	http://www.springframework.org/schema/beans/spring-beans-3.0.xsd</span><br><span class="line">	http://www.springframework.org/schema/aop</span><br><span class="line">	http://www.springframework.org/schema/aop/spring-aop-3.0.xsd&quot;&gt;</span><br><span class="line"></span><br><span class="line">	&lt;!-- 原始对象 --&gt;</span><br><span class="line">	&lt;bean id=&quot;chromeBrowser&quot; class=&quot;com.lcifn.spring.aop.bean.ChromeBrowser&quot;/&gt;</span><br><span class="line">	&lt;!-- 环绕增强对象 --&gt;</span><br><span class="line">	&lt;bean id=&quot;browserAroundAdvice&quot; class=&quot;com.lcifn.spring.aop.advice.BrowserAroundAdvice&quot;&gt;&lt;/bean&gt;</span><br><span class="line">	&lt;!-- 切面 --&gt;</span><br><span class="line">	&lt;bean id=&quot;regexpAdvisor&quot; class=&quot;org.springframework.aop.support.RegexpMethodPointcutAdvisor&quot;&gt;</span><br><span class="line">		&lt;property name=&quot;advice&quot; ref=&quot;browserAroundAdvice&quot;&gt;&lt;/property&gt;</span><br><span class="line">		&lt;!-- 切入点正则表达式 --&gt;</span><br><span class="line">		&lt;property name=&quot;pattern&quot; value=&quot;com.lcifn.spring.aop.bean.ChromeBrowser.seeMovie&quot;&gt;&lt;/property&gt;</span><br><span class="line">	&lt;/bean&gt;</span><br><span class="line"></span><br><span class="line">	&lt;bean id=&quot;browserProxy&quot; class=&quot;org.springframework.aop.framework.ProxyFactoryBean&quot;&gt;</span><br><span class="line">		&lt;!-- 要代理的对象 --&gt;</span><br><span class="line">		&lt;property name=&quot;target&quot; ref=&quot;chromeBrowser&quot;/&gt;</span><br><span class="line">		&lt;!-- 拦截器组 --&gt;</span><br><span class="line">		&lt;property name=&quot;interceptorNames&quot; value=&quot;regexpAdvisor&quot;/&gt;</span><br><span class="line">		&lt;!-- proxyTargetClass --&gt;</span><br><span class="line">		&lt;property name=&quot;proxyTargetClass&quot; value=&quot;true&quot;&gt;&lt;/property&gt;</span><br><span class="line">	&lt;/bean&gt;</span><br><span class="line">&lt;/beans&gt;</span><br></pre></td></tr></table></figure>
+<p>对ProxyFactoryBean的配置新增proxyTargetClass属性，网上对此属性的解释是强制使用CGLIB代理对象，而在Spring的文档中对此的解释则是</p>
+<blockquote>
+<p>force proxying for the TargetSource’s exposed target class. If that target class is an interface, a JDK proxy will be created for the given interface. If that target class is any other class, a CGLIB proxy will be created for the given class.</p>
+</blockquote>
+<p>即强制暴露TargetSource中的目标class，如果此class是接口，则使用JDK代理，如果是类对象，则使用CGLIB代理。但是正常情况下，都是使用CGLIB代理。</p>
+<p>来看测试类</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">public class RegexpProxyFactoryBeanTest &#123;</span><br><span class="line"></span><br><span class="line">	public static void main(String[] args) &#123;</span><br><span class="line">		ApplicationContext context = new ClassPathXmlApplicationContext(&quot;aop/proxyfactorybean-regexp.xml&quot;);</span><br><span class="line">		ChromeBrowser browser = (ChromeBrowser) context.getBean(&quot;browserProxy&quot;);</span><br><span class="line">		browser.seeMovie(&quot;The Great Wall&quot;);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>此时已经能解决大部分的问题了，但AOP所处理的就是多个业务中相似的非逻辑相关的问题。因而ProxyFactoryBean的配置会有很多，太多的XML配置总会很麻烦。Spring设计时也考虑到这个问题，因而有了自动代理。</p>
+<h1 id="3-自动代理-DefaultAdvisorAutoProxyCreator"><a href="#3-自动代理-DefaultAdvisorAutoProxyCreator" class="headerlink" title="3.自动代理(DefaultAdvisorAutoProxyCreator)"></a>3.自动代理(DefaultAdvisorAutoProxyCreator)</h1><p>自动代理，即自动发现Advisor(切面)配置，意味着不再需要一个个地配置ProxyFactoryBean，只需要配置特定的切面即可。来看配置：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span><br><span class="line">&lt;beans xmlns=&quot;http://www.springframework.org/schema/beans&quot;</span><br><span class="line">	xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; </span><br><span class="line">	xmlns:aop=&quot;http://www.springframework.org/schema/aop&quot;</span><br><span class="line">	xsi:schemaLocation=&quot;</span><br><span class="line">	http://www.springframework.org/schema/beans</span><br><span class="line">	http://www.springframework.org/schema/beans/spring-beans-3.0.xsd</span><br><span class="line">	http://www.springframework.org/schema/aop</span><br><span class="line">	http://www.springframework.org/schema/aop/spring-aop-3.0.xsd&quot;&gt;</span><br><span class="line"></span><br><span class="line">	&lt;!-- 原始对象 --&gt;</span><br><span class="line">	&lt;bean id=&quot;chromeBrowser&quot; class=&quot;com.lcifn.spring.aop.bean.ChromeBrowser&quot;/&gt;</span><br><span class="line">	&lt;!-- 环绕增强对象 --&gt;</span><br><span class="line">	&lt;bean id=&quot;browserAroundAdvice&quot; class=&quot;com.lcifn.spring.aop.advice.BrowserAroundAdvice&quot;&gt;&lt;/bean&gt;</span><br><span class="line">	&lt;!-- 切面 --&gt;</span><br><span class="line">	&lt;bean id=&quot;regexpAdvisor&quot; class=&quot;org.springframework.aop.support.RegexpMethodPointcutAdvisor&quot;&gt;</span><br><span class="line">		&lt;property name=&quot;advice&quot; ref=&quot;browserAroundAdvice&quot;&gt;&lt;/property&gt;</span><br><span class="line">		&lt;!-- 切入点正则表达式 --&gt;</span><br><span class="line">		&lt;property name=&quot;pattern&quot; value=&quot;com.lcifn.spring.aop.bean.ChromeBrowser.visit.*&quot;&gt;&lt;/property&gt;</span><br><span class="line">	&lt;/bean&gt;</span><br><span class="line"></span><br><span class="line">	&lt;!-- 自动扫描切面代理类 --&gt;</span><br><span class="line">	&lt;bean class=&quot;org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator&quot;&gt;</span><br><span class="line">		&lt;property name=&quot;optimize&quot; value=&quot;true&quot;&gt;&lt;/property&gt;</span><br><span class="line">	&lt;/bean&gt;</span><br><span class="line">&lt;/beans&gt;</span><br></pre></td></tr></table></figure>
+<p>此时如果增加一种AOP逻辑，只需要配置一个新的切面类，指定要代理的切入点和增强类即可。自动代理的测试同ProxyFactoryBean相同，就不展示了。</p>
+<p>这里涉及到一个新的属性optimize，此属性在使用JDK还是CGLIB代理的判断上同proxyTargetClass一致。但其文档上阐述了一些其他信息。</p>
+<blockquote>
+<p>Set whether proxies should perform aggressive optimizations.The exact meaning of “aggressive optimizations” will differ between proxies, but there is usually some tradeoff.</p>
+</blockquote>
+<blockquote>
+<p>用来设置代理时是否使用激进的优化策略。但不同的代理间的优化策略也不相同，通常情况只是一种权衡。</p>
+</blockquote>
+<blockquote>
+<p>For example, optimization will usually mean that advice changes won’t take effect after a proxy has been created. For this reason, optimization is disabled by default. An optimize value of “true” may be ignored if other settings preclude optimization: for example, if “exposeProxy” is set to “true” and that’s not compatible with the optimization.</p>
+</blockquote>
+<blockquote>
+<p>比如，优化通常意味着对于已经生成的代理，增强(Advice)的变化无法对其产生影响。鉴于此，默认优化配置是禁止的。另外如果其他配置阻止了优化策略的，optimize=true将被忽略。比如exposeProxy=true与优化策略是不兼容的。</p>
+</blockquote>
+<p>将自动代理类DefaultAdvisorAutoProxyCreator的optimize属性设置为true，是因为并不清楚代理的切面是什么情况，因而需要Spring帮助我们对各种情况做一些权衡。</p>
+<p>做到这里，当年Spring的罗大侠觉得这下应该满足你们这群用户了吧。可是很多用户又提出新的问题：业务越来越复杂，我们需要更加精细的控制。另外JDK5的出现让人们意识到注解相比于XML更简洁。因此，罗大侠又说，ok，都满足你们，集成AspectJ，支持注解，你们满意了吧。</p>
+<h1 id="4-Spring-AspectJ-注解"><a href="#4-Spring-AspectJ-注解" class="headerlink" title="4.Spring+AspectJ+注解"></a>4.Spring+AspectJ+注解</h1><p>Spring3.0的发布通过配置类让XML配置可以完美地被取代，而AOP的配置也可以通过注解的方式更加便捷的设置。下面还以浏览器举例，来看注解的AOP如何配置。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">@Component</span><br><span class="line">[@Aspect](https://my.oschina.net/aspect)</span><br><span class="line">public class AspectJAnnotationBrowserAroundAdvice &#123;</span><br><span class="line">	@Pointcut(&quot;execution(* com.lcifn.spring.aop.bean.ChromeBrowser.*(..))&quot;)</span><br><span class="line">	private void pointcut()&#123;</span><br><span class="line"></span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	@Around(value=&quot;pointcut()&quot;)</span><br><span class="line">	public Object aroundIntercept(ProceedingJoinPoint pjp) throws Throwable&#123;</span><br><span class="line">		encrypt();</span><br><span class="line">		Object retVal = pjp.proceed();</span><br><span class="line">		decrypt();</span><br><span class="line">		return retVal;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	// 加密</span><br><span class="line">	private void encrypt()&#123;</span><br><span class="line">		System.out.println(&quot;encrypt ...&quot;);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	// 解密</span><br><span class="line">	private void decrypt()&#123;</span><br><span class="line">		System.out.println(&quot;decrypt ...&quot;);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>@Aspect作用在类上，标识这是一个切面类。</li>
+<li>@Pointcut一般标识在一个空方法上，值为aspectj的连接点表达式。关于连接点表达式这里就不详述了。</li>
+<li>@Around标识此方法为环绕增强，值为@Pointcut标识的方法名，或者直接使用连接点表达式也可。</li>
+</ul>
+<p>比如</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">@Around(&quot;execution(* com.lcifn.spring.aop.bean.ChromeBrowser.*(..))&quot;)</span><br></pre></td></tr></table></figure>
+<p>类上的@Component注解表示它被Spring所管理。当然要使这些注解生效，也需要启用相关配置，来看配置类。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">@Configuration</span><br><span class="line">@ComponentScan(&quot;com.lcifn.spring.aop.bean,com.lcifn.spring.aop.advice&quot;)</span><br><span class="line">@EnableAspectJAutoProxy(proxyTargetClass=true)</span><br><span class="line">public class AppConfig &#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>@Configuration标识这是Spring的配置类</li>
+<li>@ComponentScan则是注解方式的类扫描，值为要扫描的包路径</li>
+<li>@EnableAspectJAutoProxy表示使用AspectJ注解，proxyTargetClass=true标识启用CGLIB代理</li>
+</ul>
+<p>没有了XML配置，启动Spring容器当然不能再用ClassPathXmlApplicationContext类，而是使用AnnotationConfigApplicationContext。在创建对象时传入配置类的Class对象作为参数。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">public class AspectJAnnotationAopTest &#123;</span><br><span class="line"></span><br><span class="line">	public static void main(String[] args) &#123;</span><br><span class="line">		ApplicationContext context = new AnnotationConfigApplicationContext(AppConfig.class);</span><br><span class="line">		ChromeBrowser browser = (ChromeBrowser) context.getBean(&quot;chromeBrowser&quot;);</span><br><span class="line">		browser.visitInternet();</span><br><span class="line">		browser.listenToMusic();</span><br><span class="line">		browser.seeMovie(&quot;The Great Wall&quot;);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>有人可能觉得因为历史的缘故或其他原因，不想使用AspectJ注解配置AOP，而是通过XML配置，可不可以呢？Spring也考虑到此种情况了。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span><br><span class="line">&lt;beans xmlns=&quot;http://www.springframework.org/schema/beans&quot;</span><br><span class="line">	xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; </span><br><span class="line">	xmlns:aop=&quot;http://www.springframework.org/schema/aop&quot;</span><br><span class="line">	xsi:schemaLocation=&quot;</span><br><span class="line">	http://www.springframework.org/schema/beans</span><br><span class="line">	http://www.springframework.org/schema/beans/spring-beans-3.0.xsd</span><br><span class="line">	http://www.springframework.org/schema/aop</span><br><span class="line">	http://www.springframework.org/schema/aop/spring-aop-3.0.xsd&quot;&gt;</span><br><span class="line"></span><br><span class="line">	&lt;!-- 原始对象 --&gt;</span><br><span class="line">	&lt;bean id=&quot;chromeBrowser&quot; class=&quot;com.lcifn.spring.aop.bean.ChromeBrowser&quot;/&gt;</span><br><span class="line">	&lt;!-- 环绕增强对象 --&gt;</span><br><span class="line">	&lt;bean id=&quot;aspectjBrowserAroundAdvice&quot; class=&quot;com.lcifn.spring.aop.advice.AspectJBrowserAroundAdvice&quot;&gt;&lt;/bean&gt;</span><br><span class="line"></span><br><span class="line">	&lt;!-- aspectj aop 配置 --&gt;</span><br><span class="line">	&lt;aop:config&gt;</span><br><span class="line">		&lt;!-- 切入点配置 --&gt;</span><br><span class="line">		&lt;aop:pointcut id=&quot;browserPointcut&quot; expression=&quot;execution(* com.lcifn.spring.aop.bean.*.*(..))&quot;/&gt;</span><br><span class="line">		&lt;aop:aspect ref=&quot;aspectjBrowserAroundAdvice&quot;&gt;</span><br><span class="line">			&lt;!-- 环绕增强 --&gt;</span><br><span class="line">			&lt;aop:around method=&quot;aroundIntercept&quot; pointcut-ref=&quot;browserPointcut&quot; /&gt;</span><br><span class="line">		&lt;/aop:aspect&gt;</span><br><span class="line">	&lt;/aop:config&gt;</span><br><span class="line">&lt;/beans&gt;</span><br></pre></td></tr></table></figure>
+<p>通过<a href="aop:config" target="_blank" rel="noopener">aop:config</a>标签及其子标签配置，其中<a href="aop:pointcut" target="_blank" rel="noopener">aop:pointcut</a>切入点的配置可以和<a href="aop:aspect" target="_blank" rel="noopener">aop:aspect</a>同级，这样可以被多个aspect重复使用，也可以配置再<a href="aop:aspect" target="_blank" rel="noopener">aop:aspect</a>内部，只被单个aspect使用。</p>
+<p>如果存在外部的advice配置，比如事务管理的<a href="tx:advice" target="_blank" rel="noopener">tx:advice</a>，则可以通过<a href="aop:advisor" target="_blank" rel="noopener">aop:advisor</a>进行整合。这里也不详细介绍了。</p>
+<p>上面介绍了纯注解和纯XML两种方式，但实际项目中往往是简单的XML+注解的方式。AOP的配置使用注解，同纯注解中的AspectJAnnotationBrowserAroundAdvice类一致，而不使用配置类，启用XML配置的方式。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span><br><span class="line">&lt;beans xmlns=&quot;http://www.springframework.org/schema/beans&quot;</span><br><span class="line">	xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; </span><br><span class="line">	xmlns:context=&quot;http://www.springframework.org/schema/context&quot;</span><br><span class="line">	xmlns:aop=&quot;http://www.springframework.org/schema/aop&quot;</span><br><span class="line">	xsi:schemaLocation=&quot;</span><br><span class="line">	http://www.springframework.org/schema/beans</span><br><span class="line">	http://www.springframework.org/schema/beans/spring-beans-3.0.xsd</span><br><span class="line">	http://www.springframework.org/schema/context</span><br><span class="line">    http://www.springframework.org/schema/context/spring-context-3.0.xsd</span><br><span class="line">	http://www.springframework.org/schema/aop</span><br><span class="line">	http://www.springframework.org/schema/aop/spring-aop-3.0.xsd&quot;&gt;</span><br><span class="line">	&lt;!-- 类扫描 --&gt;</span><br><span class="line">	&lt;context:component-scan base-package=&quot;com.lcifn.spring.aop.bean,com.lcifn.spring.aop.advice&quot;/&gt;</span><br><span class="line">	&lt;!-- 启用AspectJ注解 --&gt;</span><br><span class="line">	&lt;aop:aspectj-autoproxy/&gt;</span><br><span class="line">&lt;/beans&gt;</span><br></pre></td></tr></table></figure>
+<p>可以发现此时的XML配置变得特别的简单且能兼容历史，而注解使用也是便捷，因而很多人喜欢采用此种方式也就可以理解。</p>
+<p>对于Spring AOP的增强，本文都是采用AroundAdvice环绕增强来举例，对于其他的增强以他人的一个表格简单总结下。而对于引入增强(IntroductionAdvice)后续会有单独的章节介绍。</p>
+<table>
+<thead>
+<tr>
+<th>增强类型</th>
+<th>基于 AOP 接口</th>
+<th>基于 @Aspect</th>
+<th>基于 <a href="aop:config" target="_blank" rel="noopener">aop:config</a></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Before Advice（前置增强）</td>
+<td>MethodBeforeAdvice</td>
+<td>@Before</td>
+<td><a href="aop:before" target="_blank" rel="noopener">aop:before</a></td>
+</tr>
+<tr>
+<td>AfterReturningAdvice（后置增强）</td>
+<td>AfterReturningAdvice</td>
+<td>@AfterReturning</td>
+<td><a href="aop:after-returning" target="_blank" rel="noopener">aop:after-returning</a></td>
+</tr>
+<tr>
+<td>AfterAdvice(Finally增强)</td>
+<td>无</td>
+<td>@After</td>
+<td><a href="aop:after" target="_blank" rel="noopener">aop:after</a></td>
+</tr>
+<tr>
+<td>AroundAdvice（环绕增强）</td>
+<td>MethodInterceptor</td>
+<td>@Around</td>
+<td><a href="aop:around" target="_blank" rel="noopener">aop:around</a></td>
+</tr>
+<tr>
+<td>ThrowsAdvice（抛出增强）</td>
+<td>ThrowsAdvice</td>
+<td>@AfterThrowing</td>
+<td><a href="aop:after-throwing" target="_blank" rel="noopener">aop:after-throwing</a></td>
+</tr>
+<tr>
+<td>IntroductionAdvice（引入增强）</td>
+<td>DelegatingIntroductionInterceptor</td>
+<td>@DeclareParents</td>
+<td><a href="aop:declare-parents" target="_blank" rel="noopener">aop:declare-parents</a></td>
+</tr>
+</tbody>
+</table>
+<p>本文介绍了Spring AOP的各种实现，从ProxyFactory, 到ProxyFactoryBean，再到自动代理DefaultAdvisorAutoProxyCreator，最后到与AspectJ的结合。现在可能很少人会使用前三种方式来配置AOP，但了解这些实现能够帮助我们更好地理解Spring AOP的实现原理和架构设计。<strong>我们研究一个框架的使用，实现乃至于源码，更多地应该理解它的整体架构以及设计理念，尤其是一个设计优秀的框架。</strong>希望通过对优秀的框架地学习，来提升自己的编码水平甚至软件架构水平。后面的章节会深入Spring AOP的源码，希望通过对它的学习能够进一步地提升自己，也希望看文章的同学们也能够同我一起加油！</p>
+<p>参考文档：</p>
+<p>1.<a href="https://my.oschina.net/huangyong/blog/161402" target="_blank" rel="noopener">https://my.oschina.net/huangyong/blog/161402</a></p>
+<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><p>转自：<a href="https://my.oschina.net/u/2377110/blog/1507532#h1_3" target="_blank" rel="noopener">Spring源码-AOP(三)-Spring AOP的四种实现</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div></div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.jpg" alt="zch 微信支付">
+        <p>微信支付</p>
+      </div>
+    
+
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/spring/" rel="tag"># spring</a>
+          
+            <a href="/tags/aop/" rel="tag"># aop</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/07/25/spring源码/spring--aop ProxyFactory/" rel="next" title="spring--aop ProxyFactory">
+                <i class="fa fa-chevron-left"></i> spring--aop ProxyFactory
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/07/25/spring源码/spring事件驱动模型/" rel="prev" title="spring事件驱动模型">
+                spring事件驱动模型 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        
+  <div class="bdsharebuttonbox">
+    <a href="#" class="bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+    <a href="#" class="bds_douban" data-cmd="douban" title="分享到豆瓣网"></a>
+    <a href="#" class="bds_sqq" data-cmd="sqq" title="分享到QQ好友"></a>
+    <a href="#" class="bds_qzone" data-cmd="qzone" title="分享到QQ空间"></a>
+    <a href="#" class="bds_weixin" data-cmd="weixin" title="分享到微信"></a>
+    <a href="#" class="bds_tieba" data-cmd="tieba" title="分享到百度贴吧"></a>
+    <a href="#" class="bds_twi" data-cmd="twi" title="分享到Twitter"></a>
+    <a href="#" class="bds_fbook" data-cmd="fbook" title="分享到Facebook"></a>
+    <a href="#" class="bds_more" data-cmd="more"></a>
+    <a class="bds_count" data-cmd="count"></a>
+  </div>
+  <script>
+    window._bd_share_config = {
+      "common": {
+        "bdText": "",
+        "bdMini": "2",
+        "bdMiniList": false,
+        "bdPic": ""
+      },
+      "share": {
+        "bdSize": "16",
+        "bdStyle": "0"
+      },
+      "image": {
+        "viewList": ["tsina", "douban", "sqq", "qzone", "weixin", "twi", "fbook"],
+        "viewText": "分享到：",
+        "viewSize": "16"
+      }
+    }
+  </script>
+
+<script>
+  with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='//bdimg.share.baidu.com/static/api/js/share.js?cdnversion='+~(-new Date()/36e5)];
+</script>
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar.png" alt="zch">
+            
+              <p class="site-author-name" itemprop="name">zch</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">160</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">29</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">117</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-硬编码-ProxyFactory"><span class="nav-number">1.</span> <span class="nav-text">1.硬编码(ProxyFactory)</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-XML配置-ProxyFactoryBean"><span class="nav-number">2.</span> <span class="nav-text">2.XML配置(ProxyFactoryBean)</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-自动代理-DefaultAdvisorAutoProxyCreator"><span class="nav-number">3.</span> <span class="nav-text">3.自动代理(DefaultAdvisorAutoProxyCreator)</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#4-Spring-AspectJ-注解"><span class="nav-number">4.</span> <span class="nav-text">4.Spring+AspectJ+注解</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考"><span class="nav-number">5.</span> <span class="nav-text">参考</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<div class="copyright">&copy; <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">zch</span>
+
+  
+</div>
+
+
+  <div class="powered-by">个人学习和工作中总结的笔记</div>
+  <i class="fa fa-user-md"></i>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+<script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? "https://" : "http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1276375036'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s5.cnzz.com/z_stat.php%3Fid%3D1276375036%26online%3D1%26show%3Dline' type='text/javascript'%3E%3C/script%3E"));</script>
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/three/three.min.js"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/three/canvas_sphere.min.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+  
+  <script type="text/javascript">
+    var GUEST = ['nick','mail','link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item=>{
+      return GUEST.indexOf(item)>-1;
+    });
+    new Valine({
+        el: '#comments' ,
+        verify: true,
+        notify: true,
+        appId: 'qlLpITiuRGP5wGRRqD1TTe7y-gzGzoHsz',
+        appKey: 'Xu6NC8eq2DCotEgOrHgbA2St',
+        placeholder: 'ヾﾉ≧∀≦)o来啊，快活啊!',
+        avatar:'mm',
+        guest_info:guest,
+        pageSize:'10' || 10,
+    });
+  </script>
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

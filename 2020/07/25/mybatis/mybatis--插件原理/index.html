@@ -1,0 +1,1319 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+<meta name="google-site-verification" content="6pSprQE3BiN_wM4uIQnTSoO5EAKab52jQ86zdl_VH84">
+<meta name="google-site-verification" content="pa5VzMThwxpvSOgHS15kDjiLdeww7kHG5LcJjH6EQko">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/science-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/science-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="责任链,mybatis,">
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="ZCH NOTES" type="application/atom+xml">
+
+
+
+
+
+
+<meta name="description" content="MyBatis提供了一种插件(plugin)的功能，虽然叫做插件，但其实这是拦截器功能。那么拦截器拦截MyBatis中的哪些内容呢？ MyBatis 允许你在已映射语句执行过程中的某一点进行拦截调用。默认情况下，MyBatis允许使用插件来拦截的方法调用包括：  Executor (update, query, flushStatements, commit, rollback, getTrans">
+<meta name="keywords" content="责任链,mybatis">
+<meta property="og:type" content="article">
+<meta property="og:title" content="mybatis--插件原理">
+<meta property="og:url" content="http://yoursite.com/2020/07/25/mybatis/mybatis--插件原理/index.html">
+<meta property="og:site_name" content="ZCH NOTES">
+<meta property="og:description" content="MyBatis提供了一种插件(plugin)的功能，虽然叫做插件，但其实这是拦截器功能。那么拦截器拦截MyBatis中的哪些内容呢？ MyBatis 允许你在已映射语句执行过程中的某一点进行拦截调用。默认情况下，MyBatis允许使用插件来拦截的方法调用包括：  Executor (update, query, flushStatements, commit, rollback, getTrans">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2021-04-15T07:54:22.657Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="mybatis--插件原理">
+<meta name="twitter:description" content="MyBatis提供了一种插件(plugin)的功能，虽然叫做插件，但其实这是拦截器功能。那么拦截器拦截MyBatis中的哪些内容呢？ MyBatis 允许你在已映射语句执行过程中的某一点进行拦截调用。默认情况下，MyBatis允许使用插件来拦截的方法调用包括：  Executor (update, query, flushStatements, commit, rollback, getTrans">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"right","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2020/07/25/mybatis/mybatis--插件原理/">
+
+
+
+
+
+  <title>mybatis--插件原理 | ZCH NOTES</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-right page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">ZCH NOTES</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <h1 class="site-subtitle" itemprop="description">博学笃志 切问近思</h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404.html" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br>
+            
+            公益404
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/07/25/mybatis/mybatis--插件原理/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="zch">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ZCH NOTES">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">mybatis--插件原理</h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-07-25T16:52:41+08:00">
+                2020-07-25
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/mybatis/" itemprop="url" rel="index">
+                    <span itemprop="name">mybatis</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2020/07/25/mybatis/mybatis--插件原理/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2020/07/25/mybatis/mybatis--插件原理/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>MyBatis提供了一种插件(plugin)的功能，虽然叫做插件，但其实这是拦截器功能。那么拦截器拦截MyBatis中的哪些内容呢？</p>
+<p><code>MyBatis 允许你在已映射语句执行过程中的某一点进行拦截调用</code>。默认情况下，MyBatis允许使用插件来拦截的方法调用包括：</p>
+<ol>
+<li>Executor (update, query, flushStatements, commit, rollback, getTransaction, close, isClosed) 拦截执行器的方法</li>
+<li>ParameterHandler (getParameterObject, setParameters) 拦截参数的处理</li>
+<li>ResultSetHandler (handleResultSets, handleOutputParameters) 拦截结果集的处理</li>
+<li>StatementHandler (prepare, parameterize, batch, update, query) 拦截Sql语法构建的处理</li>
+</ol>
+<p>Mybatis采用<code>责任链模式，通过动态代理组织多个拦截器（插件）</code>，通过这些拦截器可以改变Mybatis的默认行为（诸如SQL重写之类的），由于插件会深入到Mybatis的核心，因此在编写自己的插件前最好了解下它的原理，以便写出安全高效的插件。</p>
+<h1 id="1-拦截器的使用"><a href="#1-拦截器的使用" class="headerlink" title="1 拦截器的使用"></a>1 拦截器的使用</h1><h2 id="1-1-拦截器介绍及配置"><a href="#1-1-拦截器介绍及配置" class="headerlink" title="1.1 拦截器介绍及配置"></a>1.1 拦截器介绍及配置</h2><p>首先我们看下MyBatis拦截器的接口定义：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">Interceptor</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">  <span class="function">Object <span class="title">intercept</span><span class="params">(Invocation invocation)</span> <span class="keyword">throws</span> Throwable</span>;</span><br><span class="line"></span><br><span class="line">  <span class="function">Object <span class="title">plugin</span><span class="params">(Object target)</span></span>;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">void</span> <span class="title">setProperties</span><span class="params">(Properties properties)</span></span>;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>比较简单，只有3个方法。 MyBatis默认没有一个拦截器接口的实现类，开发者们可以实现符合自己需求的拦截器。下面的MyBatis官网的一个拦截器实例：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Intercepts</span>(&#123;<span class="meta">@Signature</span>(type= Executor<span class="class">.<span class="keyword">class</span>, <span class="title">method</span> </span>= <span class="string">"update"</span>, args = &#123;MappedStatement<span class="class">.<span class="keyword">class</span>,<span class="title">Object</span>.<span class="title">class</span>&#125;)&#125;)</span></span><br><span class="line"><span class="class"><span class="title">public</span> <span class="title">class</span> <span class="title">ExamplePlugin</span> <span class="keyword">implements</span> <span class="title">Interceptor</span> </span>&#123;</span><br><span class="line">  <span class="function"><span class="keyword">public</span> Object <span class="title">intercept</span><span class="params">(Invocation invocation)</span> <span class="keyword">throws</span> Throwable </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> invocation.proceed();</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="function"><span class="keyword">public</span> Object <span class="title">plugin</span><span class="params">(Object target)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> Plugin.wrap(target, <span class="keyword">this</span>);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setProperties</span><span class="params">(Properties properties)</span> </span>&#123;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>全局xml配置：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">plugins</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">plugin</span> <span class="attr">interceptor</span>=<span class="string">"org.format.mybatis.cache.interceptor.ExamplePlugin"</span>&gt;</span><span class="tag">&lt;/<span class="name">plugin</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">plugins</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>这个拦截器拦截Executor接口的update方法（其实也就是SqlSession的新增，删除，修改操作），所有执行executor的update方法都会被该拦截器拦截到。 </p>
+<h2 id="1-2-源码分析"><a href="#1-2-源码分析" class="headerlink" title="1.2 源码分析"></a>1.2 源码分析</h2><p><strong>首先从源头-&gt;配置文件开始分析：</strong></p>
+<ol>
+<li>XMLConfigBuilder<code>解析MyBatis全局配置文件的pluginElement私有方法</code>：</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">pluginElement</span><span class="params">(XNode parent)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (parent != <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">for</span> (XNode child : parent.getChildren()) &#123;</span><br><span class="line">            String interceptor = child.getStringAttribute(<span class="string">"interceptor"</span>);</span><br><span class="line">            Properties properties = child.getChildrenAsProperties();</span><br><span class="line">            Interceptor interceptorInstance = (Interceptor) resolveClass(interceptor).newInstance();</span><br><span class="line">            interceptorInstance.setProperties(properties);</span><br><span class="line">            configuration.addInterceptor(interceptorInstance);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ol start="2">
+<li>具体的解析代码其实比较简单，就不贴了，<code>主要就是通过反射实例化plugin节点中的interceptor属性表示的类</code>。然后调用全局配置类Configuration的addInterceptor方法。</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">addInterceptor</span><span class="params">(Interceptor interceptor)</span> </span>&#123;</span><br><span class="line">    interceptorChain.addInterceptor(interceptor);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ol start="3">
+<li>这个interceptorChain是Configuration的内部属性，<code>类型为InterceptorChain，也就是一个拦截器链</code>，我们来看下它的定义：</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">InterceptorChain</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> List&lt;Interceptor&gt; interceptors = <span class="keyword">new</span> ArrayList&lt;Interceptor&gt;();</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Object <span class="title">pluginAll</span><span class="params">(Object target)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">for</span> (Interceptor interceptor : interceptors) &#123;</span><br><span class="line">            target = interceptor.plugin(target);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> target;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">addInterceptor</span><span class="params">(Interceptor interceptor)</span> </span>&#123;</span><br><span class="line">        interceptors.add(interceptor);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> List&lt;Interceptor&gt; <span class="title">getInterceptors</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> Collections.unmodifiableList(interceptors);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ol start="4">
+<li>现在我们理解了拦截器配置的解析以及拦截器的归属，<code>现在我们回过头看下为何拦截器会拦截这些方法</code>（Executor，ParameterHandler，ResultSetHandler，StatementHandler的部分方法）：</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> ParameterHandler <span class="title">newParameterHandler</span><span class="params">(MappedStatement mappedStatement, Object parameterObject, BoundSql boundSql)</span> </span>&#123;</span><br><span class="line">    ParameterHandler parameterHandler = mappedStatement.getLang().createParameterHandler(mappedStatement, parameterObject, boundSql);</span><br><span class="line">    parameterHandler = (ParameterHandler) interceptorChain.pluginAll(parameterHandler);</span><br><span class="line">    <span class="keyword">return</span> parameterHandler;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> ResultSetHandler <span class="title">newResultSetHandler</span><span class="params">(Executor executor, MappedStatement mappedStatement, RowBounds rowBounds, ParameterHandler parameterHandler, ResultHandler resultHandler, BoundSql boundSql)</span> </span>&#123;</span><br><span class="line">    ResultSetHandler resultSetHandler = <span class="keyword">new</span> DefaultResultSetHandler(executor, mappedStatement, parameterHandler, resultHandler, boundSql, rowBounds);</span><br><span class="line">    resultSetHandler = (ResultSetHandler) interceptorChain.pluginAll(resultSetHandler);</span><br><span class="line">    <span class="keyword">return</span> resultSetHandler;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> StatementHandler <span class="title">newStatementHandler</span><span class="params">(Executor executor, MappedStatement mappedStatement, Object parameterObject, RowBounds rowBounds, ResultHandler resultHandler, BoundSql boundSql)</span> </span>&#123;</span><br><span class="line">    StatementHandler statementHandler = <span class="keyword">new</span> RoutingStatementHandler(executor, mappedStatement, parameterObject, rowBounds, resultHandler, boundSql);</span><br><span class="line">    statementHandler = (StatementHandler) interceptorChain.pluginAll(statementHandler);</span><br><span class="line">    <span class="keyword">return</span> statementHandler;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> Executor <span class="title">newExecutor</span><span class="params">(Transaction transaction, ExecutorType executorType, <span class="keyword">boolean</span> autoCommit)</span> </span>&#123;</span><br><span class="line">    executorType = executorType == <span class="keyword">null</span> ? defaultExecutorType : executorType;</span><br><span class="line">    executorType = executorType == <span class="keyword">null</span> ? ExecutorType.SIMPLE : executorType;</span><br><span class="line">    Executor executor;</span><br><span class="line">    <span class="keyword">if</span> (ExecutorType.BATCH == executorType) &#123;</span><br><span class="line">        executor = <span class="keyword">new</span> BatchExecutor(<span class="keyword">this</span>, transaction);</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (ExecutorType.REUSE == executorType) &#123;</span><br><span class="line">        executor = <span class="keyword">new</span> ReuseExecutor(<span class="keyword">this</span>, transaction);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        executor = <span class="keyword">new</span> SimpleExecutor(<span class="keyword">this</span>, transaction);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (cacheEnabled) &#123;</span><br><span class="line">        executor = <span class="keyword">new</span> CachingExecutor(executor, autoCommit);</span><br><span class="line">    &#125;</span><br><span class="line">    executor = (Executor) interceptorChain.pluginAll(executor);</span><br><span class="line">    <span class="keyword">return</span> executor;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>以上4个方法都是Configuration的方法。这些方法在MyBatis的一个操作(新增，删除，修改，查询)中都会被执行到，执行的先后顺序是Executor，ParameterHandler，ResultSetHandler，StatementHandler(<code>其中ParameterHandler和ResultSetHandler的创建是在创建StatementHandler[3个可用的实现类CallableStatementHandler,PreparedStatementHandler,SimpleStatementHandler]的时候</code>，其构造函数调用的[这3个实现类的构造函数其实都调用了父类BaseStatementHandler的构造函数])。</p>
+<p>这4个方法实例化了对应的对象之后，都会调用interceptorChain的pluginAll方法，InterceptorChain的pluginAll刚才已经介绍过了，就是遍历所有的拦截器，然后调用各个拦截器的plugin方法。<code>注意：拦截器的plugin方法的返回值会直接被赋值给原先的对象</code>。</p>
+<p><code>由于可以拦截StatementHandler，这个接口主要处理sql语法的构建</code>，因此比如分页的功能，可以用拦截器实现，<code>只需要在拦截器的plugin方法中处理StatementHandler接口实现类中的sql即可</code>，可使用反射实现。</p>
+<p>MyBatis还提供了<code>@Intercepts和 @Signature关于拦截器的注解</code>。官网的例子就是使用了这2个注解，还包括了Plugin类的使用：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> Object <span class="title">plugin</span><span class="params">(Object target)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> Plugin.wrap(target, <span class="keyword">this</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="2-代理链的生成"><a href="#2-代理链的生成" class="headerlink" title="2 代理链的生成"></a>2 代理链的生成</h1><p> <code>Mybatis支持对Executor、StatementHandler、ParameterHandler和ResultSetHandler进行拦截</code>，也就是说会对这4种对象进行代理。通过查看Configuration类的源代码我们可以看到，每次都对目标对象进行代理链的生成。</p>
+<p>下面以Executor为例。Mybatis在创建Executor对象时会执行下面一行代码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">executor =(Executor) interceptorChain.pluginAll(executor);</span><br></pre></td></tr></table></figure>
+<p><code>InterceptorChain里保存了所有的拦截器，它在mybatis初始化的时候创建</code>。上面这句代码的含义是调用拦截器链里的每个拦截器依次对executor进行plugin（插入？）代码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/** </span></span><br><span class="line"><span class="comment"> * 每一个拦截器对目标类都进行一次代理 </span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> target </span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return</span> 层层代理后的对象 </span></span><br><span class="line"><span class="comment"> */</span>  </span><br><span class="line"><span class="function"><span class="keyword">public</span> Object <span class="title">pluginAll</span><span class="params">(Object target)</span> </span>&#123;  </span><br><span class="line">    <span class="keyword">for</span>(Interceptor interceptor : interceptors) &#123;  </span><br><span class="line">        target= interceptor.plugin(target);  </span><br><span class="line">    &#125;  </span><br><span class="line">    <span class="keyword">return</span> target;  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>下面以一个简单的例子来看看这个plugin方法里到底发生了什么：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Intercepts</span>(&#123;<span class="meta">@Signature</span>(type = Executor<span class="class">.<span class="keyword">class</span>, <span class="title">method</span> </span>=<span class="string">"update"</span>, args = &#123;MappedStatement<span class="class">.<span class="keyword">class</span>, <span class="title">Object</span>.<span class="title">class</span>&#125;)&#125;)  </span></span><br><span class="line"><span class="class"><span class="title">public</span> <span class="title">class</span> <span class="title">ExamplePlugin</span> <span class="keyword">implements</span> <span class="title">Interceptor</span> </span>&#123;  </span><br><span class="line">    <span class="meta">@Override</span>  </span><br><span class="line">    <span class="function"><span class="keyword">public</span> Object <span class="title">intercept</span><span class="params">(Invocation invocation)</span> <span class="keyword">throws</span> Throwable </span>&#123;  </span><br><span class="line">        <span class="keyword">return</span> invocation.proceed();  </span><br><span class="line">    &#125;  </span><br><span class="line">  </span><br><span class="line">    <span class="meta">@Override</span>  </span><br><span class="line">    <span class="function"><span class="keyword">public</span> Object <span class="title">plugin</span><span class="params">(Object target)</span> </span>&#123;  </span><br><span class="line">        <span class="keyword">return</span> Plugin.wrap(target, <span class="keyword">this</span>);  </span><br><span class="line">    &#125;  </span><br><span class="line">  </span><br><span class="line">    <span class="meta">@Override</span>  </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setProperties</span><span class="params">(Properties properties)</span> </span>&#123;  </span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>每一个拦截器都必须实现上面的三个方法，其中：</strong></p>
+<ol>
+<li>Object intercept(Invocation invocation)是<code>实现拦截逻辑的地方</code>，<code>内部要通过invocation.proceed()显式地推进责任链前进</code>，也就是调用下一个拦截器拦截目标方法。</li>
+<li>Object plugin(Object target)就是<code>用当前这个拦截器生成对目标target的代理</code>，实际是通过Plugin.wrap(target,this)来完成的，把目标target和拦截器this传给了包装函数。</li>
+<li>setProperties(Properties properties)用于<code>设置额外的参数</code>，参数配置在<code>拦截器的Properties节点里</code>。</li>
+</ol>
+<p><strong><code>注解里描述的是指定拦截方法的签名 [type,method,args] （即对哪种对象的哪种方法进行拦截），它在拦截前用于决断</code></strong>。</p>
+<p>定义自己的Interceptor最重要的是要实现plugin方法和intercept方法，在plugin方法中我们可以决定是否要进行拦截进而决定要返回一个什么样的目标对象。而intercept方法就是要进行拦截的时候要执行的方法。</p>
+<p>对于plugin方法而言，其实Mybatis已经为我们提供了一个实现。<code>Mybatis中有一个叫做Plugin的类，里面有一个静态方法wrap(Object target,Interceptor interceptor)，通过该方法可以决定要返回的对象是目标对象还是对应的代理</code>。这里我们先来看一下Plugin的源码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br></pre></td><td class="code"><pre><span class="line">package org.apache.ibatis.plugin;</span><br><span class="line"></span><br><span class="line">import java.lang.reflect.InvocationHandler;</span><br><span class="line">import java.lang.reflect.Method;</span><br><span class="line">import java.lang.reflect.Proxy;</span><br><span class="line">import java.util.HashMap;</span><br><span class="line">import java.util.HashSet;</span><br><span class="line">import java.util.Map;</span><br><span class="line">import java.util.Set;</span><br><span class="line"></span><br><span class="line">import org.apache.ibatis.reflection.ExceptionUtil;</span><br><span class="line"></span><br><span class="line">//这个类是Mybatis拦截器的核心,大家可以看到该类继承了InvocationHandler</span><br><span class="line">//又是JDK动态代理机制</span><br><span class="line">public class Plugin implements InvocationHandler &#123;</span><br><span class="line"></span><br><span class="line">  //目标对象</span><br><span class="line">  private Object target;</span><br><span class="line">  //拦截器</span><br><span class="line">  private Interceptor interceptor;</span><br><span class="line">  //记录需要被拦截的类与方法</span><br><span class="line">  private Map&lt;Class&lt;?&gt;, Set&lt;Method&gt;&gt; signatureMap;</span><br><span class="line"></span><br><span class="line">  private Plugin(Object target, Interceptor interceptor, Map&lt;Class&lt;?&gt;, Set&lt;Method&gt;&gt; signatureMap) &#123;</span><br><span class="line">    this.target = target;</span><br><span class="line">    this.interceptor = interceptor;</span><br><span class="line">    this.signatureMap = signatureMap;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  //一个静态方法,对一个目标对象进行包装，生成代理类。</span><br><span class="line">  public static Object wrap(Object target, Interceptor interceptor) &#123;</span><br><span class="line">    //首先根据interceptor上面定义的注解 获取需要拦截的信息</span><br><span class="line">    Map&lt;Class&lt;?&gt;, Set&lt;Method&gt;&gt; signatureMap = getSignatureMap(interceptor);</span><br><span class="line">    //目标对象的Class</span><br><span class="line">    Class&lt;?&gt; type = target.getClass();</span><br><span class="line">    //返回需要拦截的接口信息</span><br><span class="line">    Class&lt;?&gt;[] interfaces = getAllInterfaces(type, signatureMap);</span><br><span class="line">    //如果长度为&gt;0 则返回代理类 否则不做处理</span><br><span class="line">    if (interfaces.length &gt; 0) &#123;</span><br><span class="line">      return Proxy.newProxyInstance(</span><br><span class="line">          type.getClassLoader(),</span><br><span class="line">          interfaces,</span><br><span class="line">          new Plugin(target, interceptor, signatureMap));</span><br><span class="line">    &#125;</span><br><span class="line">    return target;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  //代理对象每次调用的方法</span><br><span class="line">  public Object invoke(Object proxy, Method method, Object[] args) throws Throwable &#123;</span><br><span class="line">    try &#123;</span><br><span class="line">      //通过method参数定义的类 去signatureMap当中查询需要拦截的方法集合</span><br><span class="line">      Set&lt;Method&gt; methods = signatureMap.get(method.getDeclaringClass());</span><br><span class="line">      //判断是否需要拦截</span><br><span class="line">      if (methods != null &amp;&amp; methods.contains(method)) &#123;</span><br><span class="line">        return interceptor.intercept(new Invocation(target, method, args));</span><br><span class="line">      &#125;</span><br><span class="line">      //不拦截 直接通过目标对象调用方法</span><br><span class="line">      return method.invoke(target, args);</span><br><span class="line">    &#125; catch (Exception e) &#123;</span><br><span class="line">      throw ExceptionUtil.unwrapThrowable(e);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  //根据拦截器接口（Interceptor）实现类上面的注解获取相关信息</span><br><span class="line">  private static Map&lt;Class&lt;?&gt;, Set&lt;Method&gt;&gt; getSignatureMap(Interceptor interceptor) &#123;</span><br><span class="line">    //获取注解信息</span><br><span class="line">    Intercepts interceptsAnnotation = interceptor.getClass().getAnnotation(Intercepts.class);</span><br><span class="line">    //为空则抛出异常</span><br><span class="line">    if (interceptsAnnotation == null) &#123; // issue #251</span><br><span class="line">      throw new PluginException(&quot;No @Intercepts annotation was found in interceptor &quot; + interceptor.getClass().getName());      </span><br><span class="line">    &#125;</span><br><span class="line">    //获得Signature注解信息</span><br><span class="line">    Signature[] sigs = interceptsAnnotation.value();</span><br><span class="line">    Map&lt;Class&lt;?&gt;, Set&lt;Method&gt;&gt; signatureMap = new HashMap&lt;Class&lt;?&gt;, Set&lt;Method&gt;&gt;();</span><br><span class="line">    //循环注解信息</span><br><span class="line">    for (Signature sig : sigs) &#123;</span><br><span class="line">      //根据Signature注解定义的type信息去signatureMap当中查询需要拦截方法的集合</span><br><span class="line">      Set&lt;Method&gt; methods = signatureMap.get(sig.type());</span><br><span class="line">      //第一次肯定为null 就创建一个并放入signatureMap</span><br><span class="line">      if (methods == null) &#123;</span><br><span class="line">        methods = new HashSet&lt;Method&gt;();</span><br><span class="line">        signatureMap.put(sig.type(), methods);</span><br><span class="line">      &#125;</span><br><span class="line">      try &#123;</span><br><span class="line">        //找到sig.type当中定义的方法 并加入到集合</span><br><span class="line">        Method method = sig.type().getMethod(sig.method(), sig.args());</span><br><span class="line">        methods.add(method);</span><br><span class="line">      &#125; catch (NoSuchMethodException e) &#123;</span><br><span class="line">        throw new PluginException(&quot;Could not find method on &quot; + sig.type() + &quot; named &quot; + sig.method() + &quot;. Cause: &quot; + e, e);</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    return signatureMap;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  //根据对象类型与signatureMap获取接口信息</span><br><span class="line">  private static Class&lt;?&gt;[] getAllInterfaces(Class&lt;?&gt; type, Map&lt;Class&lt;?&gt;, Set&lt;Method&gt;&gt; signatureMap) &#123;</span><br><span class="line">    Set&lt;Class&lt;?&gt;&gt; interfaces = new HashSet&lt;Class&lt;?&gt;&gt;();</span><br><span class="line">    //循环type类型的接口信息 如果该类型存在与signatureMap当中则加入到set当中去</span><br><span class="line">    while (type != null) &#123;</span><br><span class="line">      for (Class&lt;?&gt; c : type.getInterfaces()) &#123;</span><br><span class="line">        if (signatureMap.containsKey(c)) &#123;</span><br><span class="line">          interfaces.add(c);</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">      type = type.getSuperclass();</span><br><span class="line">    &#125;</span><br><span class="line">    //转换为数组返回</span><br><span class="line">    return interfaces.toArray(new Class&lt;?&gt;[interfaces.size()]);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>下面是俩个注解类的定义源码：</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> org.apache.ibatis.plugin;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.lang.annotation.ElementType;</span><br><span class="line"><span class="keyword">import</span> java.lang.annotation.Retention;</span><br><span class="line"><span class="keyword">import</span> java.lang.annotation.RetentionPolicy;</span><br><span class="line"><span class="keyword">import</span> java.lang.annotation.Target;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Retention</span>(RetentionPolicy.RUNTIME)</span><br><span class="line"><span class="meta">@Target</span>(ElementType.TYPE)</span><br><span class="line"><span class="keyword">public</span> <span class="meta">@interface</span> Intercepts &#123;</span><br><span class="line">  Signature[] value();</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">package</span> org.apache.ibatis.plugin;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.lang.annotation.ElementType;</span><br><span class="line"><span class="keyword">import</span> java.lang.annotation.Retention;</span><br><span class="line"><span class="keyword">import</span> java.lang.annotation.RetentionPolicy;</span><br><span class="line"><span class="keyword">import</span> java.lang.annotation.Target;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Retention</span>(RetentionPolicy.RUNTIME)</span><br><span class="line"><span class="meta">@Target</span>(ElementType.TYPE)</span><br><span class="line"><span class="keyword">public</span> <span class="meta">@interface</span> Signature &#123;</span><br><span class="line">  Class&lt;?&gt; type();</span><br><span class="line"></span><br><span class="line">  <span class="function">String <span class="title">method</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line">  Class&lt;?&gt;[] args();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="3-Plugin-wrap方法"><a href="#3-Plugin-wrap方法" class="headerlink" title="3 Plugin.wrap方法"></a>3 Plugin.wrap方法</h1><p> 从前面可以看出，每个拦截器的plugin方法是通过调用Plugin.wrap方法来实现的。代码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Object <span class="title">wrap</span><span class="params">(Object target, Interceptor interceptor)</span> </span>&#123;  </span><br><span class="line">   <span class="comment">// 从拦截器的注解中获取拦截的类名和方法信息  </span></span><br><span class="line">   Map&lt;Class&lt;?&gt;, Set&lt;Method&gt;&gt; signatureMap = getSignatureMap(interceptor);  </span><br><span class="line">   Class&lt;?&gt; type = target.getClass();  </span><br><span class="line">   <span class="comment">// 解析被拦截对象的所有接口（注意是接口）  </span></span><br><span class="line">   Class&lt;?&gt;[] interfaces = getAllInterfaces(type, signatureMap);  </span><br><span class="line">   <span class="keyword">if</span>(interfaces.length &gt; <span class="number">0</span>) &#123;  </span><br><span class="line">        <span class="comment">// 生成代理对象， Plugin对象为该代理对象的InvocationHandler  （InvocationHandler属于java代理的一个重要概念，不熟悉的请参考相关概念）  </span></span><br><span class="line">        <span class="keyword">return</span> Proxy.newProxyInstance(type.getClassLoader(), interfaces, <span class="keyword">new</span> Plugin(target,interceptor,signatureMap));  </span><br><span class="line">    &#125;  </span><br><span class="line">    <span class="keyword">return</span> target;  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>这个Plugin类有三个属性：</strong></p>
+<blockquote>
+<p>private Object target;// 被代理的目标类</p>
+<p>private Interceptor interceptor;// 对应的拦截器</p>
+<p>private Map&lt;Class&lt;?&gt;, Set<method>&gt; signatureMap;// 拦截器拦截的方法缓存</method></p>
+</blockquote>
+<p><strong>getSignatureMap方法：</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> Map&lt;Class&lt;?&gt;, Set&lt;Method&gt;&gt; getSignatureMap(Interceptor interceptor) &#123;</span><br><span class="line">    Intercepts interceptsAnnotation = interceptor.getClass().getAnnotation(Intercepts<span class="class">.<span class="keyword">class</span>)</span>;</span><br><span class="line">    <span class="keyword">if</span> (interceptsAnnotation == <span class="keyword">null</span>) &#123; <span class="comment">// issue #251</span></span><br><span class="line">      <span class="keyword">throw</span> <span class="keyword">new</span> PluginException(<span class="string">"No @Intercepts annotation was found in interceptor "</span> + interceptor.getClass().getName());      </span><br><span class="line">    &#125;</span><br><span class="line">    Signature[] sigs = interceptsAnnotation.value();</span><br><span class="line">    Map&lt;Class&lt;?&gt;, Set&lt;Method&gt;&gt; signatureMap = <span class="keyword">new</span> HashMap&lt;Class&lt;?&gt;, Set&lt;Method&gt;&gt;();</span><br><span class="line">    <span class="keyword">for</span> (Signature sig : sigs) &#123;</span><br><span class="line">      Set&lt;Method&gt; methods = signatureMap.get(sig.type());</span><br><span class="line">      <span class="keyword">if</span> (methods == <span class="keyword">null</span>) &#123;</span><br><span class="line">        methods = <span class="keyword">new</span> HashSet&lt;Method&gt;();</span><br><span class="line">        signatureMap.put(sig.type(), methods);</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">try</span> &#123;</span><br><span class="line">        Method method = sig.type().getMethod(sig.method(), sig.args());</span><br><span class="line">        methods.add(method);</span><br><span class="line">      &#125; <span class="keyword">catch</span> (NoSuchMethodException e) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> PluginException(<span class="string">"Could not find method on "</span> + sig.type() + <span class="string">" named "</span> + sig.method() + <span class="string">". Cause: "</span> + e, e);</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> signatureMap;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong><code>getSignatureMap方法解释：</code></strong>首先会拿到拦截器这个类的 @Interceptors注解，然后拿到这个注解的属性 @Signature注解集合，然后遍历这个集合，遍历的时候拿出 @Signature注解的type属性(Class类型)，然后根据这个type得到带有method属性和args属性的Method。由于 @Interceptors注解的 @Signature属性是一个属性，所以最终会返回一个以type为key，value为Set<method>的Map。</method></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Intercepts</span>(&#123;<span class="meta">@Signature</span>(type= Executor<span class="class">.<span class="keyword">class</span>, <span class="title">method</span> </span>= <span class="string">"update"</span>, args = &#123;MappedStatement<span class="class">.<span class="keyword">class</span>,<span class="title">Object</span>.<span class="title">class</span>&#125;)&#125;)</span></span><br></pre></td></tr></table></figure>
+<p>比如这个 @Interceptors注解会返回一个key为Executor，value为集合(这个集合只有一个元素，也就是Method实例，这个Method实例就是Executor接口的update方法，且这个方法带有MappedStatement和Object类型的参数)。这个Method实例是根据 @Signature的method和args属性得到的。如果args参数跟type类型的method方法对应不上，那么将会抛出异常。</p>
+<p><strong>getAllInterfaces方法：</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> Class&lt;?&gt;[] getAllInterfaces(Class&lt;?&gt; type, Map&lt;Class&lt;?&gt;, Set&lt;Method&gt;&gt; signatureMap) &#123;</span><br><span class="line">    Set&lt;Class&lt;?&gt;&gt; interfaces = <span class="keyword">new</span> HashSet&lt;Class&lt;?&gt;&gt;();</span><br><span class="line">    <span class="keyword">while</span> (type != <span class="keyword">null</span>) &#123;</span><br><span class="line">      <span class="keyword">for</span> (Class&lt;?&gt; c : type.getInterfaces()) &#123;</span><br><span class="line">        <span class="keyword">if</span> (signatureMap.containsKey(c)) &#123;</span><br><span class="line">          interfaces.add(c);</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">      type = type.getSuperclass();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> interfaces.toArray(<span class="keyword">new</span> Class&lt;?&gt;[interfaces.size()]);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong><code>getAllInterfaces方法解释：</code></strong>根据目标实例target(这个target就是之前所说的MyBatis拦截器可以拦截的类，Executor,ParameterHandler,ResultSetHandler,StatementHandler)和它的父类们，返回signatureMap中含有target实现的接口数组。</p>
+<p><strong><code>所以Plugin这个类的作用就是根据 @Interceptors注解，得到这个注解的属性 @Signature数组，然后根据每个 @Signature注解的type，method，args属性使用反射找到对应的Method。最终根据调用的target对象实现的接口决定是否返回一个代理对象替代原先的target对象。</code></strong></p>
+<p>我们再次结合(Executor)interceptorChain.pluginAll(executor)这个语句来看，这个语句内部对executor执行了多次plugin,第一次plugin后通过Plugin.wrap方法生成了第一个代理类，姑且就叫executorProxy1，这个代理类的target属性是该executor对象。第二次plugin后通过Plugin.wrap方法生成了第二个代理类，姑且叫executorProxy2，这个代理类的target属性是executorProxy1…这样通过每个代理类的target属性就构成了一个代理链（<code>从最后一个executorProxyN往前查找，通过target属性可以找到最原始的executor类</code>）。</p>
+<h1 id="4-代理链上的拦截"><a href="#4-代理链上的拦截" class="headerlink" title="4 代理链上的拦截"></a>4 代理链上的拦截</h1><p> 代理链生成后，<code>对原始目标的方法调用都转移到代理者的invoke方法上来了</code>。Plugin作为InvocationHandler的实现类，他的invoke方法是怎么样的呢？</p>
+<p>比如MyBatis官网的例子，当Configuration调用newExecutor方法的时候，由于Executor接口的update(MappedStatement ms, Object parameter)方法被拦截器被截获。因此最终返回的是一个代理类Plugin，而不是Executor。这样调用方法的时候，如果是个代理类，那么会执行：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> Object <span class="title">invoke</span><span class="params">(Object proxy, Method method, Object[] args)</span> <span class="keyword">throws</span> Throwable </span>&#123;  </span><br><span class="line">    <span class="keyword">try</span> &#123;  </span><br><span class="line">       Set&lt;Method&gt; methods = signatureMap.get(method.getDeclaringClass());  </span><br><span class="line">        <span class="keyword">if</span>(methods != <span class="keyword">null</span> &amp;&amp; methods.contains(method)) &#123;  </span><br><span class="line">           <span class="comment">// 调用代理类所属拦截器的intercept方法，  </span></span><br><span class="line">           <span class="keyword">return</span> interceptor.intercept(<span class="keyword">new</span> Invocation(target, method, args));  </span><br><span class="line">        &#125;  </span><br><span class="line">        <span class="keyword">return</span> method.invoke(target, args);  </span><br><span class="line">    &#125; <span class="keyword">catch</span>(Exception e) &#123;  </span><br><span class="line">        <span class="keyword">throw</span> ExceptionUtil.unwrapThrowable(e);  </span><br><span class="line">    &#125;  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>没错，如果找到对应的方法被代理之后，那么会执行Interceptor接口的interceptor方法。</p>
+<p><code>在invoke里，如果方法签名和拦截中的签名一致，就调用拦截器的拦截方法</code>。我们看到传递给拦截器的是一个Invocation对象，这个对象是什么样子的，他的功能又是什么呢？</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Invocation</span> </span>&#123;  </span><br><span class="line">  </span><br><span class="line">    <span class="keyword">private</span> Object target;  </span><br><span class="line">    <span class="keyword">private</span> Method method;  </span><br><span class="line">    <span class="keyword">private</span> Object[] args;  </span><br><span class="line">   </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Invocation</span><span class="params">(Object target, Method method, Object[] args)</span> </span>&#123;  </span><br><span class="line">        <span class="keyword">this</span>.target =target;  </span><br><span class="line">        <span class="keyword">this</span>.method =method;  </span><br><span class="line">        <span class="keyword">this</span>.args =args;  </span><br><span class="line">    &#125;  </span><br><span class="line">    ...  </span><br><span class="line">  </span><br><span class="line">    <span class="function"><span class="keyword">public</span> Object <span class="title">proceed</span><span class="params">()</span> <span class="keyword">throws</span> InvocationTargetException, IllegalAccessException </span>&#123;  </span><br><span class="line">        <span class="keyword">return</span> method.invoke(target, args);  </span><br><span class="line">    &#125;  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>可以看到，Invocation类保存了代理对象的目标类，执行的目标类方法以及传递给它的参数。</p>
+<p>在每个拦截器的intercept方法内，<code>最后一个语句一定是return invocation.proceed()</code>（不这么做的话拦截器链就断了，你的mybatis基本上就不能正常工作了）。<code>invocation.proceed()只是简单的调用了下target的对应方法，如果target还是个代理，就又回到了上面的Plugin.invoke方法了</code>。这样就形成了拦截器的调用链推进。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> Object <span class="title">intercept</span><span class="params">(Invocation invocation)</span> <span class="keyword">throws</span> Throwable </span>&#123;  </span><br><span class="line">    <span class="comment">//完成代理类本身的逻辑  </span></span><br><span class="line">    ...</span><br><span class="line">    <span class="comment">//通过invocation.proceed()方法完成调用链的推进</span></span><br><span class="line">    <span class="keyword">return</span> invocation.proceed();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="5-总结"><a href="#5-总结" class="headerlink" title="5 总结"></a>5 总结</h1><p> MyBatis拦截器接口提供的3个方法中，plugin方法用于某些处理器(Handler)的构建过程。interceptor方法用于处理代理类的执行。setProperties方法用于拦截器属性的设置。</p>
+<p>其实MyBatis官网提供的使用 @Interceptors和 @Signature注解以及Plugin类这样处理拦截器的方法，我们不一定要直接这样使用。我们也可以抛弃这3个类，直接在plugin方法内部根据target实例的类型做相应的操作。</p>
+<p>总体来说MyBatis拦截器还是很简单的，拦截器本身不需要太多的知识点，但是学习拦截器需要对MyBatis中的各个接口很熟悉，因为拦截器涉及到了各个接口的知识点。</p>
+<p><strong>我们假设在MyBatis配置了一个插件，在运行时会发生什么？</strong></p>
+<ol>
+<li>所有可能被拦截的处理类都会生成一个代理</li>
+<li>处理类代理在执行对应方法时，判断要不要执行插件中的拦截方法</li>
+<li>执行插接中的拦截方法后，推进目标的执行</li>
+</ol>
+<p>如果有N个插件，就有N个代理，每个代理都要执行上面的逻辑。这里面的层层代理要多次生成动态代理，是比较影响性能的。虽然能指定插件拦截的位置，但这个是在执行方法时动态判断，初始化的时候就是简单的把插件包装到了所有可以拦截的地方。</p>
+<p><strong>因此，在编写插件时需注意以下几个原则：</strong></p>
+<ol>
+<li>不编写不必要的插件；</li>
+<li>实现plugin方法时判断一下目标类型，是本插件要拦截的对象才执行Plugin.wrap方法，否者直接返回目标本省，这样可以减少目标被代理的次数。</li>
+</ol>
+<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><p><a href="https://my.oschina.net/xianggao/blog/550356" target="_blank" rel="noopener">插件原理</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div></div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.jpg" alt="zch 微信支付">
+        <p>微信支付</p>
+      </div>
+    
+
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/责任链/" rel="tag"># 责任链</a>
+          
+            <a href="/tags/mybatis/" rel="tag"># mybatis</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/07/25/mybatis/mybatis--SQL执行流程分析/" rel="next" title="mybatis--SQL执行流程分析">
+                <i class="fa fa-chevron-left"></i> mybatis--SQL执行流程分析
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/07/25/mysql/mysql--事务隔离级别和MVCC/" rel="prev" title="mysql--事务隔离级别和MVCC">
+                mysql--事务隔离级别和MVCC <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        
+  <div class="bdsharebuttonbox">
+    <a href="#" class="bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+    <a href="#" class="bds_douban" data-cmd="douban" title="分享到豆瓣网"></a>
+    <a href="#" class="bds_sqq" data-cmd="sqq" title="分享到QQ好友"></a>
+    <a href="#" class="bds_qzone" data-cmd="qzone" title="分享到QQ空间"></a>
+    <a href="#" class="bds_weixin" data-cmd="weixin" title="分享到微信"></a>
+    <a href="#" class="bds_tieba" data-cmd="tieba" title="分享到百度贴吧"></a>
+    <a href="#" class="bds_twi" data-cmd="twi" title="分享到Twitter"></a>
+    <a href="#" class="bds_fbook" data-cmd="fbook" title="分享到Facebook"></a>
+    <a href="#" class="bds_more" data-cmd="more"></a>
+    <a class="bds_count" data-cmd="count"></a>
+  </div>
+  <script>
+    window._bd_share_config = {
+      "common": {
+        "bdText": "",
+        "bdMini": "2",
+        "bdMiniList": false,
+        "bdPic": ""
+      },
+      "share": {
+        "bdSize": "16",
+        "bdStyle": "0"
+      },
+      "image": {
+        "viewList": ["tsina", "douban", "sqq", "qzone", "weixin", "twi", "fbook"],
+        "viewText": "分享到：",
+        "viewSize": "16"
+      }
+    }
+  </script>
+
+<script>
+  with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='//bdimg.share.baidu.com/static/api/js/share.js?cdnversion='+~(-new Date()/36e5)];
+</script>
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar.png" alt="zch">
+            
+              <p class="site-author-name" itemprop="name">zch</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">160</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">29</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">117</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-拦截器的使用"><span class="nav-number">1.</span> <span class="nav-text">1 拦截器的使用</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-1-拦截器介绍及配置"><span class="nav-number">1.1.</span> <span class="nav-text">1.1 拦截器介绍及配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-2-源码分析"><span class="nav-number">1.2.</span> <span class="nav-text">1.2 源码分析</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-代理链的生成"><span class="nav-number">2.</span> <span class="nav-text">2 代理链的生成</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-Plugin-wrap方法"><span class="nav-number">3.</span> <span class="nav-text">3 Plugin.wrap方法</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#4-代理链上的拦截"><span class="nav-number">4.</span> <span class="nav-text">4 代理链上的拦截</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#5-总结"><span class="nav-number">5.</span> <span class="nav-text">5 总结</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考"><span class="nav-number">6.</span> <span class="nav-text">参考</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<div class="copyright">&copy; <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">zch</span>
+
+  
+</div>
+
+
+  <div class="powered-by">个人学习和工作中总结的笔记</div>
+  <i class="fa fa-user-md"></i>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+<script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? "https://" : "http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1276375036'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s5.cnzz.com/z_stat.php%3Fid%3D1276375036%26online%3D1%26show%3Dline' type='text/javascript'%3E%3C/script%3E"));</script>
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/three/three.min.js"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/three/canvas_sphere.min.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+  
+  <script type="text/javascript">
+    var GUEST = ['nick','mail','link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item=>{
+      return GUEST.indexOf(item)>-1;
+    });
+    new Valine({
+        el: '#comments' ,
+        verify: true,
+        notify: true,
+        appId: 'qlLpITiuRGP5wGRRqD1TTe7y-gzGzoHsz',
+        appKey: 'Xu6NC8eq2DCotEgOrHgbA2St',
+        placeholder: 'ヾﾉ≧∀≦)o来啊，快活啊!',
+        avatar:'mm',
+        guest_info:guest,
+        pageSize:'10' || 10,
+    });
+  </script>
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

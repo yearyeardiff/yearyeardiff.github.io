@@ -1,0 +1,1252 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+<meta name="google-site-verification" content="6pSprQE3BiN_wM4uIQnTSoO5EAKab52jQ86zdl_VH84">
+<meta name="google-site-verification" content="pa5VzMThwxpvSOgHS15kDjiLdeww7kHG5LcJjH6EQko">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/science-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/science-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="java,java并发,并发队列,ConcurrentLinkedQueue,">
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="ZCH NOTES" type="application/atom+xml">
+
+
+
+
+
+
+<meta name="description" content="1.简介ConcurrentLinkedQueue是JUC中的基于链表的无锁队列实现。本文将解读其源码实现。 2. 论文ConcurrentLinkedQueue的实现是以Maged M. Michael和Michael L. Scott的论文Simple, Fast, and Practical Non-Blocking and Blocking Concurrent Queue Algorit">
+<meta name="keywords" content="java,java并发,并发队列,ConcurrentLinkedQueue">
+<meta property="og:type" content="article">
+<meta property="og:title" content="java并发---并发队列【ConcurrentLinkedQueue】">
+<meta property="og:url" content="http://yoursite.com/2020/07/25/java并发/java并发---并发队列【ConcurrentLinkedQueue】/index.html">
+<meta property="og:site_name" content="ZCH NOTES">
+<meta property="og:description" content="1.简介ConcurrentLinkedQueue是JUC中的基于链表的无锁队列实现。本文将解读其源码实现。 2. 论文ConcurrentLinkedQueue的实现是以Maged M. Michael和Michael L. Scott的论文Simple, Fast, and Practical Non-Blocking and Blocking Concurrent Queue Algorit">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2020-07-25T08:52:41.438Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="java并发---并发队列【ConcurrentLinkedQueue】">
+<meta name="twitter:description" content="1.简介ConcurrentLinkedQueue是JUC中的基于链表的无锁队列实现。本文将解读其源码实现。 2. 论文ConcurrentLinkedQueue的实现是以Maged M. Michael和Michael L. Scott的论文Simple, Fast, and Practical Non-Blocking and Blocking Concurrent Queue Algorit">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"right","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2020/07/25/java并发/java并发---并发队列【ConcurrentLinkedQueue】/">
+
+
+
+
+
+  <title>java并发---并发队列【ConcurrentLinkedQueue】 | ZCH NOTES</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-right page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">ZCH NOTES</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <h1 class="site-subtitle" itemprop="description">博学笃志 切问近思</h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404.html" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br>
+            
+            公益404
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/07/25/java并发/java并发---并发队列【ConcurrentLinkedQueue】/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="zch">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ZCH NOTES">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">java并发---并发队列【ConcurrentLinkedQueue】</h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-07-25T16:52:41+08:00">
+                2020-07-25
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/java并发/" itemprop="url" rel="index">
+                    <span itemprop="name">java并发</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2020/07/25/java并发/java并发---并发队列【ConcurrentLinkedQueue】/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2020/07/25/java并发/java并发---并发队列【ConcurrentLinkedQueue】/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="1-简介"><a href="#1-简介" class="headerlink" title="1.简介"></a>1.简介</h2><p>ConcurrentLinkedQueue是JUC中的基于链表的无锁队列实现。本文将解读其源码实现。</p>
+<h2 id="2-论文"><a href="#2-论文" class="headerlink" title="2. 论文"></a>2. 论文</h2><p>ConcurrentLinkedQueue的实现是以Maged M. Michael和Michael L. Scott的论文<a href="http://www.cs.rochester.edu/~scott/papers/1996_PODC_queues.pdf" target="_blank" rel="noopener">Simple, Fast, and Practical Non-Blocking and Blocking Concurrent Queue Algorithms</a>为原型进行改造的，不妨阅读此篇论文。</p>
+<h2 id="3-ConcurrentLinkedQueue的实现"><a href="#3-ConcurrentLinkedQueue的实现" class="headerlink" title="3. ConcurrentLinkedQueue的实现"></a>3. ConcurrentLinkedQueue的实现</h2><h3 id="3-1-数据结构"><a href="#3-1-数据结构" class="headerlink" title="3.1 数据结构"></a>3.1 数据结构</h3><p>正如典型的队列设计，内部的节点用如下的Node类表示</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 仅展示属性，其余略去。</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">Node</span>&lt;<span class="title">E</span>&gt; </span>&#123;</span><br><span class="line">    <span class="keyword">volatile</span> E item;</span><br><span class="line">    <span class="keyword">volatile</span> Node&lt;E&gt; next;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>值得一提的是Node中有一个lazySetNext方法</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">lazySetNext</span><span class="params">(Node&lt;E&gt; val)</span> </span>&#123;</span><br><span class="line">    UNSAFE.putOrderedObject(<span class="keyword">this</span>, nextOffset, val);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>与AtomicReference类一样，使用了UNSAFE.putOrderedObject方法来实现低延迟的写入。这个方法会插入Store-Store内存屏障，也就是保证写操作不会重排。而不会插入普通volatile写会插入的Store-Load屏障。</p>
+<p>ConcurrentLinkedQueue在构造时会初始化head和tail为一个item为null的节点，作为哨兵节点。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">private transient volatile Node&lt;E&gt; head;</span><br><span class="line"></span><br><span class="line">private transient volatile Node&lt;E&gt; tail;</span><br></pre></td></tr></table></figure>
+<h3 id="3-2-设计思想"><a href="#3-2-设计思想" class="headerlink" title="3.2 设计思想"></a>3.2 设计思想</h3><p>ConcurrentLinkedQueue的源码还是有些晦涩难懂的，但是doc非常详细，对阅读源码非常有帮助。如果带着从doc中介绍的设计与实现思路去读源码会轻松不少。</p>
+<p>ConcurrentLinkedQueue是不允许向其插入空的item的，对于删除元素，会将其item给CAS为null，一旦某个元素的item变为null，就意味着它不再是队列中的有效元素了，并且会将已删除节点的next指针指向自身。<br>这样可以实现尽可能快地从已删除的元素跳过后面删除的元素，回到队列中。</p>
+<p>ConcurrentLinkedQueue具有以下这些性质：</p>
+<ul>
+<li>队列中任意时刻只有最后一个元素的next为null</li>
+<li>head和tail不会是null（哨兵节点的设计）</li>
+<li>head未必是队列中第一个元素（head指向的可能是一个已经被移除的元素）</li>
+<li>队列中的有效元素都可以从head通过succ方法遍历到</li>
+<li>tail未必是队列中最后一个元素（tail.next可以不为null）</li>
+<li>队列中的最后一个元素可以从tail通过succ方法遍历到</li>
+<li>tail甚至可以是head的前驱</li>
+</ul>
+<p>这里提到了succ方法，那么先睹为快，看一下succ方法吧。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">final</span> Node&lt;E&gt; <span class="title">succ</span><span class="params">(Node&lt;E&gt; p)</span> </span>&#123;</span><br><span class="line">    Node&lt;E&gt; next = p.next;</span><br><span class="line">    <span class="comment">// 如果next就是自身（代表已经不在队列中），则返回head，否则返回next。</span></span><br><span class="line">    <span class="keyword">return</span> (p == next) ? head : next;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>因为ConcurrentLinkedQueue中的head和tail都可能会滞后，这其实是一种避免频繁CAS的优化。当然过度的滞后也是会影响操作效率的，所以在具体实现的时候，会尽可能能有机会更新head和tail就去更新它们。</p>
+<h3 id="3-3-源码解读"><a href="#3-3-源码解读" class="headerlink" title="3.3 源码解读"></a>3.3 源码解读</h3><h4 id="3-3-1-offer方法"><a href="#3-3-1-offer方法" class="headerlink" title="3.3.1 offer方法"></a>3.3.1 offer方法</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">offer</span><span class="params">(E e)</span> </span>&#123;</span><br><span class="line">    checkNotNull(e);</span><br><span class="line">    <span class="keyword">final</span> Node&lt;E&gt; newNode = <span class="keyword">new</span> Node&lt;E&gt;(e);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (Node&lt;E&gt; t = tail, p = t;;) &#123;</span><br><span class="line">        Node&lt;E&gt; q = p.next;</span><br><span class="line">        <span class="comment">// 如果p的next为null，则说明此刻p为队列中最后一个元素。</span></span><br><span class="line">        <span class="keyword">if</span> (q == <span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="comment">/*</span></span><br><span class="line"><span class="comment">             * cas成功则newNode成功入队，只是此刻tail还是老的。</span></span><br><span class="line"><span class="comment">             * 否则说明因为线程竞争的关系没有成功入队，需要重试。</span></span><br><span class="line"><span class="comment">             */</span></span><br><span class="line">            <span class="keyword">if</span> (p.casNext(<span class="keyword">null</span>, newNode)) &#123;</span><br><span class="line">                <span class="comment">/*</span></span><br><span class="line"><span class="comment">                 * t是当前线程读到的tail快照，p是上面CAS时队列中最后一个元素。</span></span><br><span class="line"><span class="comment">                 * 这两者不一致说明该更新tail了。</span></span><br><span class="line"><span class="comment">                 * 如果CAS失败则说明tail已经被其它线程更新过了，这没关系。</span></span><br><span class="line"><span class="comment">                 */</span></span><br><span class="line">                <span class="keyword">if</span> (p != t) </span><br><span class="line">                    casTail(t, newNode);</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">/*</span></span><br><span class="line"><span class="comment">         * ConcurrentLinkedQueue的一个设计就是对于已经移除的元素，</span></span><br><span class="line"><span class="comment">         * 会将next置为本身，用于判断当前元素已经出队，接着从head继续遍历(可以看succ方法)。</span></span><br><span class="line"><span class="comment">         *</span></span><br><span class="line"><span class="comment">         * 在整个offer方法的执行过程中，p一定是等于t或者在t的后面的，</span></span><br><span class="line"><span class="comment">         * 因此如果p已经不在队列中的话，t也一定不在队列中了。</span></span><br><span class="line"><span class="comment">         *</span></span><br><span class="line"><span class="comment">         * 所以重新读取一次tail到快照t，</span></span><br><span class="line"><span class="comment">         * 如果t未发生变化，就从head开始继续下去。</span></span><br><span class="line"><span class="comment">         * 否则让p从新的t开始继续尝试入队是一个更好的选择(此时新的t很可能在head后面)</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span> (p == q)</span><br><span class="line">            p = (t != (t = tail)) ? t : head;</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">            <span class="comment">/*</span></span><br><span class="line"><span class="comment">             * 如果p与t相等，则让p继续向后移动一个节点。</span></span><br><span class="line"><span class="comment">             *</span></span><br><span class="line"><span class="comment">             * 如果p和t不相等，则说明已经经历至少两轮循环(仍然没有入队)，</span></span><br><span class="line"><span class="comment">             * 则重新读取一次tail到t，如果t发生了变化，则从t开始再次尝试入队。</span></span><br><span class="line"><span class="comment">             */</span></span><br><span class="line">            p = (p != t &amp;&amp; t != (t = tail)) ? t : q;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="3-3-2-poll方法"><a href="#3-3-2-poll方法" class="headerlink" title="3.3.2 poll方法"></a>3.3.2 poll方法</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> E <span class="title">poll</span><span class="params">()</span> </span>&#123;</span><br><span class="line">restartFromHead:</span><br><span class="line">    <span class="keyword">for</span> (;;) &#123;</span><br><span class="line">        <span class="comment">// p初始设置为head。</span></span><br><span class="line">        <span class="keyword">for</span> (Node&lt;E&gt; h = head, p = h, q;;) &#123;</span><br><span class="line">            E item = p.item;</span><br><span class="line"></span><br><span class="line">            <span class="comment">/* </span></span><br><span class="line"><span class="comment">             * 成功将item给CAS为null则说明成功移除了元素。</span></span><br><span class="line"><span class="comment">             * 这里的item != null判断也是为了尽可能避免无意义的CAS。</span></span><br><span class="line"><span class="comment">             */</span></span><br><span class="line">            <span class="keyword">if</span> (item != <span class="keyword">null</span> &amp;&amp; p.casItem(item, <span class="keyword">null</span>)) &#123;</span><br><span class="line">                <span class="comment">/*</span></span><br><span class="line"><span class="comment">                 * p如果与h不相等，则说明head很可能滞后,指向已不在队列中的元素。</span></span><br><span class="line"><span class="comment">                 * 如果此时p有后继，则更新head为p.next，</span></span><br><span class="line"><span class="comment">                 * 否则尽管p已经被移除出去了,也只能更新head为p了。</span></span><br><span class="line"><span class="comment">                 */</span></span><br><span class="line">                <span class="keyword">if</span> (p != h)</span><br><span class="line">                    updateHead(h, ((q = p.next) != <span class="keyword">null</span>) ? q : p);</span><br><span class="line">                <span class="keyword">return</span> item;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="comment">/*</span></span><br><span class="line"><span class="comment">             * 如果没能成功移除p，且p也没有后继，则说明p为此时队列的最后元素。</span></span><br><span class="line"><span class="comment">             * 所以更新head为p并返回null。</span></span><br><span class="line"><span class="comment">             *</span></span><br><span class="line"><span class="comment">             * 注意这里h和p是可能相等的，updateHead会判断h和p是否相等以避免无意义CAS。</span></span><br><span class="line"><span class="comment">             */</span></span><br><span class="line">            <span class="keyword">else</span> <span class="keyword">if</span> ((q = p.next) == <span class="keyword">null</span>) &#123;</span><br><span class="line">                updateHead(h, p);</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="comment">/*</span></span><br><span class="line"><span class="comment">             * p存在后继，需要检查是否p还在队列中。</span></span><br><span class="line"><span class="comment">             * 如果p已经不在队列中(p==q)，则重新读一次head到快照h并让p从h开始再尝试移除元素。</span></span><br><span class="line"><span class="comment">             * </span></span><br><span class="line"><span class="comment">             * 因为一定有其它线程已经通过updateHead将head从p给CAS为新的head并且令p节点的next指向p自己，</span></span><br><span class="line"><span class="comment">             * 这时再一步步往后面走显然不值得，不如从现在的head开始重新来过。</span></span><br><span class="line"><span class="comment">             */</span></span><br><span class="line">            <span class="keyword">else</span> <span class="keyword">if</span> (p == q)</span><br><span class="line">                <span class="keyword">continue</span> restartFromHead;</span><br><span class="line">            <span class="comment">// 继续向后走一个节点尝试移除元素。</span></span><br><span class="line">            <span class="keyword">else</span></span><br><span class="line">                p = q;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">final</span> <span class="keyword">void</span> <span class="title">updateHead</span><span class="params">(Node&lt;E&gt; h, Node&lt;E&gt; p)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (h != p &amp;&amp; casHead(h, p))</span><br><span class="line">        h.lazySetNext(h);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="3-3-3-peek方法"><a href="#3-3-3-peek方法" class="headerlink" title="3.3.3 peek方法"></a>3.3.3 peek方法</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> E <span class="title">peek</span><span class="params">()</span> </span>&#123;</span><br><span class="line">restartFromHead:</span><br><span class="line">    <span class="keyword">for</span> (;;) &#123;</span><br><span class="line">        <span class="keyword">for</span> (Node&lt;E&gt; h = head, p = h, q;;) &#123;</span><br><span class="line">            E item = p.item;</span><br><span class="line">            <span class="comment">// 其实这里的if就是将poll中的if前两个分支做了个合并。</span></span><br><span class="line">            <span class="keyword">if</span> (item != <span class="keyword">null</span> || (q = p.next) == <span class="keyword">null</span>) &#123;</span><br><span class="line">                updateHead(h, p);</span><br><span class="line">                <span class="keyword">return</span> item;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">else</span> <span class="keyword">if</span> (p == q)</span><br><span class="line">                <span class="keyword">continue</span> restartFromHead;</span><br><span class="line">            <span class="keyword">else</span></span><br><span class="line">                p = q;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="3-3-4-remove方法"><a href="#3-3-4-remove方法" class="headerlink" title="3.3.4 remove方法"></a>3.3.4 remove方法</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">remove</span><span class="params">(Object o)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (o != <span class="keyword">null</span>) &#123;</span><br><span class="line">        Node&lt;E&gt; next, pred = <span class="keyword">null</span>;</span><br><span class="line">        <span class="comment">// p为当前节点，pred为p前驱，next为后继。</span></span><br><span class="line">        <span class="keyword">for</span> (Node&lt;E&gt; p = first(); p != <span class="keyword">null</span>; pred = p, p = next) &#123;</span><br><span class="line">            <span class="keyword">boolean</span> removed = <span class="keyword">false</span>;</span><br><span class="line">            E item = p.item;</span><br><span class="line">            <span class="comment">// item为null代表元素已经无效（认为不在队列中）</span></span><br><span class="line">            <span class="keyword">if</span> (item != <span class="keyword">null</span>) &#123;</span><br><span class="line">                <span class="comment">// 不是要删除的元素。</span></span><br><span class="line">                <span class="keyword">if</span> (!o.equals(item)) &#123;</span><br><span class="line">                    next = succ(p);</span><br><span class="line">                    <span class="keyword">continue</span>;</span><br><span class="line">                &#125;</span><br><span class="line">                removed = p.casItem(item, <span class="keyword">null</span>);</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            next = succ(p);</span><br><span class="line">            <span class="keyword">if</span> (pred != <span class="keyword">null</span> &amp;&amp; next != <span class="keyword">null</span>)</span><br><span class="line">                <span class="comment">// 前驱与后继连上。</span></span><br><span class="line">                pred.casNext(p, next);</span><br><span class="line">            <span class="keyword">if</span> (removed)</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="3-3-5-size方法"><a href="#3-3-5-size方法" class="headerlink" title="3.3.5 size方法"></a>3.3.5 size方法</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * size方法效率其实挺差的，是一个O(n)的遍历。</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">size</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> count = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (Node&lt;E&gt; p = first(); p != <span class="keyword">null</span>; p = succ(p))</span><br><span class="line">        <span class="keyword">if</span> (p.item != <span class="keyword">null</span>)</span><br><span class="line">            <span class="comment">// 最多只返回Integer.MAX_VALUE</span></span><br><span class="line">            <span class="keyword">if</span> (++count == Integer.MAX_VALUE)</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">    <span class="keyword">return</span> count;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 这个方法和poll/peek方法差不多，只不过返回的是Node而不是元素。</span></span><br><span class="line"><span class="comment"> * </span></span><br><span class="line"><span class="comment"> * 之所以peek方法没有复用first方法的原因有2点</span></span><br><span class="line"><span class="comment"> * 1. 会增加一次volatile读</span></span><br><span class="line"><span class="comment"> * 2. 有可能会因为和poll方法的竞争，导致出现非期望的结果。</span></span><br><span class="line"><span class="comment"> *    比如first返回的node非null，里面的item也不是null。</span></span><br><span class="line"><span class="comment"> *    但是等到poll方法返回从first方法拿到的node的item的时候，item已经被poll方法CAS为null了。</span></span><br><span class="line"><span class="comment"> *    那这个问题只能再peek中增加重试，这未免代价太高了。</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * 这就是first和peek代码没有复用的原因。</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function">Node&lt;E&gt; <span class="title">first</span><span class="params">()</span> </span>&#123;</span><br><span class="line">restartFromHead:</span><br><span class="line">    <span class="keyword">for</span> (;;) &#123;</span><br><span class="line">        <span class="keyword">for</span> (Node&lt;E&gt; h = head, p = h, q;;) &#123;</span><br><span class="line">            <span class="keyword">boolean</span> hasItem = (p.item != <span class="keyword">null</span>);</span><br><span class="line">            <span class="keyword">if</span> (hasItem || (q = p.next) == <span class="keyword">null</span>) &#123;</span><br><span class="line">                updateHead(h, p);</span><br><span class="line">                <span class="keyword">return</span> hasItem ? p : <span class="keyword">null</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">else</span> <span class="keyword">if</span> (p == q)</span><br><span class="line">                <span class="keyword">continue</span> restartFromHead;</span><br><span class="line">            <span class="keyword">else</span></span><br><span class="line">                p = q;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div></div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.jpg" alt="zch 微信支付">
+        <p>微信支付</p>
+      </div>
+    
+
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/java/" rel="tag"># java</a>
+          
+            <a href="/tags/java并发/" rel="tag"># java并发</a>
+          
+            <a href="/tags/并发队列/" rel="tag"># 并发队列</a>
+          
+            <a href="/tags/ConcurrentLinkedQueue/" rel="tag"># ConcurrentLinkedQueue</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/07/25/java并发/Untitled/" rel="next" title="java并发---CopyOnWriteArrayList">
+                <i class="fa fa-chevron-left"></i> java并发---CopyOnWriteArrayList
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/07/25/java并发/java并发---乐观锁与悲观锁/" rel="prev" title="java并发---乐观锁与悲观锁">
+                java并发---乐观锁与悲观锁 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        
+  <div class="bdsharebuttonbox">
+    <a href="#" class="bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+    <a href="#" class="bds_douban" data-cmd="douban" title="分享到豆瓣网"></a>
+    <a href="#" class="bds_sqq" data-cmd="sqq" title="分享到QQ好友"></a>
+    <a href="#" class="bds_qzone" data-cmd="qzone" title="分享到QQ空间"></a>
+    <a href="#" class="bds_weixin" data-cmd="weixin" title="分享到微信"></a>
+    <a href="#" class="bds_tieba" data-cmd="tieba" title="分享到百度贴吧"></a>
+    <a href="#" class="bds_twi" data-cmd="twi" title="分享到Twitter"></a>
+    <a href="#" class="bds_fbook" data-cmd="fbook" title="分享到Facebook"></a>
+    <a href="#" class="bds_more" data-cmd="more"></a>
+    <a class="bds_count" data-cmd="count"></a>
+  </div>
+  <script>
+    window._bd_share_config = {
+      "common": {
+        "bdText": "",
+        "bdMini": "2",
+        "bdMiniList": false,
+        "bdPic": ""
+      },
+      "share": {
+        "bdSize": "16",
+        "bdStyle": "0"
+      },
+      "image": {
+        "viewList": ["tsina", "douban", "sqq", "qzone", "weixin", "twi", "fbook"],
+        "viewText": "分享到：",
+        "viewSize": "16"
+      }
+    }
+  </script>
+
+<script>
+  with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='//bdimg.share.baidu.com/static/api/js/share.js?cdnversion='+~(-new Date()/36e5)];
+</script>
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar.png" alt="zch">
+            
+              <p class="site-author-name" itemprop="name">zch</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">160</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">29</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">117</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-简介"><span class="nav-number">1.</span> <span class="nav-text">1.简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-论文"><span class="nav-number">2.</span> <span class="nav-text">2. 论文</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-ConcurrentLinkedQueue的实现"><span class="nav-number">3.</span> <span class="nav-text">3. ConcurrentLinkedQueue的实现</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-1-数据结构"><span class="nav-number">3.1.</span> <span class="nav-text">3.1 数据结构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2-设计思想"><span class="nav-number">3.2.</span> <span class="nav-text">3.2 设计思想</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-3-源码解读"><span class="nav-number">3.3.</span> <span class="nav-text">3.3 源码解读</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#3-3-1-offer方法"><span class="nav-number">3.3.1.</span> <span class="nav-text">3.3.1 offer方法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-3-2-poll方法"><span class="nav-number">3.3.2.</span> <span class="nav-text">3.3.2 poll方法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-3-3-peek方法"><span class="nav-number">3.3.3.</span> <span class="nav-text">3.3.3 peek方法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-3-4-remove方法"><span class="nav-number">3.3.4.</span> <span class="nav-text">3.3.4 remove方法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-3-5-size方法"><span class="nav-number">3.3.5.</span> <span class="nav-text">3.3.5 size方法</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<div class="copyright">&copy; <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">zch</span>
+
+  
+</div>
+
+
+  <div class="powered-by">个人学习和工作中总结的笔记</div>
+  <i class="fa fa-user-md"></i>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+<script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? "https://" : "http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1276375036'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s5.cnzz.com/z_stat.php%3Fid%3D1276375036%26online%3D1%26show%3Dline' type='text/javascript'%3E%3C/script%3E"));</script>
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/three/three.min.js"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/three/canvas_sphere.min.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+  
+  <script type="text/javascript">
+    var GUEST = ['nick','mail','link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item=>{
+      return GUEST.indexOf(item)>-1;
+    });
+    new Valine({
+        el: '#comments' ,
+        verify: true,
+        notify: true,
+        appId: 'qlLpITiuRGP5wGRRqD1TTe7y-gzGzoHsz',
+        appKey: 'Xu6NC8eq2DCotEgOrHgbA2St',
+        placeholder: 'ヾﾉ≧∀≦)o来啊，快活啊!',
+        avatar:'mm',
+        guest_info:guest,
+        pageSize:'10' || 10,
+    });
+  </script>
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

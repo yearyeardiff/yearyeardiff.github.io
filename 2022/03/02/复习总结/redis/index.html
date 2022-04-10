@@ -1,0 +1,1743 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+<meta name="google-site-verification" content="6pSprQE3BiN_wM4uIQnTSoO5EAKab52jQ86zdl_VH84">
+<meta name="google-site-verification" content="pa5VzMThwxpvSOgHS15kDjiLdeww7kHG5LcJjH6EQko">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/science-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/science-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="redis,">
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="ZCH NOTES" type="application/atom+xml">
+
+
+
+
+
+
+<meta name="description" content="数据结构与对象SDS 数据结构  &quot;  相较于原生c语言字符串的区别？ ​            常数复杂度获取字符串长度​            杜绝缓冲区溢出​            减少修改字符串时带来的内存重分配次数​                空间预分配​                惰性空间释放​            二进制安全   链表 数据结构 ​            &quot;">
+<meta name="keywords" content="redis">
+<meta property="og:type" content="article">
+<meta property="og:title" content="redis设计与实现">
+<meta property="og:url" content="http://yoursite.com/2022/03/02/复习总结/redis/index.html">
+<meta property="og:site_name" content="ZCH NOTES">
+<meta property="og:description" content="数据结构与对象SDS 数据结构  &quot;  相较于原生c语言字符串的区别？ ​            常数复杂度获取字符串长度​            杜绝缓冲区溢出​            减少修改字符串时带来的内存重分配次数​                空间预分配​                惰性空间释放​            二进制安全   链表 数据结构 ​            &quot;">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/images/image-20220327155838151.png">
+<meta property="og:image" content="http://yoursite.com/images/image-20220327160246557.png">
+<meta property="og:image" content="http://yoursite.com/images/image-20220327200520224.png">
+<meta property="og:image" content="http://yoursite.com/images/image-20220327200658260.png">
+<meta property="og:image" content="http://yoursite.com/images/image-20220327200900372.png">
+<meta property="og:image" content="http://yoursite.com/images/image-20220327203439662.png">
+<meta property="og:image" content="http://yoursite.com/images/image-20220327203538383.png">
+<meta property="og:image" content="http://yoursite.com/images/image-20220327203639653.png">
+<meta property="og:image" content="http://yoursite.com/images/image-20220327204211701.png">
+<meta property="og:image" content="http://yoursite.com/images/image-20220327204051657.png">
+<meta property="og:image" content="http://yoursite.com/images/image-20220327212614427.png">
+<meta property="og:image" content="http://yoursite.com/images/image-20220327232346093.png">
+<meta property="og:image" content="http://yoursite.com/images/image-20220328145953801.png">
+<meta property="og:image" content="http://yoursite.com/images/image-20220328151858653.png">
+<meta property="og:image" content="http://yoursite.com/images/image-20220328181413466.png">
+<meta property="og:image" content="http://yoursite.com/images/image-20220328165530576.png">
+<meta property="og:image" content="http://yoursite.com/images/image-20220328171446304.png">
+<meta property="og:image" content="http://yoursite.com/images/image-20220328171505476.png">
+<meta property="og:image" content="http://yoursite.com/images/image-20220328204312385.png">
+<meta property="og:image" content="http://yoursite.com/images/image-20220328204341504.png">
+<meta property="og:image" content="http://yoursite.com/images/image-20220328205719679.png">
+<meta property="og:image" content="http://yoursite.com/images/image-20220328210037050.png">
+<meta property="og:image" content="http://yoursite.com/images/image-20220328210311702.png">
+<meta property="og:image" content="http://yoursite.com/images/image-20220328210346132.png">
+<meta property="og:image" content="http://yoursite.com/images/image-20220328211612900.png">
+<meta property="og:image" content="http://yoursite.com/images/image-20220328222139682.png">
+<meta property="og:image" content="http://yoursite.com/images/image-20220328222454024.png">
+<meta property="og:image" content="http://yoursite.com/images/image-20220328222804037.png">
+<meta property="og:image" content="http://yoursite.com/images/image-20220328222848607.png">
+<meta property="og:image" content="http://yoursite.com/images/image-20220328223145203.png">
+<meta property="og:image" content="http://yoursite.com/images/image-20220328223236704.png">
+<meta property="og:image" content="http://yoursite.com/images/image-20220328223529391.png">
+<meta property="og:image" content="http://yoursite.com/images/image-20220328223919377.png">
+<meta property="og:image" content="http://yoursite.com/images/image-20220328224004552.png">
+<meta property="og:image" content="http://yoursite.com/images/image-20220328230826290.png">
+<meta property="og:image" content="http://yoursite.com/images/image-20220330222326638.png">
+<meta property="og:image" content="http://yoursite.com/images/image-20220330222810822.png">
+<meta property="og:image" content="http://yoursite.com/images/image-20220330223354761.png">
+<meta property="og:image" content="http://yoursite.com/2022/03/02/复习总结/redis/images/image-20220330223410477.png">
+<meta property="og:image" content="http://yoursite.com/2022/03/02/复习总结/redis/images/image-20220330223753669.png">
+<meta property="og:image" content="http://yoursite.com/images/image-20220330223915432.png">
+<meta property="og:image" content="http://yoursite.com/images/image-20220330224909157.png">
+<meta property="og:updated_time" content="2022-04-07T13:53:26.617Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="redis设计与实现">
+<meta name="twitter:description" content="数据结构与对象SDS 数据结构  &quot;  相较于原生c语言字符串的区别？ ​            常数复杂度获取字符串长度​            杜绝缓冲区溢出​            减少修改字符串时带来的内存重分配次数​                空间预分配​                惰性空间释放​            二进制安全   链表 数据结构 ​            &quot;">
+<meta name="twitter:image" content="http://yoursite.com/images/image-20220327155838151.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"right","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2022/03/02/复习总结/redis/">
+
+
+
+
+
+  <title>redis设计与实现 | ZCH NOTES</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-right page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">ZCH NOTES</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <h1 class="site-subtitle" itemprop="description">博学笃志 切问近思</h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404.html" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br>
+            
+            公益404
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2022/03/02/复习总结/redis/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="zch">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ZCH NOTES">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">redis设计与实现</h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2022-03-02T00:00:00+08:00">
+                2022-03-02
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/复习/" itemprop="url" rel="index">
+                    <span itemprop="name">复习</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2022/03/02/复习总结/redis/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2022/03/02/复习总结/redis/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="数据结构与对象"><a href="#数据结构与对象" class="headerlink" title="数据结构与对象"></a>数据结构与对象</h1><h2 id="SDS"><a href="#SDS" class="headerlink" title="SDS"></a>SDS</h2><ul>
+<li>数据结构</li>
+</ul>
+<p><img src="/images/image-20220327155838151.png" alt="image-20220327155838151" style="zoom:50%;"></p>"
+<ul>
+<li><p>相较于原生c语言字符串的区别？</p>
+<p>​            常数复杂度获取字符串长度<br>​            杜绝缓冲区溢出<br>​            减少修改字符串时带来的内存重分配次数<br>​                空间预分配<br>​                惰性空间释放<br>​            二进制安全</p>
+</li>
+</ul>
+<h2 id="链表"><a href="#链表" class="headerlink" title="链表"></a>链表</h2><ul>
+<li><p>数据结构</p>
+<p>​            <img src="/images/image-20220327160246557.png" alt="image-20220327160246557" style="zoom: 33%;"></p>"
+</li>
+</ul>
+<h2 id="字典"><a href="#字典" class="headerlink" title="字典"></a>字典</h2><ul>
+<li><p>数据结构</p>
+<pre><code>&lt;img src=&quot;images/image-20220327160401494.png&quot; alt=&quot;image-20220327160401494&quot; style=&quot;zoom: 25%;&quot; /&gt;
+</code></pre><p>ht 属性是一个包含两个项的数组， 数组中的每个项都是一个 dictht 哈希表， 一般情况下， 字典只使用 ht[0] 哈希表， ht[1] 哈希表只会在对 ht[0] 哈希表进行 rehash 时使用。<br>除了 ht[1] 之外， 另一个和 rehash 有关的属性就是 rehashidx ： 它记录了 rehash 目前的进度， 如果目前没有在进行 rehash ， 那么它的值为 -1 。</p>
+</li>
+<li><p>hash算法</p>
+<pre><code>MurmurHash2算法
+</code></pre></li>
+<li><p>冲突解决</p>
+<pre><code>链地址法，可参考java hashmap的实现
+</code></pre></li>
+<li><p>rehash的过程</p>
+<p>扩展和收缩哈希表的工作可以通过执行rehash（重新散列）操作来完成，Redis对字典的哈希表执行rehash的步骤如下：<br>1）为字典的ht[1]哈希表分配空间，这个哈希表的空间大小取决于要执行的操作，以及ht[0]当前包含的键值对数量（也即是ht[0].used属性的值）：</p>
+<pre><code>❑如果执行的是扩展操作，那么ht[1]的大小为第一个大于等于ht[0].used*2的2 n（2的n次方幂）；
+❑如果执行的是收缩操作，那么ht[1]的大小为第一个大于等于ht[0].used的2 n。
+</code></pre><p>2）将保存在ht[0]中的所有键值对rehash到ht[1]上面：rehash指的是重新计算键的哈希值和索引值，然后将键值对放置到ht[1]哈希表的指定位置上。<br>3）当ht[0]包含的所有键值对都迁移到了ht[1]之后（ht[0]变为空表），释放ht[0]，将ht[1]设置为ht[0]，并在ht[1]新创建一个空白哈希表，为下一次rehash做准备。</p>
+</li>
+<li><p>什么时候触发rehash</p>
+<ul>
+<li><p>扩展</p>
+<p>1）服务器目前没有在执行BGSAVE命令或者BGREWRITEAOF命令，并且哈希表的负载因子大于等于1。</p>
+<p>2）服务器目前正在执行BGSAVE命令或者BGREWRITEAOF命令，并且哈希表的负载因子大于等于5。</p>
+</li>
+</ul>
+<ul>
+<li>收缩<br>当哈希表的负载因子小于0.1时，程序自动开始对哈希表执行收缩操作</li>
+</ul>
+</li>
+<li><p>渐进式rehash步骤</p>
+<p>为了避免rehash对服务器性能造成影响，服务器不是一次性将ht[0]里面的所有键值对全部rehash到ht[1]，而是分多次、渐进式地将ht[0]里面的键值对慢慢地rehash到ht[1]。</p>
+<p>1）为ht[1]分配空间，让字典同时持有ht[0]和ht[1]两个哈希表。</p>
+<p>2）在字典中维持一个索引计数器变量rehashidx，并将它的值设置为0，表示rehash工作正式开始。</p>
+<p>3）在rehash进行期间，每次对字典执行添加、删除、查找或者更新操作时，程序除了执行指定的操作以外，还会顺带将ht[0]哈希表在rehashidx索引上的所有键值对rehash到ht[1]，当rehash工作完成之后，程序将rehashidx属性的值增一。</p>
+<p>4）随着字典操作的不断执行，最终在某个时间点上，ht[0]的所有键值对都会被rehash至ht[1]，这时程序将rehashidx属性的值设为-1，表示rehash操作已完成。</p>
+<p>渐进式rehash的好处在于它采取分而治之的方式，将rehash键值对所需的计算工作均摊到对字典的每个添加、删除、查找和更新操作上，从而避免了集中式rehash而带来的庞大计算量。</p>
+</li>
+<li><p>怎么在rehash过程中的增删改查？</p>
+<p>因为在进行渐进式rehash的过程中，字典会同时使用ht[0]和ht[1]两个哈希表，所以在渐进式rehash进行期间，字典的删除（delete）、查找（find）、更新（update）等操作会在两个哈希表上进行。例如，要在字典里面查找一个键的话，程序会先在ht[0]里面进行查找，如果没找到的话，就会继续到ht[1]里面进行查找，诸如此类。</p>
+<p>另外，在渐进式rehash执行期间，新添加到字典的键值对一律会被保存到ht[1]里面，而ht[0]则不再进行任何添加操作，这一措施保证了ht[0]包含的键值对数量会只减不增，并随着rehash操作的执行而最终变成空表。</p>
+</li>
+</ul>
+<h2 id="跳跃表"><a href="#跳跃表" class="headerlink" title="跳跃表"></a>跳跃表</h2><p>​        有序集合底层实现<br>​        java 代码实现：<a href="https://juejin.cn/post/6844903847521976327" target="_blank" rel="noopener">https://juejin.cn/post/6844903847521976327</a><br>​        数据结构</p>
+<p>​        <img src="/images/image-20220327200520224.png" alt="image-20220327200520224" style="zoom:30%;"></p>"
+<h2 id="整数集合"><a href="#整数集合" class="headerlink" title="整数集合"></a>整数集合</h2><p>​        是集合键的实现之一<br>​        数据结构</p>
+<p><img src="/images/image-20220327200658260.png" alt="image-20220327200658260" style="zoom:30%;"></p>"
+<h2 id="压缩列表"><a href="#压缩列表" class="headerlink" title="压缩列表"></a>压缩列表</h2><p>压缩列表（ziplist）是列表键和哈希键的底层实现之一。当一个列表键只包含少量列表项，并且每个列表项要么就是小整数值，要么就是长度比较短的字符串，那么Redis就会使用压缩列表来做列表键的底层实现</p>
+<ul>
+<li><p>数据结构</p>
+<p><img src="/images/image-20220327200900372.png" alt="image-20220327200900372" style="zoom:33%;">            </p>"
+</li>
+</ul>
+<h2 id="对象系统"><a href="#对象系统" class="headerlink" title="对象系统"></a>对象系统</h2><h3 id="类型与编码"><a href="#类型与编码" class="headerlink" title="类型与编码"></a>类型与编码</h3><ul>
+<li><p>结构体</p>
+<p><img src="/images/image-20220327203439662.png" alt="image-20220327203439662" style="zoom: 33%;"></p>"
+</li>
+<li><p>类型</p>
+<p><img src="/images/image-20220327203538383.png" alt="image-20220327203538383" style="zoom:33%;"></p>"
+</li>
+<li><p>编码</p>
+<p><img src="/images/image-20220327203639653.png" alt="image-20220327203639653" style="zoom:33%;"></p>"
+</li>
+</ul>
+<h3 id="内存回收"><a href="#内存回收" class="headerlink" title="内存回收"></a>内存回收</h3><p>因为C语言并不具备自动内存回收功能，所以Redis在自己的对象系统中构建了一个引用计数（reference counting）技术实现的内存回收机制，通过这一机制，程序可以通过跟踪对象的引用计数信息，在适当的时候自动释放对象并进行内存回收。</p>
+<p><img src="/images/image-20220327204211701.png" alt="image-20220327204211701" style="zoom:33%;"></p>"
+<h3 id="对象共享"><a href="#对象共享" class="headerlink" title="对象共享"></a>对象共享</h3><p><img src="/images/image-20220327204051657.png" alt="image-20220327204051657" style="zoom:33%;"></p>"
+<p>在Redis中，让多个键共享同一个值对象需要执行以下两个步骤：<br>    1）将数据库键的值指针指向一个现有的值对象；<br>    2）将被共享的值对象的引用计数增一。<br>Redis会在初始化服务器时，创建一万个字符串对象，这些对象包含了从0到9999的所有整数值，当服务器需要用到值为0到9999的字符串对象时，服务器就会使用这些共享对象，而不是新创建对象<br>这些共享对象不单单只有字符串键可以使用，那些在数据结构中嵌套了字符串对象的对象（linkedlist编码的列表对象、hashtable编码的哈希对象、hashtable编码的集合对象，以及zset编码的有序集合对象)都可以使用这些共享对象。<br>Redis只对包含整数值的字符串对象进行共享</p>
+<h3 id="空转时长"><a href="#空转时长" class="headerlink" title="空转时长"></a>空转时长</h3><p>redisObject结构包含的最后一个属性为lru属性，该属性记录了对象最后一次被命令程序访问的时间</p>
+<h1 id="单机数据库"><a href="#单机数据库" class="headerlink" title="单机数据库"></a>单机数据库</h1><h2 id="数据库"><a href="#数据库" class="headerlink" title="数据库"></a>数据库</h2><ul>
+<li><p>数据结构</p>
+<pre><code>&lt;img src=&quot;images/image-20220327212351861.png&quot; alt=&quot;image-20220327212351861&quot; style=&quot;zoom:33%;&quot; /&gt;
+</code></pre></li>
+<li><p>键空间</p>
+<p>redisDb结构的dict字典保存了数据库中的所有键值对，我们将这个字典称为键空间（key space）</p>
+<p><img src="/images/image-20220327212614427.png" alt="image-20220327212614427" style="zoom:30%;"></p>"
+</li>
+<li><p>读写键空间时的维护操作</p>
+<p>当使用Redis命令对数据库进行读写时，服务器不仅会对键空间执行指定的读写操作，还会执行一些额外的维护操作</p>
+<p>1.在读取一个键之后，服务器会更新键的LRU（最后一次使用）时间，这个值可以用于计算键的闲置时间，使用OBJECT idletime命令可以查看键key的闲置时间。</p>
+<p>2.如果服务器在读取一个键时发现该键已经过期，那么服务器会先删除这个过期键，然后才执行余下的其他操作，本章稍后对过期键的讨论会详细说明这一点。</p>
+<p>3.如果有客户端使用WATCH命令监视了某个键，那么服务器在对被监视的键进行修改之后，会将这个键标记为脏（dirty），从而让事务程序注意到这个键已经被修改过，第19章会详细说明这一点。</p>
+<p>4.服务器每次修改一个键之后，都会对脏（dirty）键计数器的值增1，这个计数器会触发服务器的持久化以及复制操作，第10章、第11章和第15章都会说到这一点。</p>
+</li>
+</ul>
+<h3 id="键的生存时间或过期时间"><a href="#键的生存时间或过期时间" class="headerlink" title="键的生存时间或过期时间"></a>键的生存时间或过期时间</h3><h4 id="过期键的保存"><a href="#过期键的保存" class="headerlink" title="过期键的保存"></a>过期键的保存</h4><p>redisDb结构的expires字典保存了数据库中所有键的过期时间，我们称这个字典为过期字典</p>
+<h4 id="过期键删除策略：惰性删除-定期删除"><a href="#过期键删除策略：惰性删除-定期删除" class="headerlink" title="过期键删除策略：惰性删除+定期删除"></a>过期键删除策略：惰性删除+定期删除</h4><ul>
+<li><p>惰性删除<br>过期键的惰性删除策略由db.c/expireIfNeeded函数实现，所有读写数据库的Redis命令在执行之前都会调用expireIfNeeded函数对输入键进行检查</p>
+<p><img src="/images/image-20220327232346093.png" alt="image-20220327232346093" style="zoom:33%;">                      </p>"
+</li>
+<li><p>定期删除</p>
+<pre><code>每当Redis的服务器周期性操作redis.c/serverCron函数执行时，activeExpireCycle函数就会被调用，它在规定的时间内，分多次遍历服务器中的各个数据库，从数据库的expires字典中随机检查一部分键的过期时间，并删除其中的过期键。
+</code></pre></li>
+</ul>
+<h4 id="AOF，RDB和复制功能对过期键的处理"><a href="#AOF，RDB和复制功能对过期键的处理" class="headerlink" title="AOF，RDB和复制功能对过期键的处理"></a>AOF，RDB和复制功能对过期键的处理</h4><ul>
+<li><p>RDB</p>
+<p>在执行SAVE命令或者BGSAVE命令创建一个新的RDB文件时，程序会对数据库中的键进行检查，已过期的键不会被保存到新创建的RDB文件中。</p>
+<ul>
+<li>载入rdb文件<ol>
+<li>如果服务器以主服务器模式运行，那么在载入RDB文件时，程序会对文件中保存的键进行检查，未过期的键会被载入到数据库中，而过期键则会被忽略，所以过期键对载入RDB文件的主服务器不会造成影响。</li>
+<li>如果服务器以从服务器模式运行，那么在载入RDB文件时，文件中保存的所有键，不论是否过期，都会被载入到数据库中。不过，因为主从服务器在进行数据同步的时候，从服务器的数据库就会被清空，所以一般来讲，过期键对载入RDB文件的从服务器也不会造成影响</li>
+</ol>
+</li>
+</ul>
+</li>
+<li><p>AOF<br>当服务器以AOF持久化模式运行时，如果数据库中的某个键已经过期，但它还没有被惰性删除或者定期删除，那么AOF文件不会因为这个过期键而产生任何影响。当过期键被惰性删除或者定期删除之后，程序会向AOF文件追加（append）一条DEL命令，来显式地记录该键已被删除。<br>和生成RDB文件时类似，在执行AOF重写的过程中，程序会对数据库中的键进行检查，已过期的键不会被保存到重写后的AOF文件中。</p>
+</li>
+<li><p>复制</p>
+<p>主服务器在删除一个过期键之后，会显式地向所有从服务器发送一个DEL命令，告知从服务器删除这个过期键。❑从服务器在执行客户端发送的读命令时，即使碰到过期键也不会将过期键删除，而是继续像处理未过期的键一样来处理过期键。❑从服务器只有在接到主服务器发来的DEL命令之后，才会删除过期键。</p>
+</li>
+</ul>
+<h2 id="RDB"><a href="#RDB" class="headerlink" title="RDB"></a>RDB</h2><h3 id="创建与载入"><a href="#创建与载入" class="headerlink" title="创建与载入"></a>创建与载入</h3><ul>
+<li>持久化<br>RDB持久化功能所生成的RDB文件是一个经过压缩的二进制文件，通过该文件可以还原生成RDB文件时的数据库状态</li>
+<li>创建命令<ul>
+<li>SAVE，BGSAVE<br>当执行save命令时，redis服务器会被阻塞，所有请求命令都会被拒绝<br>bgsave命令由子进程执行，不阻塞服务器<br>save,bgsave,bgrewriteaof不能同时执行</li>
+</ul>
+</li>
+<li>载入流程<br>载入rdb文件期间，服务器会一致处于阻塞状态</li>
+<li>自动间隔性保存<br>Redis允许用户通过设置服务器配置的save选项，让服务器每隔一段时间自动执行一次BGSAVE命令。<ul>
+<li>计数<br>1.dirty计数器记录距离上一次成功执行SAVE命令或者BGSAVE命令之后，服务器对数据库状态（服务器中的所有数据库）进行了多少次修改（包括写入、删除、更新等操作）。<br>2.lastsave属性是一个UNIX时间戳，记录了服务器上一次成功执行SAVE命令或者BGSAVE命令的时间。</li>
+<li>检查保存条件是否满足<br>每次执行完save，dirty就会被清0<br>Redis的服务器周期性操作函数serverCron默认每隔100毫秒就会执行一次，该函数用于对正在运行的服务器进行维护，它的其中一项工作就是检查save选项所设置的保存条件是否已经满足，如果满足的话，就执行BGSAVE命令。</li>
+</ul>
+</li>
+</ul>
+<h2 id="AOF"><a href="#AOF" class="headerlink" title="AOF"></a>AOF</h2><ul>
+<li>AOF与RDB区别<br>与RDB持久化通过保存数据库中的键值对来记录数据库状态不同，AOF持久化是通过保存Redis服务器所执行的写命令来记录数据库状态的</li>
+</ul>
+<h3 id="持久化的实现"><a href="#持久化的实现" class="headerlink" title="持久化的实现"></a>持久化的实现</h3><ul>
+<li><p>命令追加<br>当服务器执行完命令后，会把协议内容添加到aof_buf缓冲区的末尾</p>
+</li>
+<li><p>文件写入与同步<br>flushAppendOnlyFile函数的行为由服务器配置的appendfsync选项的值来决定，appendfsync选项的默认值为everysec</p>
+</li>
+<li><p>写入与同步的区别<br> 写入是指写入内存缓冲区，同步是指同缓冲区写入到磁盘</p>
+</li>
+<li><p>载入与数据还原</p>
+<p><img src="/images/image-20220328145953801.png" alt="image-20220328145953801" style="zoom:33%;"></p>"
+</li>
+</ul>
+<h3 id="AOF重写"><a href="#AOF重写" class="headerlink" title="AOF重写"></a>AOF重写</h3><p>为了解决aof文件体积膨胀的问题</p>
+<p>创建一个新的AOF文件来替代现有的AOF文件，新旧两个AOF文件所保存的数据库状态相同，但新AOF文件不会包含任何浪费空间的冗余命令，所以新AOF文件的体积通常会比旧AOF文件的体积要小得多</p>
+<h3 id="实现原理"><a href="#实现原理" class="headerlink" title="实现原理"></a>实现原理</h3><p>首先从数据库中读取键现在的值，然后用一条命令去记录键值对，代替之前记录这个键值对的多条命令，这就是AOF重写功能的实现原理。（不需要分析现有的AOF文件）<br>在实际中，为了避免在执行命令时造成客户端输入缓冲区溢出，重写程序在处理列表、哈希表、集合、有序集合这四种可能会带有多个元素的键时，会先检查键所包含的元素数量，如果元素的数量超过了redis.h/REDIS_AOF_REWRITE_ITEMS_PER_CMD常量的值，那么重写程序将使用多条命令来记录键的值，而不单单使用一条命令。</p>
+<h3 id="后台重写"><a href="#后台重写" class="headerlink" title="后台重写"></a>后台重写</h3><p>子进程进行AOF重写期间，服务器进程（父进程）可以继续处理命令请求</p>
+<h4 id="服务器进程和重写子进程同时运行，怎么保证数据一致？"><a href="#服务器进程和重写子进程同时运行，怎么保证数据一致？" class="headerlink" title="服务器进程和重写子进程同时运行，怎么保证数据一致？"></a>服务器进程和重写子进程同时运行，怎么保证数据一致？</h4><p><img src="/images/image-20220328151858653.png" alt="image-20220328151858653" style="zoom:33%;"></p>"
+<p>在子进程执行AOF重写期间，服务器进程需要执行以下三个工作：<br>    ​    1）执行客户端发来的命令。<br>    ​    2）将执行后的写命令追加到AOF缓冲区。<br>    ​    3）将执行后的写命令追加到AOF重写缓冲区。<br>这样一来可以保证：</p>
+<ol>
+<li><p>AOF缓冲区的内容会定期被写入和同步到AOF文件，对现有AOF文件的处理工作会如常进行。</p>
+</li>
+<li><p>从创建子进程开始，服务器执行的所有写命令都会被记录到AOF重写缓冲区里面。</p>
+<pre><code>当子进程完成AOF重写工作之后，它会向父进程发送一个信号，父进程在接到该信号之后，会调用一个信号处理函数，并执行以下工作：
+</code></pre><p> 1）将AOF重写缓冲区中的所有内容写入到新AOF文件中，这时新AOF文件所保存的数据库状态将和服务器当前的数据库状态一致。<br> 2）对新的AOF文件进行改名，原子地（atomic）覆盖现有的AOF文件，完成新旧两个AOF文件的替换。</p>
+</li>
+</ol>
+<h2 id="服务器"><a href="#服务器" class="headerlink" title="服务器"></a>服务器</h2><p>还原数据库状态</p>
+<ol>
+<li>载入RDB文件或者AOF文件</li>
+<li>如果启用了AOF持久化功能，使用AOF文件恢复数据库状态</li>
+<li>如果没启用，使用RDB文件恢复</li>
+</ol>
+<h1 id="多机数据库"><a href="#多机数据库" class="headerlink" title="多机数据库"></a>多机数据库</h1><h2 id="复制"><a href="#复制" class="headerlink" title="复制"></a>复制</h2><p>命令：slaveof master_ip master_port</p>
+<h3 id="旧版功能的实现"><a href="#旧版功能的实现" class="headerlink" title="旧版功能的实现"></a>旧版功能的实现</h3><p>2大步骤：同步（sync）和命令传播（command propagate）两个操作</p>
+<ol>
+<li>同步操作用于将从服务器的数据库状态更新至主服务器当前所处的数据库状态。</li>
+<li>命令传播操作则用于在主服务器的数据库状态被修改， 导致主从服务器的数据库状态出现不一致时， 让主从服务器的数据库重新回到一致状态。</li>
+</ol>
+<p><img src="/images/image-20220328181413466.png" alt="image-20220328181413466" style="zoom:33%;"></p>"
+<h4 id="同步"><a href="#同步" class="headerlink" title="同步"></a>同步</h4><p><img src="/images/image-20220328165530576.png" alt="image-20220328165530576" style="zoom:33%;"></p>"
+<ul>
+<li><p>触发时机<br>当客户端向从服务器发送 SLAVEOF 命令， 要求从服务器复制主服务器时</p>
+</li>
+<li><p>具体步骤</p>
+<ol>
+<li>从服务器向主服务器发送 SYNC 命令。</li>
+<li>收到 SYNC 命令的主服务器执行 BGSAVE 命令， 在后台生成一个 RDB 文件， 并使用一个缓冲区记录从现在开始执行的所有写命令。</li>
+<li>当主服务器的 BGSAVE 命令执行完毕时， 主服务器会将 BGSAVE 命令生成的 RDB 文件发送给从服务器， 从服务器接收并载入这个 RDB 文件， 将自己的数据库状态更新至主服务器执行 BGSAVE 命令时的数据库状态。</li>
+<li>主服务器将记录在缓冲区里面的所有写命令发送给从服务器， 从服务器执行这些写命令， 将自己的数据库状态更新至主服务器数据库当前所处的状态。</li>
+</ol>
+</li>
+</ul>
+<h4 id="命令传播"><a href="#命令传播" class="headerlink" title="命令传播"></a>命令传播</h4><ul>
+<li><p>为什么要命令传播<br>  每当主服务器执行客户端发送的写命令时， 主服务器的数据库就有可能会被修改， 并导致主从服务器状态不再一致</p>
+</li>
+<li><p>怎么做<br>  主服务器会将自己执行的写命令 —— 也即是造成主从服务器不一致的那条写命令 —— 发送给从服务器执行， 当从服务器执行了相同的写命令之后， 主从服务器将再次回到一致状态。</p>
+</li>
+</ul>
+<h4 id="缺陷"><a href="#缺陷" class="headerlink" title="缺陷"></a>缺陷</h4><ul>
+<li>断线后复制效率低<br>断线恢复连接后：从库向主库发送SYNC命令，执行同步操作</li>
+</ul>
+<h3 id="新版功能的实现"><a href="#新版功能的实现" class="headerlink" title="新版功能的实现"></a>新版功能的实现</h3><ul>
+<li><p>相对老版本的优化点</p>
+<p>使用PSYNC代替SYNC，PSYNC在断线后复制时，可以仅同步断线后主服务器执行的命令</p>
+</li>
+</ul>
+<h4 id="PSYNC"><a href="#PSYNC" class="headerlink" title="PSYNC"></a>PSYNC</h4><ul>
+<li><p>PSYNC命令具有完整重同步（full resynchronization）和部分重同步（partial resynchronization）两种模式：\</p>
+<ul>
+<li>其中完整重同步用于处理初次复制情况：完整重同步的执行步骤和SYNC命令的执行步骤基本一样，它们都是通过让主服务器创建并发送RDB文件，以及向从服务器发送保存在缓冲区里面的写命令来进行同步。</li>
+<li>而部分重同步则用于处理断线后重复制情况：当从服务器在断线后重新连接主服务器时，如果条件允许，主服务器可以将主从服务器连接断开期间执行的写命令发送给从服务器，从服务器只要接收并执行这些写命令，就可以将数据库更新至主服务器当前所处的状态。</li>
+</ul>
+</li>
+<li><p>部分重同步功能由以下三个部分构成：</p>
+<ol>
+<li><p>主服务器的复制偏移量（replication offset）和从服务器的复制偏移量。</p>
+</li>
+<li><p>主服务器的复制积压缓冲区（replication backlog）。</p>
+</li>
+<li><p>服务器的运行ID（run ID）。</p>
+</li>
+</ol>
+</li>
+</ul>
+<h5 id="复制偏移量"><a href="#复制偏移量" class="headerlink" title="复制偏移量"></a>复制偏移量</h5><ul>
+<li><p>执行复制的双方——主服务器和从服务器会分别维护一个复制偏移量：</p>
+<pre><code>1.主服务器每次向从服务器传播N个字节的数据时，就将自己的复制偏移量的值加上N。
+2.从服务器每次收到主服务器传播来的N个字节的数据时，就将自己的复制偏移量的值加上N。
+</code></pre></li>
+<li><p>通过对比主从服务器的复制偏移量，程序可以很容易地知道主从服务器是否处于一致状态：</p>
+<ol>
+<li><p>如果主从服务器处于一致状态，那么主从服务器两者的偏移量总是相同的。</p>
+</li>
+<li><p>相反，如果主从服务器两者的偏移量并不相同，那么说明主从服务器并未处于一致状态</p>
+</li>
+</ol>
+</li>
+</ul>
+<h4 id="复制积压缓冲区"><a href="#复制积压缓冲区" class="headerlink" title="复制积压缓冲区"></a>复制积压缓冲区</h4><ul>
+<li><p>主服务器维护的一个固定长度，先进先出的队列，默认大小1M</p>
+</li>
+<li><p>同步记录时，也会记录在复制积压区</p>
+<p><img src="/images/image-20220328171446304.png" alt="image-20220328171446304" style="zoom:33%;"></p>"
+<p><img src="/images/image-20220328171505476.png" alt="image-20220328171505476" style="zoom:33%;"></p>"
+</li>
+<li><p>如何利用积压区进行断线后恢复数据<br>当从服务器重新连上主服务器时，从服务器会通过PSYNC命令将自己的复制偏移量offset发送给主服务器，主服务器会根据这个复制偏移量来决定对从服务器执行何种同步操作： </p>
+<ol>
+<li><p>如果offset偏移量之后的数据（也即是偏移量offset+1开始的数据）仍然存在于复制积压缓冲区里面，那么主服务器将对从服务器执行部分重同步操作。</p>
+</li>
+<li><p>相反，如果offset偏移量之后的数据已经不存在于复制积压缓冲区，那么主服务器将对从服务器执行完整重同步操作。</p>
+</li>
+</ol>
+</li>
+</ul>
+<h4 id="服务器运行ID"><a href="#服务器运行ID" class="headerlink" title="服务器运行ID"></a>服务器运行ID</h4><p>除了复制偏移量和复制积压缓冲区之外，实现部分重同步还需要用到服务器运行ID（run ID）：</p>
+<ol>
+<li><p>每个Redis服务器，不论主服务器还是从服务，都会有自己的运行ID。</p>
+</li>
+<li><p>运行ID在服务器启动时自动生成，由40个随机的十六进制字符组成，例如53b9b28df8042fdc9ab5e3fcbbbabff1d5dce2b3。</p>
+</li>
+</ol>
+<p>   怎么用</p>
+<p>   当从服务器对主服务器进行初次复制时，主服务器会将自己的运行ID传送给从服务器，而从服务器则会将这个运行ID保存起来。<br>   当从服务器断线并重新连上一个主服务器时，从服务器将向当前连接的主服务器发送之前保存的运行ID：<br>   1.如果从服务器保存的运行ID和当前连接的主服务器的运行ID相同，那么说明从服务器断线之前复制的就是当前连接的这个主服务器，主服务器可以继续尝试执行部分重同步操作。<br>   2.相反地，如果从服务器保存的运行ID和当前连接的主服务器的运行ID并不相同，那么说明从服务器断线之前复制的主服务器并不是当前连接的这个主服务器，主服务器将对从服务器执行完整重同步操作。</p>
+<h3 id="复制的实现流程"><a href="#复制的实现流程" class="headerlink" title="复制的实现流程"></a>复制的实现流程</h3><ol>
+<li><p>设置主服务器的地址和端口 slaveof &lt;master_ip&gt; &lt;master_port&gt;</p>
+</li>
+<li><p>建立套接字<br> 如果从服务器创建的套接字能成功连接（connect）到主服务器，那么从服务器将为这个套接字关联一个专门用于处理复制工作的文件事件处理器，这个处理器将负责执行后续的复制工作</p>
+</li>
+<li><p>发送PING命令</p>
+</li>
+<li><p>身份验证</p>
+</li>
+<li><p>发送端口信息<br> 主服务器把端口信息记录在从服务器对应的客户端状态的slave_listening_port属性中<br> 从服务器也是一种客户端<br> slave_listening_port属性的唯一作用是：执行INFO replication命令时打印出从服务器的端口号</p>
+</li>
+<li><p>同步</p>
+</li>
+<li><p>命令传播</p>
+</li>
+</ol>
+<h3 id="心跳检测"><a href="#心跳检测" class="headerlink" title="心跳检测"></a>心跳检测</h3><ul>
+<li><p>怎么心跳检测<br>命令传播阶段，从服务器默认每秒向主服务器发送命令：REPLCONF ACK &lt;replication_offset&gt;</p>
+</li>
+<li><p>作用是什么</p>
+<ul>
+<li><p>辅助实现min-slaves</p>
+</li>
+<li><p>检测命令丢失<br>如果因为网络故障，主服务器传播给从服务器的写命令在半路丢失，那么当从服务器向主服务器发送REPLCONF ACK命令时，<br>主服务器将发觉从服务器当前的复制偏移量少于自己的复制偏移量，然后主服务器就会根据从服务器提交的复制偏移量，<br>在复制积压缓冲区里面找到从服务器缺少的数据，并将这些数据重新发送给从服务器。</p>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="sentinel"><a href="#sentinel" class="headerlink" title="sentinel"></a>sentinel</h2><ul>
+<li>是什么<br>Sentinel（哨岗、哨兵）是Redis的高可用性（high availability）解决方案：由一个或多个Sentinel实例（instance）组成的Sentinel系统（system）可以监视任意多个主服务器，以及这些主服务器属下的所有从服务器，并在被监视的主服务器进入下线状态时，自动将下线主服务器属下的某个从服务器升级为新的主服务器，然后由新的主服务器代替已下线的主服务器继续处理命令请求。</li>
+</ul>
+<h3 id="故障转移的整个过程"><a href="#故障转移的整个过程" class="headerlink" title="故障转移的整个过程"></a>故障转移的整个过程</h3><h4 id="启动并初始化sentinel"><a href="#启动并初始化sentinel" class="headerlink" title="启动并初始化sentinel"></a>启动并初始化sentinel</h4><p>1）初始化服务器。</p>
+<p>2）将普通Redis服务器使用的代码替换成Sentinel专用代码。</p>
+<p>3）初始化Sentinel状态。</p>
+<p>4）根据给定的配置文件，初始化Sentinel的监视主服务器列表。</p>
+<p>5）创建连向主服务器的网络连接。</p>
+<p>Sentinel本质上只是一个运行在特殊模式下的Redis服务器</p>
+<ul>
+<li><p>数据结构</p>
+<p><img src="/images/image-20220328204312385.png" alt="image-20220328204312385" style="zoom:33%;"></p>"
+<p><img src="/images/image-20220328204341504.png" alt="image-20220328204341504" style="zoom:33%;"></p>"
+</li>
+<li><p>创建与主服务器的连接<br>Sentinel会创建两个连向主服务器的异步网络连接：</p>
+<ul>
+<li><p>一个是命令连接，这个连接专门用于向主服务器发送命令，并接收命令回复。</p>
+</li>
+<li><p>另一个是订阅连接，这个连接专门用于订阅主服务器的<strong>sentinel</strong>:hello频道。<br>为什么是2个</p>
+<p><img src="/images/image-20220328205719679.png" alt="image-20220328205719679" style="zoom:33%;">        </p>"
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="获取主服务器的信息"><a href="#获取主服务器的信息" class="headerlink" title="获取主服务器的信息"></a>获取主服务器的信息</h4><ul>
+<li><p>Sentinel默认会以每十秒一次的频率，通过命令连接向被监视的主服务器发送INFO命令，并通过分析INFO命令的回复来获取主服务器的当前信息。</p>
+</li>
+<li><p>通过分析主服务器返回的INFO命令回复，Sentinel可以获取以下两方面的信息：</p>
+<ul>
+<li>一方面是关于主服务器本身的信息，包括run_id域记录的服务器运行ID，以及role域记录的服务器角色；</li>
+<li>另一方面是关于主服务器属下所有从服务器的信息，每个从服务器都由一个”slave”字符串开头的行记录，每行的ip=域记录了从服务器的IP地址，而port=域则记录了从服务器的端口号。根据这些IP地址和端口号<br> Sentinel无须用户提供从服务器的地址信息，就可以自动发现从服务器</li>
+</ul>
+<p><img src="/images/image-20220328210037050.png" alt="image-20220328210037050" style="zoom:33%;"></p>"
+</li>
+</ul>
+<h4 id="获取从服务器的信息"><a href="#获取从服务器的信息" class="headerlink" title="获取从服务器的信息"></a>获取从服务器的信息</h4><ul>
+<li><p>sentinel发现从服务器时，会建立命令连接和订阅连接</p>
+<p><img src="/images/image-20220328210311702.png" alt="image-20220328210311702" style="zoom:25%;"></p>"
+</li>
+<li><p>在创建命令连接之后，Sentinel在默认情况下，会以每十秒一次的频率通过命令连接向从服务器发送INFO命令</p>
+</li>
+</ul>
+<h4 id="向主服务器和从服务器发消息"><a href="#向主服务器和从服务器发消息" class="headerlink" title="向主服务器和从服务器发消息"></a>向主服务器和从服务器发消息</h4><p>Sentinel会以每两秒一次的频率，通过命令连接向所有被监视的主服务器和从服务器发送命令</p>
+<p><img src="/images/image-20220328210346132.png" alt="image-20220328210346132" style="zoom:33%;">                    </p>"
+<p>以s_开头的参数记录的是Sentinel本身的信息，m_开头的参数记录的则是主服务器的信息</p>
+<h4 id="接收来自主服务器和从服务器的频道信息"><a href="#接收来自主服务器和从服务器的频道信息" class="headerlink" title="接收来自主服务器和从服务器的频道信息"></a>接收来自主服务器和从服务器的频道信息</h4><ol>
+<li><p>对于每个与Sentinel连接的服务器，Sentinel既通过命令连接向服务器的<strong>sentinel</strong>:hello频道发送信息，又通过订阅连接从服务器的<strong>sentinel</strong>:hello频道接收信息</p>
+</li>
+<li><p>对于监视同一个服务器的多个Sentinel来说，一个Sentinel发送的信息会被其他Sentinel接收到，这些信息会被用于更新其他Sentinel对发送信息Sentinel的认知，也会被用于更新其他Sentinel对被监视服务器的认知。</p>
+</li>
+<li><p>更新sentinels字典<br>Sentinel为主服务器创建的实例结构中的sentinels字典保存了除Sentinel本身之外，所有同样监视这个主服务器的其他Sentinel的资料</p>
+<p><img src="/images/image-20220328211612900.png" alt="image-20220328211612900" style="zoom:33%;"></p>"
+</li>
+<li><p>创建连向其他Sentinel的命令连接</p>
+<ul>
+<li>当Sentinel通过频道信息发现一个新的Sentinel时，它不仅会为新Sentinel在sentinels字典中创建相应的实例结构，还会创建一个连向新Sentinel的命令连接，而新Sentinel也同样会创建连向这个Sentinel的命令连接</li>
+<li>Sentinel之间不会创建订阅连接</li>
+</ul>
+</li>
+</ol>
+<h4 id="主观下线"><a href="#主观下线" class="headerlink" title="主观下线"></a>主观下线</h4><ol>
+<li><p>在默认情况下，Sentinel会以每秒一次的频率向所有与它创建了命令连接的实例（包括主服务器、从服务器、其他Sentinel在内)发送PING命令，并通过实例返回的PING命令回复来判断实例是否在线。</p>
+</li>
+<li><p>回复</p>
+<ul>
+<li><p>有效回复：实例返回+PONG、-LOADING、-MASTERDOWN三种回复的其中一种。</p>
+</li>
+<li><p>无效回复：实例返回除+PONG、-LOADING、-MASTERDOWN三种回复之外的其他回复，或者在指定时限内没有返回任何回复</p>
+</li>
+<li><p>Sentinel配置文件中的down-after-milliseconds选项指定了Sentinel判断实例进入主观下线所需的时间长度：如果一个实例在down-after-milliseconds毫秒内，连续向Sentinel返回无效回复，那么Sentinel会修改这个实例所对应的实例结构，在结构的flags属性中打开SRI_S_DOWN标识，以此来表示这个实例已经进入主观下线状态</p>
+</li>
+<li><p>多个Sentinel设置的主观下线时长可能不同</p>
+</li>
+</ul>
+</li>
+</ol>
+<h4 id="检查客观下线状态"><a href="#检查客观下线状态" class="headerlink" title="检查客观下线状态"></a>检查客观下线状态</h4><ol>
+<li><p>当Sentinel将一个主服务器判断为主观下线之后，为了确认这个主服务器是否真的下线了，它会向同样监视这一主服务器的其他Sentinel进行询问，看它们是否也认为主服务器已经进入了下线状态（可以是主观下线或者客观下线）。当Sentinel从其他Sentinel那里接收到足够数量的已下线判断之后，Sentinel就会将从服务器判定为客观下线，并对主服务器执行故障转移操作。</p>
+</li>
+<li><p>命令询问其他Sentinel是否同意主服务器已下线</p>
+</li>
+<li><p>根据其他Sentinel发回的SENTINEL is-master-down-by-addr命令回复，Sentinel将统计其他Sentinel同意主服务器已下线的数量，当这一数量达到配置指定的判断客观下线所需的数量时，Sentinel会将主服务器实例结构flags属性的SRI_O_DOWN标识打开，表示主服务器已经进入客观下线状态</p>
+</li>
+</ol>
+<h4 id="选举领头Sentinel"><a href="#选举领头Sentinel" class="headerlink" title="选举领头Sentinel"></a>选举领头Sentinel</h4><p>当一个主服务器被判断为客观下线时，监视这个下线主服务器的各个Sentinel会进行协商，选举出一个领头Sentinel，并由领头Sentinel对下线主服务器执行故障转移操作。<br>选举算法是对Raft算法的领头选举方法的实现</p>
+<h4 id="故障转移"><a href="#故障转移" class="headerlink" title="故障转移"></a>故障转移</h4><ul>
+<li><p>3个步骤<br>1）在已下线主服务器属下的所有从服务器里面，挑选出一个从服务器，并将其转换为主服务器。<br>2）让已下线主服务器属下的所有从服务器改为复制新的主服务器。<br>3）将已下线主服务器设置为新的主服务器的从服务器，当这个旧的主服务器重新上线时，它就会成为新的主服务器的从服务器。</p>
+</li>
+<li><p>怎么选举新的主服务器<br>挑选出一个状态良好、数据完整的从服务器，然后向这个从服务器发送SLAVEOF no one命令，将这个从服务器转换为主服务器。</p>
+<p>如果有多个具有相同最高优先级的从服务器，那么领头Sentinel将按照从服务器的复制偏移量，对具有相同最高优先级的所有从服务器进行排序，并选出其中偏移量最大的从服务器（复制偏移量最大的从服务器就是保存着最新数据的从服务器）。最后，如果有多个优先级最高、复制偏移量最大的从服务器，那么领头Sentinel将按照运行ID对这些从服务器进行排序，并选出其中运行ID最小的从服务器。</p>
+</li>
+</ul>
+<h2 id="集群"><a href="#集群" class="headerlink" title="集群"></a>集群</h2><p>Redis集群是Redis提供的分布式数据库方案，集群通过分片（sharding）来进行数据共享，并提供复制和故障转移功能。</p>
+<h3 id="节点"><a href="#节点" class="headerlink" title="节点"></a>节点</h3><ul>
+<li><p>怎么加入集群</p>
+<p><img src="/images/image-20220328222139682.png" alt="image-20220328222139682" style="zoom: 50%;"></p>"
+<p>向一个节点node发送CLUSTER MEET命令，可以让node节点与ip和port所指定的节点进行握手（handshake），当握手成功时，node节点就会将ip和port所指定的节点添加到node节点当前所在的集群中</p>
+</li>
+<li><p>节点启动<br>一个节点就是一个运行在集群模式下的Redis服务器，Redis服务器在启动时会根据cluster-enabled配置选项是否为yes来决定是否开启服务器的集群模式</p>
+<p><img src="/images/image-20220328222454024.png" alt="image-20220328222454024" style="zoom:33%;"></p>"
+</li>
+<li><p>集群数据结构</p>
+<p>每个节点都会使用一个clusterNode结构来记录自己的状态，并为集群中的所有其他节点（包括主节点和从节点)都创建一个相应的clusterNode结构，以此来记录其他节点的状态<br>每个节点都保存着一个clusterState结构，这个结构记录了在当前节点的视角下，集群目前所处的状态<br><img src="/images/image-20220328222804037.png" alt="image-20220328222804037" style="zoom: 33%;"></p>"
+</li>
+<li><p>CLUSTER MEET命令的实现</p>
+<p><img src="/images/image-20220328222848607.png" alt="image-20220328222848607" style="zoom:33%;"></p>"
+</li>
+</ul>
+<h3 id="槽指派"><a href="#槽指派" class="headerlink" title="槽指派"></a>槽指派</h3><ul>
+<li><p>Redis集群通过分片的方式来保存数据库中的键值对：集群的整个数据库被分为16384个槽（slot），数据库中的每个键都属于这16384个槽的其中一个，集群中的每个节点可以处理0个或最多16384个槽。</p>
+</li>
+<li><p>cluster addslots<br>通过向节点发送CLUSTER ADDSLOTS命令，我们可以将一个或多个槽指派（assign）给节点负责</p>
+</li>
+<li><p>记录节点的槽指派信息</p>
+<ol>
+<li>clusterNode结构的slots属性和numslot属性记录了节点负责处理哪些槽</li>
+</ol>
+<p><img src="/images/image-20220328223145203.png" alt="image-20220328223145203" style="zoom:33%;"></p>"
+<ol start="2">
+<li><p><img src="/images/image-20220328223236704.png" alt="image-20220328223236704" style="zoom:33%;"></p>"
+<p>1表示负责处理</p>
+</li>
+</ol>
+</li>
+<li><p>传播节点的槽指派信息<br>节点也会将自己的slots数组通过消息发送给集群中的其他节点，以此来告知其他节点自己目前负责处理哪些槽。<br>因为集群中的每个节点都会将自己的slots数组通过消息发送给集群中的其他节点，并且每个接收到slots数组的节点都会将数组保存到相应节点的clusterNode结构里面，因此，集群中的每个节点都会知道数据库中的16384个槽分别被指派给了集群中的哪些节点。</p>
+</li>
+<li><p>记录集群所有槽的指派信息</p>
+<p>clusterState结构中的slots数组记录了集群中所有16384个槽的指派信息</p>
+<p><img src="/images/image-20220328223529391.png" alt="image-20220328223529391" style="zoom:33%;">                    </p>"
+</li>
+</ul>
+<h3 id="在集群中执行命令"><a href="#在集群中执行命令" class="headerlink" title="在集群中执行命令"></a>在集群中执行命令</h3><p><img src="/images/image-20220328223919377.png" alt="image-20220328223919377" style="zoom:33%;"></p>"
+<ol>
+<li><p>计算键属于哪个槽</p>
+<p><img src="/images/image-20220328224004552.png" alt="image-20220328224004552" style="zoom:33%;"></p>"
+</li>
+<li><p>判断槽是否由当前节点负责处理<br>当节点计算出键所属的槽i之后，节点就会检查自己在clusterState.slots数组中的项i，判断键所在的槽是否由自己负责</p>
+</li>
+<li><p>MOVED错误<br>当节点发现键所在的槽并非由自己负责处理的时候，节点就会向客户端返回一个MOVED错误，指引客户端转向至正在负责槽的节点。</p>
+</li>
+</ol>
+<h4 id="重新分片"><a href="#重新分片" class="headerlink" title="重新分片"></a>重新分片</h4><ol>
+<li><p>重新分片操作可以在线（online）进行，在重新分片的过程中，集群不需要下线，并且源节点和目标节点都可以继续处理命令请求。</p>
+</li>
+<li><p>槽迁移的过程</p>
+<p><img src="/images/image-20220328230826290.png" alt="image-20220328230826290" style="zoom:33%;"></p>"
+</li>
+</ol>
+<h4 id="ASK错误"><a href="#ASK错误" class="headerlink" title="ASK错误"></a>ASK错误</h4><ul>
+<li><p>属于被迁移槽的一部分键值对保存在源节点里面，而另一部分键值对则保存在目标节点里面。</p>
+<p>   <img src="/images/image-20220330222326638.png" alt="image-20220330222326638" style="zoom:33%;"></p>"
+</li>
+<li><p>CLUSTER SETSLOT IMPORTING命令的实现</p>
+<pre><code>clusterState结构的importing_slots_from数组记录了当前节点正在从其他节点导入的槽
+</code></pre></li>
+</ul>
+<pre><code>&lt;img src=&quot;images/image-20220330222610460.png&quot; alt=&quot;image-20220330222610460&quot; style=&quot;zoom:33%;&quot; /&gt;
+</code></pre><ul>
+<li>CLUSTER SETSLOT MIGRATING命令的实现<pre><code>clusterState结构的migrating_slots_to数组记录了当前节点正在迁移至其他节点的槽
+</code></pre></li>
+</ul>
+<pre><code>&lt;img src=&quot;images/image-20220330222636281.png&quot; alt=&quot;image-20220330222636281&quot; style=&quot;zoom:33%;&quot; /&gt;
+</code></pre><ul>
+<li><p>ASK错误</p>
+<pre><code>如果节点没有在自己的数据库里找到键key，那么节点会检查自己的clusterState.migrating_slots_to[i]，看键key所属的槽i是否正在进行迁移，如果槽i的确在进行迁移的话，那么节点会向客户端发送一个ASK错误，引导客户端到正在导入槽i的节点去查找键key
+</code></pre></li>
+<li><p>ASKING命令</p>
+<p>   在一般情况下，如果客户端向节点发送一个关于槽i的命令，而槽i又没有指派给这个节点的话，那么节点将向客户端返回一个MOVED错误；但是，如果节点的clusterState.importing_slots_from[i]显示节点正在导入槽i，并且发送命令的客户端带有REDIS_ASKING标识，那么节点将破例执行这个关于槽i的命令一次</p>
+<p>   <img src="/images/image-20220330222810822.png" alt="image-20220330222810822" style="zoom:33%;"></p>"
+</li>
+</ul>
+<h4 id="复制与故障转移"><a href="#复制与故障转移" class="headerlink" title="复制与故障转移"></a>复制与故障转移</h4><p>Redis集群中的节点分为主节点（master）和从节点（slave），其中主节点用于处理槽，而从节点则用于复制某个主节点，并在被复制的主节点下线时，代替下线主节点继续处理命令请求。</p>
+<ul>
+<li><p>设置从节点</p>
+<p><img src="/images/image-20220330223354761.png" alt="image-20220330223354761" style="zoom:50%;"><br><img src="images/image-20220330223410477.png" alt="image-20220330223410477" style="zoom:33%;"><br><img src="images/image-20220330223753669.png" alt="image-20220330223753669" style="zoom:33%;">            </p>"
+</li>
+</ul>
+<h5 id="故障检测"><a href="#故障检测" class="headerlink" title="故障检测"></a>故障检测</h5><ol>
+<li><p>集群中的每个节点都会定期地向集群中的其他节点发送PING消息，以此来检测对方是否在线，如果接收PING消息的节点没有在规定的时间内，向发送PING消息的节点返回PONG消息，那么发送PING消息的节点就会将接收PING消息的节点标记为疑似下线（probable fail，PFAIL）</p>
+</li>
+<li><p>当一个主节点A通过消息得知主节点B认为主节点C进入了疑似下线状态时，主节点A会在自己的clusterState.nodes字典中找到主节点C所对应的clusterNode结构，并将主节点B的下线报告（failure report）添加到clusterNode结构的fail_reports链表里面</p>
+<p><img src="/images/image-20220330223915432.png" alt="image-20220330223915432" style="zoom: 25%;"></p>"
+</li>
+<li><p>如果在一个集群里面，半数以上负责处理槽的主节点都将某个主节点x报告为疑似下线，那么这个主节点x将被标记为已下线（FAIL），将主节点x标记为已下线的节点会向集群广播一条关于主节点x的FAIL消息，所有收到这条FAIL消息的节点都会立即将主节点x标记为已下线。</p>
+</li>
+</ol>
+<h5 id="故障转移-1"><a href="#故障转移-1" class="headerlink" title="故障转移"></a>故障转移</h5><p>当一个从节点发现自己正在复制的主节点进入了已下线状态时，从节点将开始对下线主节点进行故障转移，以下是故障转移的执行步骤：<br>      1）复制下线主节点的所有从节点里面，会有一个从节点被选中。<br>      2）被选中的从节点会执行SLAVEOF no one命令，成为新的主节点。<br>      3）新的主节点会撤销所有对已下线主节点的槽指派，并将这些槽全部指派给自己。<br>      4）新的主节点向集群广播一条PONG消息，这条PONG消息可以让集群中的其他节点立即知道这个节点已经由从节点变成了主节点，并且这个主节点已经接管了原本由已下线节点负责处理的槽。<br>      5）新的主节点开始接收和自己负责处理的槽有关的命令请求，故障转移完成。</p>
+<h5 id="选举新的主节点"><a href="#选举新的主节点" class="headerlink" title="选举新的主节点"></a>选举新的主节点</h5><ol>
+<li><p>其他集群节点给从节点投票</p>
+</li>
+<li><p>基于Raft算法的领头选举（leader election)方法来实现的</p>
+</li>
+</ol>
+<h4 id="消息"><a href="#消息" class="headerlink" title="消息"></a>消息</h4><p><img src="/images/image-20220330224909157.png" alt="image-20220330224909157" style="zoom:50%;"></p>"
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div></div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.jpg" alt="zch 微信支付">
+        <p>微信支付</p>
+      </div>
+    
+
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/redis/" rel="tag"># redis</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2021/08/03/分布式/分布式系统：一致性模型/" rel="next" title="一致性模型">
+                <i class="fa fa-chevron-left"></i> 一致性模型
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2022/04/09/复习总结/mysql技术内幕/" rel="prev" title="mysql技术内幕">
+                mysql技术内幕 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        
+  <div class="bdsharebuttonbox">
+    <a href="#" class="bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+    <a href="#" class="bds_douban" data-cmd="douban" title="分享到豆瓣网"></a>
+    <a href="#" class="bds_sqq" data-cmd="sqq" title="分享到QQ好友"></a>
+    <a href="#" class="bds_qzone" data-cmd="qzone" title="分享到QQ空间"></a>
+    <a href="#" class="bds_weixin" data-cmd="weixin" title="分享到微信"></a>
+    <a href="#" class="bds_tieba" data-cmd="tieba" title="分享到百度贴吧"></a>
+    <a href="#" class="bds_twi" data-cmd="twi" title="分享到Twitter"></a>
+    <a href="#" class="bds_fbook" data-cmd="fbook" title="分享到Facebook"></a>
+    <a href="#" class="bds_more" data-cmd="more"></a>
+    <a class="bds_count" data-cmd="count"></a>
+  </div>
+  <script>
+    window._bd_share_config = {
+      "common": {
+        "bdText": "",
+        "bdMini": "2",
+        "bdMiniList": false,
+        "bdPic": ""
+      },
+      "share": {
+        "bdSize": "16",
+        "bdStyle": "0"
+      },
+      "image": {
+        "viewList": ["tsina", "douban", "sqq", "qzone", "weixin", "twi", "fbook"],
+        "viewText": "分享到：",
+        "viewSize": "16"
+      }
+    }
+  </script>
+
+<script>
+  with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='//bdimg.share.baidu.com/static/api/js/share.js?cdnversion='+~(-new Date()/36e5)];
+</script>
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar.png" alt="zch">
+            
+              <p class="site-author-name" itemprop="name">zch</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">160</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">29</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">117</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#数据结构与对象"><span class="nav-number">1.</span> <span class="nav-text">数据结构与对象</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#SDS"><span class="nav-number">1.1.</span> <span class="nav-text">SDS</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#链表"><span class="nav-number">1.2.</span> <span class="nav-text">链表</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#字典"><span class="nav-number">1.3.</span> <span class="nav-text">字典</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#跳跃表"><span class="nav-number">1.4.</span> <span class="nav-text">跳跃表</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#整数集合"><span class="nav-number">1.5.</span> <span class="nav-text">整数集合</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#压缩列表"><span class="nav-number">1.6.</span> <span class="nav-text">压缩列表</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#对象系统"><span class="nav-number">1.7.</span> <span class="nav-text">对象系统</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#类型与编码"><span class="nav-number">1.7.1.</span> <span class="nav-text">类型与编码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#内存回收"><span class="nav-number">1.7.2.</span> <span class="nav-text">内存回收</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#对象共享"><span class="nav-number">1.7.3.</span> <span class="nav-text">对象共享</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#空转时长"><span class="nav-number">1.7.4.</span> <span class="nav-text">空转时长</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#单机数据库"><span class="nav-number">2.</span> <span class="nav-text">单机数据库</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#数据库"><span class="nav-number">2.1.</span> <span class="nav-text">数据库</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#键的生存时间或过期时间"><span class="nav-number">2.1.1.</span> <span class="nav-text">键的生存时间或过期时间</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#过期键的保存"><span class="nav-number">2.1.1.1.</span> <span class="nav-text">过期键的保存</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#过期键删除策略：惰性删除-定期删除"><span class="nav-number">2.1.1.2.</span> <span class="nav-text">过期键删除策略：惰性删除+定期删除</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#AOF，RDB和复制功能对过期键的处理"><span class="nav-number">2.1.1.3.</span> <span class="nav-text">AOF，RDB和复制功能对过期键的处理</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#RDB"><span class="nav-number">2.2.</span> <span class="nav-text">RDB</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#创建与载入"><span class="nav-number">2.2.1.</span> <span class="nav-text">创建与载入</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#AOF"><span class="nav-number">2.3.</span> <span class="nav-text">AOF</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#持久化的实现"><span class="nav-number">2.3.1.</span> <span class="nav-text">持久化的实现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#AOF重写"><span class="nav-number">2.3.2.</span> <span class="nav-text">AOF重写</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#实现原理"><span class="nav-number">2.3.3.</span> <span class="nav-text">实现原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#后台重写"><span class="nav-number">2.3.4.</span> <span class="nav-text">后台重写</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#服务器进程和重写子进程同时运行，怎么保证数据一致？"><span class="nav-number">2.3.4.1.</span> <span class="nav-text">服务器进程和重写子进程同时运行，怎么保证数据一致？</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#服务器"><span class="nav-number">2.4.</span> <span class="nav-text">服务器</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#多机数据库"><span class="nav-number">3.</span> <span class="nav-text">多机数据库</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#复制"><span class="nav-number">3.1.</span> <span class="nav-text">复制</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#旧版功能的实现"><span class="nav-number">3.1.1.</span> <span class="nav-text">旧版功能的实现</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#同步"><span class="nav-number">3.1.1.1.</span> <span class="nav-text">同步</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#命令传播"><span class="nav-number">3.1.1.2.</span> <span class="nav-text">命令传播</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#缺陷"><span class="nav-number">3.1.1.3.</span> <span class="nav-text">缺陷</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#新版功能的实现"><span class="nav-number">3.1.2.</span> <span class="nav-text">新版功能的实现</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#PSYNC"><span class="nav-number">3.1.2.1.</span> <span class="nav-text">PSYNC</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#复制偏移量"><span class="nav-number">3.1.2.1.1.</span> <span class="nav-text">复制偏移量</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#复制积压缓冲区"><span class="nav-number">3.1.2.2.</span> <span class="nav-text">复制积压缓冲区</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#服务器运行ID"><span class="nav-number">3.1.2.3.</span> <span class="nav-text">服务器运行ID</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#复制的实现流程"><span class="nav-number">3.1.3.</span> <span class="nav-text">复制的实现流程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#心跳检测"><span class="nav-number">3.1.4.</span> <span class="nav-text">心跳检测</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#sentinel"><span class="nav-number">3.2.</span> <span class="nav-text">sentinel</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#故障转移的整个过程"><span class="nav-number">3.2.1.</span> <span class="nav-text">故障转移的整个过程</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#启动并初始化sentinel"><span class="nav-number">3.2.1.1.</span> <span class="nav-text">启动并初始化sentinel</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#获取主服务器的信息"><span class="nav-number">3.2.1.2.</span> <span class="nav-text">获取主服务器的信息</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#获取从服务器的信息"><span class="nav-number">3.2.1.3.</span> <span class="nav-text">获取从服务器的信息</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#向主服务器和从服务器发消息"><span class="nav-number">3.2.1.4.</span> <span class="nav-text">向主服务器和从服务器发消息</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#接收来自主服务器和从服务器的频道信息"><span class="nav-number">3.2.1.5.</span> <span class="nav-text">接收来自主服务器和从服务器的频道信息</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#主观下线"><span class="nav-number">3.2.1.6.</span> <span class="nav-text">主观下线</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#检查客观下线状态"><span class="nav-number">3.2.1.7.</span> <span class="nav-text">检查客观下线状态</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#选举领头Sentinel"><span class="nav-number">3.2.1.8.</span> <span class="nav-text">选举领头Sentinel</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#故障转移"><span class="nav-number">3.2.1.9.</span> <span class="nav-text">故障转移</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#集群"><span class="nav-number">3.3.</span> <span class="nav-text">集群</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#节点"><span class="nav-number">3.3.1.</span> <span class="nav-text">节点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#槽指派"><span class="nav-number">3.3.2.</span> <span class="nav-text">槽指派</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#在集群中执行命令"><span class="nav-number">3.3.3.</span> <span class="nav-text">在集群中执行命令</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#重新分片"><span class="nav-number">3.3.3.1.</span> <span class="nav-text">重新分片</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ASK错误"><span class="nav-number">3.3.3.2.</span> <span class="nav-text">ASK错误</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#复制与故障转移"><span class="nav-number">3.3.3.3.</span> <span class="nav-text">复制与故障转移</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#故障检测"><span class="nav-number">3.3.3.3.1.</span> <span class="nav-text">故障检测</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#故障转移-1"><span class="nav-number">3.3.3.3.2.</span> <span class="nav-text">故障转移</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#选举新的主节点"><span class="nav-number">3.3.3.3.3.</span> <span class="nav-text">选举新的主节点</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#消息"><span class="nav-number">3.3.3.4.</span> <span class="nav-text">消息</span></a></li></ol></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<div class="copyright">&copy; <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">zch</span>
+
+  
+</div>
+
+
+  <div class="powered-by">个人学习和工作中总结的笔记</div>
+  <i class="fa fa-user-md"></i>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+<script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? "https://" : "http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1276375036'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s5.cnzz.com/z_stat.php%3Fid%3D1276375036%26online%3D1%26show%3Dline' type='text/javascript'%3E%3C/script%3E"));</script>
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/three/three.min.js"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/three/canvas_sphere.min.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+  
+  <script type="text/javascript">
+    var GUEST = ['nick','mail','link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item=>{
+      return GUEST.indexOf(item)>-1;
+    });
+    new Valine({
+        el: '#comments' ,
+        verify: true,
+        notify: true,
+        appId: 'qlLpITiuRGP5wGRRqD1TTe7y-gzGzoHsz',
+        appKey: 'Xu6NC8eq2DCotEgOrHgbA2St',
+        placeholder: 'ヾﾉ≧∀≦)o来啊，快活啊!',
+        avatar:'mm',
+        guest_info:guest,
+        pageSize:'10' || 10,
+    });
+  </script>
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

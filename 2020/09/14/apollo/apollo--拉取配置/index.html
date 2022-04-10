@@ -1,0 +1,1258 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+<meta name="google-site-verification" content="6pSprQE3BiN_wM4uIQnTSoO5EAKab52jQ86zdl_VH84">
+<meta name="google-site-verification" content="pa5VzMThwxpvSOgHS15kDjiLdeww7kHG5LcJjH6EQko">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/science-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/science-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="apollo,">
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="ZCH NOTES" type="application/atom+xml">
+
+
+
+
+
+
+<meta name="description" content="整体流程&quot; 约定 通知编号 = ReleaseMessage.id Watch Key = ReleaseMessage.message  推送客户端发布消息推送配置流程图&quot; ReleaseMessageScannercom.ctrip.framework.apollo.biz.message.ReleaseMessageScanner ，实现 org.springframework.beans.">
+<meta name="keywords" content="apollo">
+<meta property="og:type" content="article">
+<meta property="og:title" content="apollo--拉取配置">
+<meta property="og:url" content="http://yoursite.com/2020/09/14/apollo/apollo--拉取配置/index.html">
+<meta property="og:site_name" content="ZCH NOTES">
+<meta property="og:description" content="整体流程&quot; 约定 通知编号 = ReleaseMessage.id Watch Key = ReleaseMessage.message  推送客户端发布消息推送配置流程图&quot; ReleaseMessageScannercom.ctrip.framework.apollo.biz.message.ReleaseMessageScanner ，实现 org.springframework.beans.">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/images/image-20201108165818701.png">
+<meta property="og:image" content="http://yoursite.com/images/image-20201109103707448.png">
+<meta property="og:image" content="http://yoursite.com/images/image-20201111161110474.png">
+<meta property="og:image" content="http://yoursite.com/images/image-20201112141922732.png">
+<meta property="og:image" content="http://yoursite.com/images/02-5165632.png">
+<meta property="og:updated_time" content="2022-04-07T09:49:28.721Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="apollo--拉取配置">
+<meta name="twitter:description" content="整体流程&quot; 约定 通知编号 = ReleaseMessage.id Watch Key = ReleaseMessage.message  推送客户端发布消息推送配置流程图&quot; ReleaseMessageScannercom.ctrip.framework.apollo.biz.message.ReleaseMessageScanner ，实现 org.springframework.beans.">
+<meta name="twitter:image" content="http://yoursite.com/images/image-20201108165818701.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"right","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2020/09/14/apollo/apollo--拉取配置/">
+
+
+
+
+
+  <title>apollo--拉取配置 | ZCH NOTES</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-right page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">ZCH NOTES</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <h1 class="site-subtitle" itemprop="description">博学笃志 切问近思</h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404.html" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br>
+            
+            公益404
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/09/14/apollo/apollo--拉取配置/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="zch">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ZCH NOTES">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">apollo--拉取配置</h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-09-14T11:38:55+08:00">
+                2020-09-14
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/apollo/" itemprop="url" rel="index">
+                    <span itemprop="name">apollo</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2020/09/14/apollo/apollo--拉取配置/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2020/09/14/apollo/apollo--拉取配置/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="整体流程"><a href="#整体流程" class="headerlink" title="整体流程"></a>整体流程</h1><p><img src="/images/image-20201108165818701.png" alt="image-20201108165818701"></p>"
+<h2 id="约定"><a href="#约定" class="headerlink" title="约定"></a>约定</h2><ul>
+<li>通知编号 = <code>ReleaseMessage.id</code></li>
+<li>Watch Key = <code>ReleaseMessage.message</code></li>
+</ul>
+<h1 id="推送客户端发布消息"><a href="#推送客户端发布消息" class="headerlink" title="推送客户端发布消息"></a>推送客户端发布消息</h1><h2 id="推送配置流程图"><a href="#推送配置流程图" class="headerlink" title="推送配置流程图"></a>推送配置流程图</h2><p><img src="/images/image-20201109103707448.png" alt="image-20201109103707448"></p>"
+<h2 id="ReleaseMessageScanner"><a href="#ReleaseMessageScanner" class="headerlink" title="ReleaseMessageScanner"></a>ReleaseMessageScanner</h2><p><code>com.ctrip.framework.apollo.biz.message.ReleaseMessageScanner</code> ，实现 <code>org.springframework.beans.factory.InitializingBean</code> 接口，ReleaseMessage 扫描器，被 <code>Config Service</code> 使用。</p>
+<h3 id="初始化-Scan-任务"><a href="#初始化-Scan-任务" class="headerlink" title="初始化 Scan 任务"></a>初始化 Scan 任务</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">afterPropertiesSet</span><span class="params">()</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">  databaseScanInterval = bizConfig.releaseMessageScanIntervalInMilli();</span><br><span class="line">  <span class="comment">// 获得最大的 ReleaseMessage 的编号</span></span><br><span class="line">  maxIdScanned = loadLargestMessageId();</span><br><span class="line">  <span class="comment">// 创建从 DB 中扫描 ReleaseMessage 表的定时任务</span></span><br><span class="line">  executorService.scheduleWithFixedDelay(() -&gt; &#123;</span><br><span class="line">    Transaction transaction = Tracer.newTransaction(<span class="string">"Apollo.ReleaseMessageScanner"</span>, <span class="string">"scanMessage"</span>);</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">      <span class="comment">// 扫描任务</span></span><br><span class="line">      scanMessages();</span><br><span class="line">      transaction.setStatus(Transaction.SUCCESS);</span><br><span class="line">    &#125; <span class="keyword">catch</span> (Throwable ex) &#123;</span><br><span class="line">      transaction.setStatus(ex);</span><br><span class="line">      logger.error(<span class="string">"Scan and send message failed"</span>, ex);</span><br><span class="line">    &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">      transaction.complete();</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;, databaseScanInterval, databaseScanInterval, TimeUnit.MILLISECONDS);</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">/**</span></span><br><span class="line"><span class="comment">   * find largest message id as the current start point</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@return</span> current largest message id</span></span><br><span class="line"><span class="comment">   */</span></span><br><span class="line">  <span class="function"><span class="keyword">private</span> <span class="keyword">long</span> <span class="title">loadLargestMessageId</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    ReleaseMessage releaseMessage = releaseMessageRepository.findTopByOrderByIdDesc();</span><br><span class="line">    <span class="keyword">return</span> releaseMessage == <span class="keyword">null</span> ? <span class="number">0</span> : releaseMessage.getId();</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">/**</span></span><br><span class="line"><span class="comment">   * Scan messages, continue scanning until there is no more messages</span></span><br><span class="line"><span class="comment">   */</span></span><br><span class="line">  <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">scanMessages</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">boolean</span> hasMoreMessages = <span class="keyword">true</span>;</span><br><span class="line">    <span class="keyword">while</span> (hasMoreMessages &amp;&amp; !Thread.currentThread().isInterrupted()) &#123;</span><br><span class="line">      hasMoreMessages = scanAndSendMessages();</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">/**</span></span><br><span class="line"><span class="comment">   * scan messages and send</span></span><br><span class="line"><span class="comment">   *</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@return</span> whether there are more messages</span></span><br><span class="line"><span class="comment">   */</span></span><br><span class="line">  <span class="function"><span class="keyword">private</span> <span class="keyword">boolean</span> <span class="title">scanAndSendMessages</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="comment">//current batch is 500</span></span><br><span class="line">    List&lt;ReleaseMessage&gt; releaseMessages =</span><br><span class="line">        releaseMessageRepository.findFirst500ByIdGreaterThanOrderByIdAsc(maxIdScanned);</span><br><span class="line">    <span class="keyword">if</span> (CollectionUtils.isEmpty(releaseMessages)) &#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    fireMessageScanned(releaseMessages);</span><br><span class="line">    <span class="keyword">int</span> messageScanned = releaseMessages.size();</span><br><span class="line">    maxIdScanned = releaseMessages.get(messageScanned - <span class="number">1</span>).getId();</span><br><span class="line">    <span class="keyword">return</span> messageScanned == <span class="number">500</span>;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+<h3 id="fireMessageScanned"><a href="#fireMessageScanned" class="headerlink" title="fireMessageScanned"></a>fireMessageScanned</h3><p><code>#fireMessageScanned(List&lt;ReleaseMessage&gt; messages)</code> 方法，触发监听器，处理 ReleaseMessage 们。代码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">fireMessageScanned</span><span class="params">(List&lt;ReleaseMessage&gt; messages)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">for</span> (ReleaseMessage message : messages) &#123; <span class="comment">// 循环 ReleaseMessage</span></span><br><span class="line">        <span class="keyword">for</span> (ReleaseMessageListener listener : listeners) &#123; <span class="comment">// 循环 ReleaseMessageListener</span></span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                <span class="comment">// 触发监听器</span></span><br><span class="line">                listener.handleMessage(message, Topics.APOLLO_RELEASE_TOPIC);</span><br><span class="line">            &#125; <span class="keyword">catch</span> (Throwable ex) &#123;</span><br><span class="line">                Tracer.logError(ex);</span><br><span class="line">                logger.error(<span class="string">"Failed to invoke message listener &#123;&#125;"</span>, listener.getClass(), ex);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 通过 #addMessageListener(ReleaseMessageListener) 方法，注册 ReleaseMessageListener 。在 MessageScannerConfiguration 中，调用该方法，初始化 ReleaseMessageScanner 的监听器们</span></span><br><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">MessageScannerConfiguration</span> </span>&#123;</span><br><span class="line">.......</span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> ReleaseMessageScanner <span class="title">releaseMessageScanner</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        ReleaseMessageScanner releaseMessageScanner = <span class="keyword">new</span> ReleaseMessageScanner();</span><br><span class="line">        <span class="comment">// 0. handle release message cache</span></span><br><span class="line">        releaseMessageScanner.addMessageListener(releaseMessageServiceWithCache);</span><br><span class="line">        <span class="comment">// 1. handle gray release rule</span></span><br><span class="line">        releaseMessageScanner.addMessageListener(grayReleaseRulesHolder);</span><br><span class="line">        <span class="comment">// 2. handle server cache</span></span><br><span class="line">        releaseMessageScanner.addMessageListener(configService);</span><br><span class="line">        releaseMessageScanner.addMessageListener(configFileController);</span><br><span class="line">        <span class="comment">// 3. notify clients</span></span><br><span class="line">        releaseMessageScanner.addMessageListener(notificationControllerV2);</span><br><span class="line">        releaseMessageScanner.addMessageListener(notificationController);</span><br><span class="line">        <span class="keyword">return</span> releaseMessageScanner;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="NotificationControllerV2"><a href="#NotificationControllerV2" class="headerlink" title="NotificationControllerV2"></a>NotificationControllerV2</h2><p><code>com.ctrip.framework.apollo.configservice.controller.NotificationControllerV2</code> ，实现 ReleaseMessageListener 接口，通知 Controller ，仅提供 <code>notifications/v2</code> 接口。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br></pre></td><td class="code"><pre><span class="line"> <span class="meta">@GetMapping</span></span><br><span class="line"> <span class="keyword">public</span> DeferredResult&lt;ResponseEntity&lt;List&lt;ApolloConfigNotification&gt;&gt;&gt; pollNotification(</span><br><span class="line">     <span class="meta">@RequestParam</span>(value = <span class="string">"appId"</span>) String appId,</span><br><span class="line">     <span class="meta">@RequestParam</span>(value = <span class="string">"cluster"</span>) String cluster,</span><br><span class="line">     <span class="meta">@RequestParam</span>(value = <span class="string">"notifications"</span>) String notificationsAsString,</span><br><span class="line">     <span class="meta">@RequestParam</span>(value = <span class="string">"dataCenter"</span>, required = <span class="keyword">false</span>) String dataCenter,</span><br><span class="line">     <span class="meta">@RequestParam</span>(value = <span class="string">"ip"</span>, required = <span class="keyword">false</span>) String clientIp) &#123;</span><br><span class="line">   List&lt;ApolloConfigNotification&gt; notifications = <span class="keyword">null</span>;</span><br><span class="line"></span><br><span class="line">   <span class="comment">// 反序列化客户端的通知信息</span></span><br><span class="line">   <span class="keyword">try</span> &#123;</span><br><span class="line">     notifications =</span><br><span class="line">         gson.fromJson(notificationsAsString, notificationsTypeReference);</span><br><span class="line">   &#125; <span class="keyword">catch</span> (Throwable ex) &#123;</span><br><span class="line">     Tracer.logError(ex);</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   <span class="keyword">if</span> (CollectionUtils.isEmpty(notifications)) &#123;</span><br><span class="line">     <span class="keyword">throw</span> <span class="keyword">new</span> BadRequestException(<span class="string">"Invalid format of notifications: "</span> + notificationsAsString);</span><br><span class="line">   &#125;</span><br><span class="line">   </span><br><span class="line">   <span class="comment">// 过滤并创建 ApolloConfigNotification Map 。其中，KEY 为 Namespace 的名字</span></span><br><span class="line">   Map&lt;String, ApolloConfigNotification&gt; filteredNotifications = filterNotifications(appId, notifications);</span><br><span class="line"></span><br><span class="line">   <span class="keyword">if</span> (CollectionUtils.isEmpty(filteredNotifications)) &#123;</span><br><span class="line">     <span class="keyword">throw</span> <span class="keyword">new</span> BadRequestException(<span class="string">"Invalid format of notifications: "</span> + notificationsAsString);</span><br><span class="line">   &#125;</span><br><span class="line">   </span><br><span class="line">   <span class="comment">// 创建DefferedResult对象</span></span><br><span class="line">   <span class="comment">//       当一个请求到达API接口，如果该API接口的return返回值是DeferredResult，在没有超时或者</span></span><br><span class="line">   <span class="comment">//       DeferredResult对象设置setResult时，接口不会返回，但是Servlet容器线程会结束，</span></span><br><span class="line">   <span class="comment">//       如此以来这个请求不会占用服务连接池太久，如果超时或设置setResult，接口会立即返回。</span></span><br><span class="line">   DeferredResultWrapper deferredResultWrapper = <span class="keyword">new</span> DeferredResultWrapper(bizConfig.longPollingTimeoutInMilli());</span><br><span class="line">   <span class="comment">// 客户端所有的命名空间</span></span><br><span class="line">   Set&lt;String&gt; namespaces = Sets.newHashSetWithExpectedSize(filteredNotifications.size());</span><br><span class="line">   <span class="comment">// 客户端所有命名空间以及通知id的对应关系</span></span><br><span class="line">   Map&lt;String, Long&gt; clientSideNotifications = Maps.newHashMapWithExpectedSize(filteredNotifications.size());</span><br><span class="line">   </span><br><span class="line">   <span class="keyword">for</span> (Map.Entry&lt;String, ApolloConfigNotification&gt; notificationEntry : filteredNotifications.entrySet()) &#123;</span><br><span class="line">     String normalizedNamespace = notificationEntry.getKey();</span><br><span class="line">     ApolloConfigNotification notification = notificationEntry.getValue();</span><br><span class="line">     namespaces.add(normalizedNamespace);</span><br><span class="line">     clientSideNotifications.put(normalizedNamespace, notification.getNotificationId());</span><br><span class="line">     <span class="keyword">if</span> (!Objects.equals(notification.getNamespaceName(), normalizedNamespace)) &#123;</span><br><span class="line">       <span class="comment">// 记录名字被格式化的 Namespace 。因为，最终返回给客户端，使用原始的 Namespace 名字，否则客户端无法识别。</span></span><br><span class="line">       deferredResultWrapper.recordNamespaceNameNormalizedResult(notification.getNamespaceName(), normalizedNamespace);</span><br><span class="line">     &#125;</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   <span class="comment">//  Assemble Watch Key Multimap with namespace as the key and watch keys as the value</span></span><br><span class="line">   <span class="comment">// 如果是关联类型的namespace，有2个watch key</span></span><br><span class="line">   Multimap&lt;String, String&gt; watchedKeysMap =</span><br><span class="line">       watchKeysUtil.assembleAllWatchKeys(appId, cluster, namespaces, dataCenter);</span><br><span class="line"></span><br><span class="line">   Set&lt;String&gt; watchedKeys = Sets.newHashSet(watchedKeysMap.values());</span><br><span class="line"></span><br><span class="line">   <span class="comment">/**</span></span><br><span class="line"><span class="comment">    * 1、set deferredResult before the check, for avoid more waiting</span></span><br><span class="line"><span class="comment">    * If the check before setting deferredResult,it may receive a notification the next time</span></span><br><span class="line"><span class="comment">    * when method handleMessage is executed between check and set deferredResult.</span></span><br><span class="line"><span class="comment">    */</span></span><br><span class="line">   deferredResultWrapper</span><br><span class="line">         .onTimeout(() -&gt; logWatchedKeys(watchedKeys, <span class="string">"Apollo.LongPoll.TimeOutKeys"</span>));</span><br><span class="line"></span><br><span class="line">   deferredResultWrapper.onCompletion(() -&gt; &#123;</span><br><span class="line">     <span class="comment">//unregister all keys</span></span><br><span class="line">     <span class="keyword">for</span> (String key : watchedKeys) &#123;</span><br><span class="line">       deferredResults.remove(key, deferredResultWrapper);</span><br><span class="line">     &#125;</span><br><span class="line">     logWatchedKeys(watchedKeys, <span class="string">"Apollo.LongPoll.CompletedKeys"</span>);</span><br><span class="line">   &#125;);</span><br><span class="line"></span><br><span class="line">   <span class="comment">//register all keys</span></span><br><span class="line">   <span class="keyword">for</span> (String key : watchedKeys) &#123;</span><br><span class="line">     <span class="keyword">this</span>.deferredResults.put(key, deferredResultWrapper);</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   logWatchedKeys(watchedKeys, <span class="string">"Apollo.LongPoll.RegisteredKeys"</span>);</span><br><span class="line">   logger.debug(<span class="string">"Listening &#123;&#125; from appId: &#123;&#125;, cluster: &#123;&#125;, namespace: &#123;&#125;, datacenter: &#123;&#125;"</span>,</span><br><span class="line">       watchedKeys, appId, cluster, namespaces, dataCenter);</span><br><span class="line"></span><br><span class="line">   <span class="comment">/**</span></span><br><span class="line"><span class="comment">    * 2、check new release</span></span><br><span class="line"><span class="comment">    * 最近的发布记录</span></span><br><span class="line"><span class="comment">    */</span></span><br><span class="line">   List&lt;ReleaseMessage&gt; latestReleaseMessages =</span><br><span class="line">       releaseMessageService.findLatestReleaseMessagesGroupByMessages(watchedKeys);</span><br><span class="line"></span><br><span class="line">   <span class="comment">/**</span></span><br><span class="line"><span class="comment">    * Manually close the entity manager.</span></span><br><span class="line"><span class="comment">    * Since for async request, Spring won't do so until the request is finished,</span></span><br><span class="line"><span class="comment">    * which is unacceptable since we are doing long polling - means the db connection would be hold</span></span><br><span class="line"><span class="comment">    * for a very long time</span></span><br><span class="line"><span class="comment">    */</span></span><br><span class="line">   entityManagerUtil.closeEntityManager();</span><br><span class="line"></span><br><span class="line">   List&lt;ApolloConfigNotification&gt; newNotifications =</span><br><span class="line">       getApolloConfigNotifications(namespaces, clientSideNotifications, watchedKeysMap,</span><br><span class="line">           latestReleaseMessages);</span><br><span class="line"></span><br><span class="line">   <span class="keyword">if</span> (!CollectionUtils.isEmpty(newNotifications)) &#123;</span><br><span class="line">     deferredResultWrapper.setResult(newNotifications);</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   <span class="keyword">return</span> deferredResultWrapper.getResult();</span><br><span class="line"> &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"> <span class="comment">/**</span></span><br><span class="line"><span class="comment">  * 组装watch key</span></span><br><span class="line"><span class="comment">  * Assemble watch keys for the given appId, cluster, namespaces, dataCenter combination</span></span><br><span class="line"><span class="comment">  *</span></span><br><span class="line"><span class="comment">  * <span class="doctag">@return</span> a multimap with namespace as the key and watch keys as the value</span></span><br><span class="line"><span class="comment">  */</span></span><br><span class="line"> <span class="function"><span class="keyword">public</span> Multimap&lt;String, String&gt; <span class="title">assembleAllWatchKeys</span><span class="params">(String appId, String clusterName,</span></span></span><br><span class="line"><span class="function"><span class="params">                                                      Set&lt;String&gt; namespaces,</span></span></span><br><span class="line"><span class="function"><span class="params">                                                      String dataCenter)</span> </span>&#123;</span><br><span class="line">   Multimap&lt;String, String&gt; watchedKeysMap =</span><br><span class="line">       assembleWatchKeys(appId, clusterName, namespaces, dataCenter);</span><br><span class="line"></span><br><span class="line">   <span class="keyword">if</span> (!(namespaces.size() == <span class="number">1</span> &amp;&amp; namespaces.contains(ConfigConsts.NAMESPACE_APPLICATION))) &#123;</span><br><span class="line">     Set&lt;String&gt; namespacesBelongToAppId = namespacesBelongToAppId(appId, namespaces);</span><br><span class="line">     <span class="comment">// 关联类型的namespace</span></span><br><span class="line">     Set&lt;String&gt; publicNamespaces = Sets.difference(namespaces, namespacesBelongToAppId);</span><br><span class="line"></span><br><span class="line">     <span class="comment">//Listen on more namespaces if it's a public namespace</span></span><br><span class="line">     <span class="keyword">if</span> (!publicNamespaces.isEmpty()) &#123;</span><br><span class="line">       <span class="comment">// 组装关联类型的watch key</span></span><br><span class="line">       watchedKeysMap</span><br><span class="line">           .putAll(findPublicConfigWatchKeys(appId, clusterName, publicNamespaces, dataCenter));</span><br><span class="line">     &#125;</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   <span class="keyword">return</span> watchedKeysMap;</span><br><span class="line"> &#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 根据最近发布记录，获取最新的通知消息；如果发布记录的id比客户端缓存的通知id大，那么就是最新的通知消息</span></span><br><span class="line"> <span class="function"><span class="keyword">private</span> List&lt;ApolloConfigNotification&gt; <span class="title">getApolloConfigNotifications</span><span class="params">(Set&lt;String&gt; namespaces,</span></span></span><br><span class="line"><span class="function"><span class="params">                                                                     Map&lt;String, Long&gt; clientSideNotifications,</span></span></span><br><span class="line"><span class="function"><span class="params">                                                                     Multimap&lt;String, String&gt; watchedKeysMap,</span></span></span><br><span class="line"><span class="function"><span class="params">                                                                     List&lt;ReleaseMessage&gt; latestReleaseMessages)</span> </span>&#123;</span><br><span class="line">   List&lt;ApolloConfigNotification&gt; newNotifications = Lists.newArrayList();</span><br><span class="line">   <span class="keyword">if</span> (!CollectionUtils.isEmpty(latestReleaseMessages)) &#123;</span><br><span class="line">     Map&lt;String, Long&gt; latestNotifications = Maps.newHashMap();</span><br><span class="line">     <span class="keyword">for</span> (ReleaseMessage releaseMessage : latestReleaseMessages) &#123;</span><br><span class="line">       latestNotifications.put(releaseMessage.getMessage(), releaseMessage.getId());</span><br><span class="line">     &#125;</span><br><span class="line"></span><br><span class="line">     <span class="keyword">for</span> (String namespace : namespaces) &#123;</span><br><span class="line">       <span class="comment">// 客户端缓存的通知id</span></span><br><span class="line">       <span class="keyword">long</span> clientSideId = clientSideNotifications.get(namespace);</span><br><span class="line">       <span class="comment">// 最新的通知id</span></span><br><span class="line">       <span class="keyword">long</span> latestId = ConfigConsts.NOTIFICATION_ID_PLACEHOLDER;</span><br><span class="line">       <span class="comment">// 根据命名空间，得到该命名空间所关心的watch key。然后比较大小，得到这些watch key中最大的通知id</span></span><br><span class="line">       Collection&lt;String&gt; namespaceWatchedKeys = watchedKeysMap.get(namespace);</span><br><span class="line">       <span class="keyword">for</span> (String namespaceWatchedKey : namespaceWatchedKeys) &#123;</span><br><span class="line">         <span class="keyword">long</span> namespaceNotificationId =</span><br><span class="line">             latestNotifications.getOrDefault(namespaceWatchedKey, ConfigConsts.NOTIFICATION_ID_PLACEHOLDER);</span><br><span class="line">         <span class="keyword">if</span> (namespaceNotificationId &gt; latestId) &#123;</span><br><span class="line">           latestId = namespaceNotificationId;</span><br><span class="line">         &#125;</span><br><span class="line">       &#125;</span><br><span class="line">       <span class="comment">// 如果发布记录的id比客户端缓存的通知id大，那么就是最新的通知消息</span></span><br><span class="line">       <span class="keyword">if</span> (latestId &gt; clientSideId) &#123;</span><br><span class="line">         ApolloConfigNotification notification = <span class="keyword">new</span> ApolloConfigNotification(namespace, latestId);</span><br><span class="line">         namespaceWatchedKeys.stream().filter(latestNotifications::containsKey).forEach(namespaceWatchedKey -&gt;</span><br><span class="line">             notification.addMessage(namespaceWatchedKey, latestNotifications.get(namespaceWatchedKey)));</span><br><span class="line">         newNotifications.add(notification);</span><br><span class="line">       &#125;</span><br><span class="line">     &#125;</span><br><span class="line">   &#125;</span><br><span class="line">   <span class="keyword">return</span> newNotifications;</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
+<h1 id="客户端拉取配置"><a href="#客户端拉取配置" class="headerlink" title="客户端拉取配置"></a>客户端拉取配置</h1><h2 id="拉取配置流程图"><a href="#拉取配置流程图" class="headerlink" title="拉取配置流程图"></a>拉取配置流程图</h2><p><img src="/images/image-20201111161110474.png" alt="image-20201111161110474"></p>"
+<h2 id="RemoteConfigRepository"><a href="#RemoteConfigRepository" class="headerlink" title="RemoteConfigRepository"></a>RemoteConfigRepository</h2><p><code>com.ctrip.framework.apollo.internals.RemoteConfigRepository</code> ，实现 AbstractConfigRepository 抽象类，远程配置 Repository 。实现从 Config Service 拉取配置，并<strong>缓存</strong>在内存中。并且，<strong>定时 + 实时</strong>刷新缓存。</p>
+<h3 id="构造方法"><a href="#构造方法" class="headerlink" title="构造方法"></a>构造方法</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">RemoteConfigRepository</span><span class="params">(String namespace)</span> </span>&#123;</span><br><span class="line">  <span class="comment">// 一个 RemoteConfigRepository 对应一个 Namespace </span></span><br><span class="line">  m_namespace = namespace;</span><br><span class="line">  <span class="comment">// 缓存配置</span></span><br><span class="line">  m_configCache = <span class="keyword">new</span> AtomicReference&lt;&gt;();</span><br><span class="line">  m_configUtil = ApolloInjector.getInstance(ConfigUtil<span class="class">.<span class="keyword">class</span>)</span>;</span><br><span class="line">  m_httpUtil = ApolloInjector.getInstance(HttpUtil<span class="class">.<span class="keyword">class</span>)</span>;</span><br><span class="line">  m_serviceLocator = ApolloInjector.getInstance(ConfigServiceLocator<span class="class">.<span class="keyword">class</span>)</span>;</span><br><span class="line">  <span class="comment">// 远程配置长轮询服务</span></span><br><span class="line">  remoteConfigLongPollService = ApolloInjector.getInstance(RemoteConfigLongPollService<span class="class">.<span class="keyword">class</span>)</span>;</span><br><span class="line">  <span class="comment">// 长轮询到通知的 Config Service 信息。在下一次轮询配置时，优先从该 Config Service 请求</span></span><br><span class="line">  m_longPollServiceDto = <span class="keyword">new</span> AtomicReference&lt;&gt;();</span><br><span class="line">  <span class="comment">// 缓存该命名空间的所有watch key，以及对应的通知id</span></span><br><span class="line">  m_remoteMessages = <span class="keyword">new</span> AtomicReference&lt;&gt;();</span><br><span class="line">  m_loadConfigRateLimiter = RateLimiter.create(m_configUtil.getLoadConfigQPS());</span><br><span class="line">  <span class="comment">// 是否强制拉取缓存的标记,若为 true ，则多一轮从 Config Service 拉取配置。</span></span><br><span class="line">  m_configNeedForceRefresh = <span class="keyword">new</span> AtomicBoolean(<span class="keyword">true</span>);</span><br><span class="line">  m_loadConfigFailSchedulePolicy = <span class="keyword">new</span> ExponentialSchedulePolicy(m_configUtil.getOnErrorRetryInterval(),</span><br><span class="line">      m_configUtil.getOnErrorRetryInterval() * <span class="number">8</span>);</span><br><span class="line">  <span class="comment">// 尝试同步配置，作为初次的配置缓存初始化。</span></span><br><span class="line">  <span class="keyword">this</span>.trySync();</span><br><span class="line">  <span class="comment">// 初始化定时刷新配置的任务</span></span><br><span class="line">  <span class="keyword">this</span>.schedulePeriodicRefresh();</span><br><span class="line">  <span class="comment">// 将自己注册到 RemoteConfigLongPollService 中，实现配置更新的实时通知</span></span><br><span class="line">  <span class="keyword">this</span>.scheduleLongPollingRefresh();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 尝试同步配置</span></span><br><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">boolean</span> <span class="title">trySync</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">      sync();</span><br><span class="line">      <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">    &#125; <span class="keyword">catch</span> (Throwable ex) &#123;</span><br><span class="line">      Tracer.logEvent(<span class="string">"ApolloConfigException"</span>, ExceptionUtil.getDetailMessage(ex));</span><br><span class="line">      logger</span><br><span class="line">          .warn(<span class="string">"Sync config failed, will retry. Repository &#123;&#125;, reason: &#123;&#125;"</span>, <span class="keyword">this</span>.getClass(), ExceptionUtil</span><br><span class="line">              .getDetailMessage(ex));</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 初始化定时刷新配置的任务</span></span><br><span class="line">  <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">schedulePeriodicRefresh</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    logger.debug(<span class="string">"Schedule periodic refresh with interval: &#123;&#125; &#123;&#125;"</span>,</span><br><span class="line">        m_configUtil.getRefreshInterval(), m_configUtil.getRefreshIntervalTimeUnit());</span><br><span class="line">    m_executorService.scheduleAtFixedRate(</span><br><span class="line">        <span class="keyword">new</span> Runnable() &#123;</span><br><span class="line">          <span class="meta">@Override</span></span><br><span class="line">          <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">            Tracer.logEvent(<span class="string">"Apollo.ConfigService"</span>, String.format(<span class="string">"periodicRefresh: %s"</span>, m_namespace));</span><br><span class="line">            logger.debug(<span class="string">"refresh config for namespace: &#123;&#125;"</span>, m_namespace);</span><br><span class="line">            trySync();</span><br><span class="line">            Tracer.logEvent(<span class="string">"Apollo.Client.Version"</span>, Apollo.VERSION);</span><br><span class="line">          &#125;</span><br><span class="line">        &#125;, m_configUtil.getRefreshInterval(), m_configUtil.getRefreshInterval(),</span><br><span class="line">        m_configUtil.getRefreshIntervalTimeUnit());</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 将自己注册到 RemoteConfigLongPollService 中，实现配置更新的实时通知</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">scheduleLongPollingRefresh</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    remoteConfigLongPollService.submit(m_namespace, <span class="keyword">this</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="sync"><a href="#sync" class="headerlink" title="sync"></a>sync</h3><p><code>#sync()</code> <strong>实现</strong>方法，从 Config Service 同步配置</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br></pre></td><td class="code"><pre><span class="line"> <span class="meta">@Override</span></span><br><span class="line"> <span class="function"><span class="keyword">protected</span> <span class="keyword">synchronized</span> <span class="keyword">void</span> <span class="title">sync</span><span class="params">()</span> </span>&#123;</span><br><span class="line">   Transaction transaction = Tracer.newTransaction(<span class="string">"Apollo.ConfigService"</span>, <span class="string">"syncRemoteConfig"</span>);</span><br><span class="line"></span><br><span class="line">   <span class="keyword">try</span> &#123;</span><br><span class="line">     ApolloConfig previous = m_configCache.get();</span><br><span class="line">     ApolloConfig current = loadApolloConfig();</span><br><span class="line"></span><br><span class="line">     <span class="comment">//reference equals means HTTP 304</span></span><br><span class="line">     <span class="keyword">if</span> (previous != current) &#123;</span><br><span class="line">       logger.debug(<span class="string">"Remote Config refreshed!"</span>);</span><br><span class="line">       m_configCache.set(current);</span><br><span class="line">       <span class="keyword">this</span>.fireRepositoryChange(m_namespace, <span class="keyword">this</span>.getConfig());</span><br><span class="line">     &#125;</span><br><span class="line"></span><br><span class="line">     <span class="keyword">if</span> (current != <span class="keyword">null</span>) &#123;</span><br><span class="line">       Tracer.logEvent(String.format(<span class="string">"Apollo.Client.Configs.%s"</span>, current.getNamespaceName()),</span><br><span class="line">           current.getReleaseKey());</span><br><span class="line">     &#125;</span><br><span class="line"></span><br><span class="line">     transaction.setStatus(Transaction.SUCCESS);</span><br><span class="line">   &#125; <span class="keyword">catch</span> (Throwable ex) &#123;</span><br><span class="line">     transaction.setStatus(ex);</span><br><span class="line">     <span class="keyword">throw</span> ex;</span><br><span class="line">   &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">     transaction.complete();</span><br><span class="line">   &#125;</span><br><span class="line"> &#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">* 加载配置</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"> <span class="function"><span class="keyword">private</span> ApolloConfig <span class="title">loadApolloConfig</span><span class="params">()</span> </span>&#123;</span><br><span class="line">   <span class="comment">// 限流</span></span><br><span class="line">   <span class="keyword">if</span> (!m_loadConfigRateLimiter.tryAcquire(<span class="number">5</span>, TimeUnit.SECONDS)) &#123;</span><br><span class="line">     <span class="comment">//wait at most 5 seconds</span></span><br><span class="line">     <span class="keyword">try</span> &#123;</span><br><span class="line">       TimeUnit.SECONDS.sleep(<span class="number">5</span>);</span><br><span class="line">     &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">     &#125;</span><br><span class="line">   &#125;</span><br><span class="line">   <span class="comment">// 获得 appId cluster dataCenter 配置信息</span></span><br><span class="line">   String appId = m_configUtil.getAppId();</span><br><span class="line">   String cluster = m_configUtil.getCluster();</span><br><span class="line">   String dataCenter = m_configUtil.getDataCenter();</span><br><span class="line">   String secret = m_configUtil.getAccessKeySecret();</span><br><span class="line">   Tracer.logEvent(<span class="string">"Apollo.Client.ConfigMeta"</span>, STRING_JOINER.join(appId, cluster, m_namespace));</span><br><span class="line">   <span class="comment">// 计算重试次数</span></span><br><span class="line">   <span class="keyword">int</span> maxRetries = m_configNeedForceRefresh.get() ? <span class="number">2</span> : <span class="number">1</span>;</span><br><span class="line">   <span class="keyword">long</span> onErrorSleepTime = <span class="number">0</span>; <span class="comment">// 0 means no sleep</span></span><br><span class="line">   Throwable exception = <span class="keyword">null</span>;</span><br><span class="line"></span><br><span class="line">   <span class="comment">// 获得所有的 Config Service 的地址</span></span><br><span class="line">   List&lt;ServiceDTO&gt; configServices = getConfigServices();</span><br><span class="line">   String url = <span class="keyword">null</span>;</span><br><span class="line">   retryLoopLabel:</span><br><span class="line">   <span class="comment">// 循环读取配置重试次数直到成功。每一次，都会循环所有的 ServiceDTO 数组。</span></span><br><span class="line">   <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; maxRetries; i++) &#123;</span><br><span class="line">     <span class="comment">// 随机所有的 Config Service 的地址</span></span><br><span class="line">     List&lt;ServiceDTO&gt; randomConfigServices = Lists.newLinkedList(configServices);</span><br><span class="line">     Collections.shuffle(randomConfigServices);</span><br><span class="line">     <span class="comment">// 优先访问通知配置变更的 Config Service 的地址。并且，获取到时，需要置空，避免重复优先访问。</span></span><br><span class="line">     <span class="comment">//Access the server which notifies the client first</span></span><br><span class="line">     <span class="keyword">if</span> (m_longPollServiceDto.get() != <span class="keyword">null</span>) &#123;</span><br><span class="line">       randomConfigServices.add(<span class="number">0</span>, m_longPollServiceDto.getAndSet(<span class="keyword">null</span>));</span><br><span class="line">     &#125;</span><br><span class="line"></span><br><span class="line">     <span class="comment">// 循环所有的 Config Service 的地址</span></span><br><span class="line">     <span class="keyword">for</span> (ServiceDTO configService : randomConfigServices) &#123;</span><br><span class="line">       <span class="keyword">if</span> (onErrorSleepTime &gt; <span class="number">0</span>) &#123;</span><br><span class="line">         logger.warn(</span><br><span class="line">             <span class="string">"Load config failed, will retry in &#123;&#125; &#123;&#125;. appId: &#123;&#125;, cluster: &#123;&#125;, namespaces: &#123;&#125;"</span>,</span><br><span class="line">             onErrorSleepTime, m_configUtil.getOnErrorRetryIntervalTimeUnit(), appId, cluster, m_namespace);</span><br><span class="line"></span><br><span class="line">         <span class="keyword">try</span> &#123;</span><br><span class="line">           m_configUtil.getOnErrorRetryIntervalTimeUnit().sleep(onErrorSleepTime);</span><br><span class="line">         &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">           <span class="comment">//ignore</span></span><br><span class="line">         &#125;</span><br><span class="line">       &#125;</span><br><span class="line"></span><br><span class="line">       <span class="comment">// 组装查询配置的地址</span></span><br><span class="line">       url = assembleQueryConfigUrl(configService.getHomepageUrl(), appId, cluster, m_namespace,</span><br><span class="line">               dataCenter, m_remoteMessages.get(), m_configCache.get());</span><br><span class="line"></span><br><span class="line">       logger.debug(<span class="string">"Loading config from &#123;&#125;"</span>, url);</span><br><span class="line"></span><br><span class="line">       HttpRequest request = <span class="keyword">new</span> HttpRequest(url);</span><br><span class="line">       <span class="keyword">if</span> (!StringUtils.isBlank(secret)) &#123;</span><br><span class="line">         Map&lt;String, String&gt; headers = Signature.buildHttpHeaders(url, appId, secret);</span><br><span class="line">         request.setHeaders(headers);</span><br><span class="line">       &#125;</span><br><span class="line"></span><br><span class="line">       Transaction transaction = Tracer.newTransaction(<span class="string">"Apollo.ConfigService"</span>, <span class="string">"queryConfig"</span>);</span><br><span class="line">       transaction.addData(<span class="string">"Url"</span>, url);</span><br><span class="line">       <span class="keyword">try</span> &#123;</span><br><span class="line"></span><br><span class="line">         <span class="comment">// http请求</span></span><br><span class="line">         HttpResponse&lt;ApolloConfig&gt; response = m_httpUtil.doGet(request, ApolloConfig<span class="class">.<span class="keyword">class</span>)</span>;</span><br><span class="line">         m_configNeedForceRefresh.set(<span class="keyword">false</span>);</span><br><span class="line">         m_loadConfigFailSchedulePolicy.success();</span><br><span class="line"></span><br><span class="line">         transaction.addData(<span class="string">"StatusCode"</span>, response.getStatusCode());</span><br><span class="line">         transaction.setStatus(Transaction.SUCCESS);</span><br><span class="line"></span><br><span class="line">         <span class="comment">// 无新的配置，直接返回缓存的 ApolloConfig 对象</span></span><br><span class="line">         <span class="keyword">if</span> (response.getStatusCode() == <span class="number">304</span>) &#123;</span><br><span class="line">           logger.debug(<span class="string">"Config server responds with 304 HTTP status code."</span>);</span><br><span class="line">           <span class="keyword">return</span> m_configCache.get();</span><br><span class="line">         &#125;</span><br><span class="line"></span><br><span class="line">         <span class="comment">// 有新的配置，进行返回新的 ApolloConfig 对象</span></span><br><span class="line">         ApolloConfig result = response.getBody();</span><br><span class="line"></span><br><span class="line">         logger.debug(<span class="string">"Loaded config for &#123;&#125;: &#123;&#125;"</span>, m_namespace, result);</span><br><span class="line"></span><br><span class="line">         <span class="keyword">return</span> result;</span><br><span class="line">       &#125; <span class="keyword">catch</span> (ApolloConfigStatusCodeException ex) &#123;</span><br><span class="line">         ApolloConfigStatusCodeException statusCodeException = ex;</span><br><span class="line">         <span class="comment">// 若返回的状态码是 404 ，说明查询配置的 Config Service 不存在该 Namespace</span></span><br><span class="line">         <span class="comment">//config not found</span></span><br><span class="line">         <span class="keyword">if</span> (ex.getStatusCode() == <span class="number">404</span>) &#123;</span><br><span class="line">           String message = String.format(</span><br><span class="line">               <span class="string">"Could not find config for namespace - appId: %s, cluster: %s, namespace: %s, "</span> +</span><br><span class="line">                   <span class="string">"please check whether the configs are released in Apollo!"</span>,</span><br><span class="line">               appId, cluster, m_namespace);</span><br><span class="line">           statusCodeException = <span class="keyword">new</span> ApolloConfigStatusCodeException(ex.getStatusCode(),</span><br><span class="line">               message);</span><br><span class="line">         &#125;</span><br><span class="line">         Tracer.logEvent(<span class="string">"ApolloConfigException"</span>, ExceptionUtil.getDetailMessage(statusCodeException));</span><br><span class="line">         transaction.setStatus(statusCodeException);</span><br><span class="line">         exception = statusCodeException;</span><br><span class="line">         <span class="comment">// </span></span><br><span class="line">         <span class="keyword">if</span>(ex.getStatusCode() == <span class="number">404</span>) &#123;</span><br><span class="line">           <span class="keyword">break</span> retryLoopLabel;</span><br><span class="line">         &#125;</span><br><span class="line">       &#125; <span class="keyword">catch</span> (Throwable ex) &#123;</span><br><span class="line">         Tracer.logEvent(<span class="string">"ApolloConfigException"</span>, ExceptionUtil.getDetailMessage(ex));</span><br><span class="line">         transaction.setStatus(ex);</span><br><span class="line">         exception = ex;</span><br><span class="line">       &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">         transaction.complete();</span><br><span class="line">       &#125;</span><br><span class="line"></span><br><span class="line">       <span class="comment">// 计算延迟时间</span></span><br><span class="line">       <span class="comment">// if force refresh, do normal sleep, if normal config load, do exponential sleep</span></span><br><span class="line">       onErrorSleepTime = m_configNeedForceRefresh.get() ? m_configUtil.getOnErrorRetryInterval() :</span><br><span class="line">           m_loadConfigFailSchedulePolicy.fail();</span><br><span class="line">     &#125;</span><br><span class="line"></span><br><span class="line">   &#125;</span><br><span class="line">   String message = String.format(</span><br><span class="line">       <span class="string">"Load Apollo Config failed - appId: %s, cluster: %s, namespace: %s, url: %s"</span>,</span><br><span class="line">       appId, cluster, m_namespace, url);</span><br><span class="line">   <span class="keyword">throw</span> <span class="keyword">new</span> ApolloConfigException(message, exception);</span><br><span class="line"> &#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 组装http请求参数</span></span><br><span class="line"> <span class="function">String <span class="title">assembleQueryConfigUrl</span><span class="params">(String uri, String appId, String cluster, String namespace,</span></span></span><br><span class="line"><span class="function"><span class="params">                               String dataCenter, ApolloNotificationMessages remoteMessages, ApolloConfig previousConfig)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">   String path = <span class="string">"configs/%s/%s/%s"</span>;</span><br><span class="line">   List&lt;String&gt; pathParams =</span><br><span class="line">       Lists.newArrayList(pathEscaper.escape(appId), pathEscaper.escape(cluster),</span><br><span class="line">           pathEscaper.escape(namespace));</span><br><span class="line">   Map&lt;String, String&gt; queryParams = Maps.newHashMap();</span><br><span class="line"></span><br><span class="line">   <span class="keyword">if</span> (previousConfig != <span class="keyword">null</span>) &#123;</span><br><span class="line">     queryParams.put(<span class="string">"releaseKey"</span>, queryParamEscaper.escape(previousConfig.getReleaseKey()));</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   <span class="keyword">if</span> (!Strings.isNullOrEmpty(dataCenter)) &#123;</span><br><span class="line">     queryParams.put(<span class="string">"dataCenter"</span>, queryParamEscaper.escape(dataCenter));</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   String localIp = m_configUtil.getLocalIp();</span><br><span class="line">   <span class="keyword">if</span> (!Strings.isNullOrEmpty(localIp)) &#123;</span><br><span class="line">     queryParams.put(<span class="string">"ip"</span>, queryParamEscaper.escape(localIp));</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   <span class="keyword">if</span> (remoteMessages != <span class="keyword">null</span>) &#123;</span><br><span class="line">     queryParams.put(<span class="string">"messages"</span>, queryParamEscaper.escape(GSON.toJson(remoteMessages)));</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   String pathExpanded = String.format(path, pathParams.toArray());</span><br><span class="line"></span><br><span class="line">   <span class="keyword">if</span> (!queryParams.isEmpty()) &#123;</span><br><span class="line">     pathExpanded += <span class="string">"?"</span> + MAP_JOINER.join(queryParams);</span><br><span class="line">   &#125;</span><br><span class="line">   <span class="keyword">if</span> (!uri.endsWith(<span class="string">"/"</span>)) &#123;</span><br><span class="line">     uri += <span class="string">"/"</span>;</span><br><span class="line">   &#125;</span><br><span class="line">   <span class="keyword">return</span> uri + pathExpanded;</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
+<h2 id="RemoteConfigLongPollService"><a href="#RemoteConfigLongPollService" class="headerlink" title="RemoteConfigLongPollService"></a>RemoteConfigLongPollService</h2><p><code>com.ctrip.framework.apollo.internals.RemoteConfigLongPollService</code> ，远程配置长轮询服务。负责长轮询 Config Service 的配置变更通知 <code>/notifications/v2</code> 接口。当有<strong>新的</strong>通知时，触发 RemoteConfigRepository ，<strong>立即</strong>轮询 Config Service 的配置读取 <code>/configs/{appId}/{clusterName}/{namespace:.+}</code> 接口。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">submit</span><span class="params">(String namespace, RemoteConfigRepository remoteConfigRepository)</span> </span>&#123;</span><br><span class="line">  <span class="comment">// 添加到 m_longPollNamespaces 中; m_longPollNamespaces：注册的长轮询的 Namespace Multimap 缓存</span></span><br><span class="line">  <span class="keyword">boolean</span> added = m_longPollNamespaces.put(namespace, remoteConfigRepository);</span><br><span class="line">  <span class="comment">// 添加到 m_notifications 中,通知id默认-1; m_notifications:通知编号 Map 缓存</span></span><br><span class="line">  m_notifications.putIfAbsent(namespace, INIT_NOTIFICATION_ID);</span><br><span class="line">  <span class="keyword">if</span> (!m_longPollStarted.get()) &#123;</span><br><span class="line">    <span class="comment">// 若未启动长轮询定时任务，进行启动</span></span><br><span class="line">    startLongPolling();</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> added;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="startLongPolling"><a href="#startLongPolling" class="headerlink" title="startLongPolling"></a>startLongPolling</h4><p><code>#startLongPolling()</code> 方法，启动长轮询任务</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">startLongPolling</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="comment">// CAS 设置长轮询任务已经启动。若已经启动，不重复启动</span></span><br><span class="line">  <span class="keyword">if</span> (!m_longPollStarted.compareAndSet(<span class="keyword">false</span>, <span class="keyword">true</span>)) &#123;</span><br><span class="line">    <span class="comment">//already started</span></span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">try</span> &#123;</span><br><span class="line">    <span class="comment">// 获得 appId cluster dataCenter 配置信息</span></span><br><span class="line">    <span class="keyword">final</span> String appId = m_configUtil.getAppId();</span><br><span class="line">    <span class="keyword">final</span> String cluster = m_configUtil.getCluster();</span><br><span class="line">    <span class="keyword">final</span> String dataCenter = m_configUtil.getDataCenter();</span><br><span class="line">    <span class="keyword">final</span> String secret = m_configUtil.getAccessKeySecret();</span><br><span class="line">    <span class="comment">// 获得长轮询任务的初始化延迟时间，单位毫秒</span></span><br><span class="line">    <span class="keyword">final</span> <span class="keyword">long</span> longPollingInitialDelayInMills = m_configUtil.getLongPollingInitialDelayInMills();</span><br><span class="line">    <span class="comment">// 提交长轮询任务。该任务会持续且循环执行</span></span><br><span class="line">    m_longPollingService.submit(<span class="keyword">new</span> Runnable() &#123;</span><br><span class="line">      <span class="meta">@Override</span></span><br><span class="line">      <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (longPollingInitialDelayInMills &gt; <span class="number">0</span>) &#123;</span><br><span class="line">          <span class="keyword">try</span> &#123;</span><br><span class="line">            logger.debug(<span class="string">"Long polling will start in &#123;&#125; ms."</span>, longPollingInitialDelayInMills);</span><br><span class="line">            TimeUnit.MILLISECONDS.sleep(longPollingInitialDelayInMills);</span><br><span class="line">          &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">            <span class="comment">//ignore</span></span><br><span class="line">          &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 执行长轮询</span></span><br><span class="line">        doLongPollingRefresh(appId, cluster, dataCenter, secret);</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">  &#125; <span class="keyword">catch</span> (Throwable ex) &#123;</span><br><span class="line">    m_longPollStarted.set(<span class="keyword">false</span>);</span><br><span class="line">    ApolloConfigException exception =</span><br><span class="line">        <span class="keyword">new</span> ApolloConfigException(<span class="string">"Schedule long polling refresh failed"</span>, ex);</span><br><span class="line">    Tracer.logError(exception);</span><br><span class="line">    logger.warn(ExceptionUtil.getDetailMessage(exception));</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 持续执行长轮询</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">doLongPollingRefresh</span><span class="params">(String appId, String cluster, String dataCenter, String secret)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">final</span> Random random = <span class="keyword">new</span> Random();</span><br><span class="line">  ServiceDTO lastServiceDto = <span class="keyword">null</span>;</span><br><span class="line">  <span class="comment">// 循环执行，直到停止或线程中断</span></span><br><span class="line">  <span class="keyword">while</span> (!m_longPollingStopped.get() &amp;&amp; !Thread.currentThread().isInterrupted()) &#123;</span><br><span class="line">    <span class="comment">// 限流</span></span><br><span class="line">    <span class="keyword">if</span> (!m_longPollRateLimiter.tryAcquire(<span class="number">5</span>, TimeUnit.SECONDS)) &#123;</span><br><span class="line">      <span class="comment">//wait at most 5 seconds</span></span><br><span class="line">      <span class="keyword">try</span> &#123;</span><br><span class="line">        TimeUnit.SECONDS.sleep(<span class="number">5</span>);</span><br><span class="line">      &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    Transaction transaction = Tracer.newTransaction(<span class="string">"Apollo.ConfigService"</span>, <span class="string">"pollNotification"</span>);</span><br><span class="line">    String url = <span class="keyword">null</span>;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">      <span class="comment">// 获得 最近一次使用的Config Service 的地址，默认为null</span></span><br><span class="line">      <span class="keyword">if</span> (lastServiceDto == <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="comment">// 获得所有的 Config Service 的地址</span></span><br><span class="line">        List&lt;ServiceDTO&gt; configServices = getConfigServices();</span><br><span class="line">        lastServiceDto = configServices.get(random.nextInt(configServices.size()));</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">      <span class="comment">// 组装长轮询通知变更的地址</span></span><br><span class="line">      url =</span><br><span class="line">        assembleLongPollRefreshUrl(lastServiceDto.getHomepageUrl(), appId, cluster, dataCenter,</span><br><span class="line">                                   m_notifications);</span><br><span class="line"></span><br><span class="line">      logger.debug(<span class="string">"Long polling from &#123;&#125;"</span>, url);</span><br><span class="line"></span><br><span class="line">      <span class="comment">// 创建 HttpRequest 对象，并设置超时时间:90s</span></span><br><span class="line">      HttpRequest request = <span class="keyword">new</span> HttpRequest(url);</span><br><span class="line">      request.setReadTimeout(LONG_POLLING_READ_TIMEOUT);</span><br><span class="line">      <span class="keyword">if</span> (!StringUtils.isBlank(secret)) &#123;</span><br><span class="line">        Map&lt;String, String&gt; headers = Signature.buildHttpHeaders(url, appId, secret);</span><br><span class="line">        request.setHeaders(headers);</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">      transaction.addData(<span class="string">"Url"</span>, url);</span><br><span class="line"></span><br><span class="line">      <span class="comment">// http请求</span></span><br><span class="line">      <span class="keyword">final</span> HttpResponse&lt;List&lt;ApolloConfigNotification&gt;&gt; response =</span><br><span class="line">        m_httpUtil.doGet(request, m_responseType);</span><br><span class="line"></span><br><span class="line">      logger.debug(<span class="string">"Long polling response: &#123;&#125;, url: &#123;&#125;"</span>, response.getStatusCode(), url);</span><br><span class="line">      </span><br><span class="line">      <span class="comment">// 有新的通知，刷新本地的缓存</span></span><br><span class="line">      <span class="keyword">if</span> (response.getStatusCode() == <span class="number">200</span> &amp;&amp; response.getBody() != <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="comment">// 更新 m_notifications:namespace-&gt;通知id</span></span><br><span class="line">        updateNotifications(response.getBody());</span><br><span class="line">        <span class="comment">// 更新 m_remoteNotificationMessages</span></span><br><span class="line">        updateRemoteNotifications(response.getBody());</span><br><span class="line">        transaction.addData(<span class="string">"Result"</span>, response.getBody().toString());</span><br><span class="line">        <span class="comment">// 通知对应的 RemoteConfigRepository 们</span></span><br><span class="line">        notify(lastServiceDto, response.getBody());</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">      <span class="comment">//try to load balance</span></span><br><span class="line">      <span class="keyword">if</span> (response.getStatusCode() == <span class="number">304</span> &amp;&amp; random.nextBoolean()) &#123;</span><br><span class="line">         <span class="comment">// 无新的通知，重置连接的 Config Service 的地址，下次请求不同的 Config Service ，实现负载均衡。</span></span><br><span class="line">        lastServiceDto = <span class="keyword">null</span>;</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">      <span class="comment">// 标记成功,会重置policy的等待时间为0</span></span><br><span class="line">      m_longPollFailSchedulePolicyInSecond.success();</span><br><span class="line">      transaction.addData(<span class="string">"StatusCode"</span>, response.getStatusCode());</span><br><span class="line">      transaction.setStatus(Transaction.SUCCESS);</span><br><span class="line">    &#125; <span class="keyword">catch</span> (Throwable ex) &#123;</span><br><span class="line">      <span class="comment">// 重置连接的 Config Service 的地址，下次请求不同的 Config Service</span></span><br><span class="line">      lastServiceDto = <span class="keyword">null</span>;</span><br><span class="line">      Tracer.logEvent(<span class="string">"ApolloConfigException"</span>, ExceptionUtil.getDetailMessage(ex));</span><br><span class="line">      transaction.setStatus(ex);</span><br><span class="line">      <span class="comment">// 标记失败，计算下一次延迟执行时间，每次延迟的时间翻倍，一直到最大值</span></span><br><span class="line">      <span class="keyword">long</span> sleepTimeInSecond = m_longPollFailSchedulePolicyInSecond.fail();</span><br><span class="line">      logger.warn(</span><br><span class="line">        <span class="string">"Long polling failed, will retry in &#123;&#125; seconds. appId: &#123;&#125;, cluster: &#123;&#125;, namespaces: &#123;&#125;, long polling url: &#123;&#125;, reason: &#123;&#125;"</span>,</span><br><span class="line">        sleepTimeInSecond, appId, cluster, assembleNamespaces(), url, ExceptionUtil.getDetailMessage(ex));</span><br><span class="line">      <span class="comment">// 根据policy等待一定时间，下次失败重试</span></span><br><span class="line">      <span class="keyword">try</span> &#123;</span><br><span class="line">        TimeUnit.SECONDS.sleep(sleepTimeInSecond);</span><br><span class="line">      &#125; <span class="keyword">catch</span> (InterruptedException ie) &#123;</span><br><span class="line">        <span class="comment">//ignore</span></span><br><span class="line">      &#125;</span><br><span class="line">    &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">      transaction.complete();</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>长轮询到新的通知消息，会更新本地缓存，通知观察者(<code>RemoteConfigRepository</code>)，触发监听事件</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br></pre></td><td class="code"><pre><span class="line"> <span class="comment">//  更新通知消息中，命名空间对应的最新通知id </span></span><br><span class="line"> <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">updateNotifications</span><span class="params">(List&lt;ApolloConfigNotification&gt; deltaNotifications)</span> </span>&#123;</span><br><span class="line">   <span class="keyword">for</span> (ApolloConfigNotification notification : deltaNotifications) &#123;</span><br><span class="line">     <span class="keyword">if</span> (Strings.isNullOrEmpty(notification.getNamespaceName())) &#123;</span><br><span class="line">       <span class="keyword">continue</span>;</span><br><span class="line">     &#125;</span><br><span class="line">     String namespaceName = notification.getNamespaceName();</span><br><span class="line">     <span class="keyword">if</span> (m_notifications.containsKey(namespaceName)) &#123;</span><br><span class="line">       <span class="comment">// 更新通知id</span></span><br><span class="line">       m_notifications.put(namespaceName, notification.getNotificationId());</span><br><span class="line">     &#125;</span><br><span class="line">     <span class="comment">//since .properties are filtered out by default, so we need to check if there is notification with .properties suffix</span></span><br><span class="line">     String namespaceNameWithPropertiesSuffix =</span><br><span class="line">         String.format(<span class="string">"%s.%s"</span>, namespaceName, ConfigFileFormat.Properties.getValue());</span><br><span class="line">     <span class="keyword">if</span> (m_notifications.containsKey(namespaceNameWithPropertiesSuffix)) &#123;</span><br><span class="line">       m_notifications.put(namespaceNameWithPropertiesSuffix, notification.getNotificationId());</span><br><span class="line">     &#125;</span><br><span class="line">   &#125;</span><br><span class="line"> &#125;</span><br><span class="line"> </span><br><span class="line"><span class="comment">// 更新通知消息的明细，即：命名空间下，所有watch key的最新通知id</span></span><br><span class="line"> <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">updateRemoteNotifications</span><span class="params">(List&lt;ApolloConfigNotification&gt; deltaNotifications)</span> </span>&#123;</span><br><span class="line">   <span class="keyword">for</span> (ApolloConfigNotification notification : deltaNotifications) &#123;</span><br><span class="line">     <span class="keyword">if</span> (Strings.isNullOrEmpty(notification.getNamespaceName())) &#123;</span><br><span class="line">       <span class="keyword">continue</span>;</span><br><span class="line">     &#125;</span><br><span class="line"></span><br><span class="line">     <span class="keyword">if</span> (notification.getMessages() == <span class="keyword">null</span> || notification.getMessages().isEmpty()) &#123;</span><br><span class="line">       <span class="keyword">continue</span>;</span><br><span class="line">     &#125;</span><br><span class="line"></span><br><span class="line">     ApolloNotificationMessages localRemoteMessages =</span><br><span class="line">         m_remoteNotificationMessages.get(notification.getNamespaceName());</span><br><span class="line">     <span class="keyword">if</span> (localRemoteMessages == <span class="keyword">null</span>) &#123;</span><br><span class="line">       localRemoteMessages = <span class="keyword">new</span> ApolloNotificationMessages();</span><br><span class="line">       m_remoteNotificationMessages.put(notification.getNamespaceName(), localRemoteMessages);</span><br><span class="line">     &#125;</span><br><span class="line"></span><br><span class="line">     <span class="comment">// 合并明细</span></span><br><span class="line">     localRemoteMessages.mergeFrom(notification.getMessages());</span><br><span class="line">   &#125;</span><br><span class="line"> &#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 合并命名空间下，watch key以及对应的通知id；如果watch key已存在，保留最大的通知id</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">mergeFrom</span><span class="params">(ApolloNotificationMessages source)</span> </span>&#123;</span><br><span class="line">   <span class="keyword">if</span> (source == <span class="keyword">null</span>) &#123;</span><br><span class="line">     <span class="keyword">return</span>;</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   <span class="comment">// key: watch key；value：通知id</span></span><br><span class="line">   <span class="keyword">for</span> (Map.Entry&lt;String, Long&gt; entry : source.getDetails().entrySet()) &#123;</span><br><span class="line">     <span class="comment">//to make sure the notification id always grows bigger</span></span><br><span class="line">     <span class="keyword">if</span> (<span class="keyword">this</span>.has(entry.getKey()) &amp;&amp;</span><br><span class="line">         <span class="keyword">this</span>.get(entry.getKey()) &gt;= entry.getValue()) &#123;</span><br><span class="line">       <span class="keyword">continue</span>;</span><br><span class="line">     &#125;</span><br><span class="line">     <span class="keyword">this</span>.put(entry.getKey(), entry.getValue());</span><br><span class="line">   &#125;</span><br><span class="line"> &#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 通知RemoteConfigRepository</span></span><br><span class="line"> <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">notify</span><span class="params">(ServiceDTO lastServiceDto, List&lt;ApolloConfigNotification&gt; notifications)</span> </span>&#123;</span><br><span class="line">   <span class="keyword">if</span> (notifications == <span class="keyword">null</span> || notifications.isEmpty()) &#123;</span><br><span class="line">     <span class="keyword">return</span>;</span><br><span class="line">   &#125;</span><br><span class="line">   <span class="comment">// 遍历所有 有发布消息的命名空间</span></span><br><span class="line">   <span class="keyword">for</span> (ApolloConfigNotification notification : notifications) &#123;</span><br><span class="line">     String namespaceName = notification.getNamespaceName();</span><br><span class="line">     <span class="comment">// 根据命名空间，获取观察者</span></span><br><span class="line">     <span class="comment">//create a new list to avoid ConcurrentModificationException</span></span><br><span class="line">     List&lt;RemoteConfigRepository&gt; toBeNotified =</span><br><span class="line">         Lists.newArrayList(m_longPollNamespaces.get(namespaceName));</span><br><span class="line">     </span><br><span class="line">     ApolloNotificationMessages originalMessages = m_remoteNotificationMessages.get(namespaceName);</span><br><span class="line">     ApolloNotificationMessages remoteMessages = originalMessages == <span class="keyword">null</span> ? <span class="keyword">null</span> : originalMessages.clone();</span><br><span class="line">     <span class="comment">// 因为 .properties 在默认情况下被过滤掉，所以我们需要检查是否有监听器。若有，添加到 RemoteConfigRepository 数组</span></span><br><span class="line">     <span class="comment">//since .properties are filtered out by default, so we need to check if there is any listener for it</span></span><br><span class="line">     toBeNotified.addAll(m_longPollNamespaces</span><br><span class="line">         .get(String.format(<span class="string">"%s.%s"</span>, namespaceName, ConfigFileFormat.Properties.getValue())));</span><br><span class="line">     <span class="keyword">for</span> (RemoteConfigRepository remoteConfigRepository : toBeNotified) &#123;</span><br><span class="line">       <span class="keyword">try</span> &#123;</span><br><span class="line">         <span class="comment">// 通知观察者</span></span><br><span class="line">         remoteConfigRepository.onLongPollNotified(lastServiceDto, remoteMessages);</span><br><span class="line">       &#125; <span class="keyword">catch</span> (Throwable ex) &#123;</span><br><span class="line">         Tracer.logError(ex);</span><br><span class="line">       &#125;</span><br><span class="line">     &#125;</span><br><span class="line">   &#125;</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
+<h4 id="onLongPollNotified"><a href="#onLongPollNotified" class="headerlink" title="onLongPollNotified"></a>onLongPollNotified</h4><p>当 RemoteConfigLongPollService 长轮询到该 RemoteConfigRepository 的 <strong>Namespace</strong> 下的配置更新时，会回调 <code>#onLongPollNotified(ServiceDTO, ApolloNotificationMessages)</code> 方法</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 监听事件</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onLongPollNotified</span><span class="params">(ServiceDTO longPollNotifiedServiceDto, ApolloNotificationMessages remoteMessages)</span> </span>&#123;</span><br><span class="line">  <span class="comment">// 设置长轮询到配置更新的 Config Service 。下次同步配置时，优先读取该服务</span></span><br><span class="line">  m_longPollServiceDto.set(longPollNotifiedServiceDto);</span><br><span class="line">  <span class="comment">// 最新的通知消息</span></span><br><span class="line">  m_remoteMessages.set(remoteMessages);</span><br><span class="line">  m_executorService.submit(<span class="keyword">new</span> Runnable() &#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">      <span class="comment">// 强制同步</span></span><br><span class="line">      m_configNeedForceRefresh.set(<span class="keyword">true</span>);</span><br><span class="line">      trySync();</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="服务端拉取配置"><a href="#服务端拉取配置" class="headerlink" title="服务端拉取配置"></a>服务端拉取配置</h1><p><img src="/images/image-20201112141922732.png" alt="image-20201112141922732" style="zoom:67%;"></p>"
+<h2 id="ConfigController"><a href="#ConfigController" class="headerlink" title="ConfigController"></a>ConfigController</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@GetMapping</span>(value = <span class="string">"/&#123;appId&#125;/&#123;clusterName&#125;/&#123;namespace:.+&#125;"</span>)</span><br><span class="line"><span class="function"><span class="keyword">public</span> ApolloConfig <span class="title">queryConfig</span><span class="params">(@PathVariable String appId, @PathVariable String clusterName,</span></span></span><br><span class="line"><span class="function"><span class="params">                                @PathVariable String namespace,</span></span></span><br><span class="line"><span class="function"><span class="params">                                @RequestParam(value = <span class="string">"dataCenter"</span>, required = <span class="keyword">false</span>)</span> String dataCenter,</span></span><br><span class="line"><span class="function">                                @<span class="title">RequestParam</span><span class="params">(value = <span class="string">"releaseKey"</span>, defaultValue = <span class="string">"-1"</span>)</span> String clientSideReleaseKey,</span></span><br><span class="line"><span class="function">                                @<span class="title">RequestParam</span><span class="params">(value = <span class="string">"ip"</span>, required = <span class="keyword">false</span>)</span> String clientIp,</span></span><br><span class="line"><span class="function">                                @<span class="title">RequestParam</span><span class="params">(value = <span class="string">"messages"</span>, required = <span class="keyword">false</span>)</span> String messagesAsString,</span></span><br><span class="line"><span class="function">                                HttpServletRequest request, HttpServletResponse response) <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">  String originalNamespace = namespace;</span><br><span class="line">  <span class="comment">//strip out .properties suffix</span></span><br><span class="line">  namespace = namespaceUtil.filterNamespaceName(namespace);</span><br><span class="line">  <span class="comment">//fix the character case issue, such as FX.apollo &lt;-&gt; fx.apollo</span></span><br><span class="line">  namespace = namespaceUtil.normalizeNamespace(appId, namespace);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (Strings.isNullOrEmpty(clientIp)) &#123;</span><br><span class="line">    clientIp = tryToGetClientIp(request);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  ApolloNotificationMessages clientMessages = transformMessages(messagesAsString);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 创建 Release 数组</span></span><br><span class="line">  List&lt;Release&gt; releases = Lists.newLinkedList();</span><br><span class="line"></span><br><span class="line">  String appClusterNameLoaded = clusterName;</span><br><span class="line">  <span class="keyword">if</span> (!ConfigConsts.NO_APPID_PLACEHOLDER.equalsIgnoreCase(appId)) &#123;</span><br><span class="line">    <span class="comment">// 获得 Release 对象</span></span><br><span class="line">    Release currentAppRelease = configService.loadConfig(appId, clientIp, appId, clusterName, namespace,</span><br><span class="line">        dataCenter, clientMessages);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (currentAppRelease != <span class="keyword">null</span>) &#123;</span><br><span class="line">      releases.add(currentAppRelease);</span><br><span class="line">      <span class="comment">// 获得 Release 对应的 Cluster 名字</span></span><br><span class="line">      <span class="comment">//we have cluster search process, so the cluster name might be overridden</span></span><br><span class="line">      appClusterNameLoaded = currentAppRelease.getClusterName();</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 若 Namespace 为关联类型，则获取关联的 Namespace 的 Release 对象</span></span><br><span class="line">  <span class="comment">//if namespace does not belong to this appId, should check if there is a public configuration</span></span><br><span class="line">  <span class="keyword">if</span> (!namespaceBelongsToAppId(appId, namespace)) &#123;</span><br><span class="line">    <span class="comment">// 获得 Release 对象</span></span><br><span class="line">    Release publicRelease = <span class="keyword">this</span>.findPublicConfig(appId, clientIp, clusterName, namespace,</span><br><span class="line">        dataCenter, clientMessages);</span><br><span class="line">    <span class="keyword">if</span> (!Objects.isNull(publicRelease)) &#123;</span><br><span class="line">      releases.add(publicRelease);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 若获得不到 Release ，返回状态码为 404 的响应</span></span><br><span class="line">  <span class="keyword">if</span> (releases.isEmpty()) &#123;</span><br><span class="line">    response.sendError(HttpServletResponse.SC_NOT_FOUND,</span><br><span class="line">        String.format(</span><br><span class="line">            <span class="string">"Could not load configurations with appId: %s, clusterName: %s, namespace: %s"</span>,</span><br><span class="line">            appId, clusterName, originalNamespace));</span><br><span class="line">    Tracer.logEvent(<span class="string">"Apollo.Config.NotFound"</span>,</span><br><span class="line">        assembleKey(appId, clusterName, originalNamespace, dataCenter));</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  auditReleases(appId, clusterName, dataCenter, clientIp, releases);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 计算 Config Service 的合并 ReleaseKey</span></span><br><span class="line">  String mergedReleaseKey = releases.stream().map(Release::getReleaseKey)</span><br><span class="line">          .collect(Collectors.joining(ConfigConsts.CLUSTER_NAMESPACE_SEPARATOR));</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (mergedReleaseKey.equals(clientSideReleaseKey)) &#123;</span><br><span class="line">    <span class="comment">// 对比 Client 的合并 Release Key 。若相等，说明没有改变，返回状态码为 302 的响应</span></span><br><span class="line">    <span class="comment">// Client side configuration is the same with server side, return 304</span></span><br><span class="line">    response.setStatus(HttpServletResponse.SC_NOT_MODIFIED);</span><br><span class="line">    Tracer.logEvent(<span class="string">"Apollo.Config.NotModified"</span>,</span><br><span class="line">        assembleKey(appId, appClusterNameLoaded, originalNamespace, dataCenter));</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  ApolloConfig apolloConfig = <span class="keyword">new</span> ApolloConfig(appId, appClusterNameLoaded, originalNamespace,</span><br><span class="line">      mergedReleaseKey);</span><br><span class="line">  <span class="comment">// 合并 Release 的配置，并将结果设置到 ApolloConfig 中</span></span><br><span class="line">  apolloConfig.setConfigurations(mergeReleaseConfigurations(releases));</span><br><span class="line"></span><br><span class="line">  Tracer.logEvent(<span class="string">"Apollo.Config.Found"</span>, assembleKey(appId, appClusterNameLoaded,</span><br><span class="line">      originalNamespace, dataCenter));</span><br><span class="line">  <span class="keyword">return</span> apolloConfig;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><img src="/images/02-5165632.png" alt="读取顺序"></p>"
+<p>加载配置</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> Release <span class="title">loadConfig</span><span class="params">(String clientAppId, String clientIp, String configAppId, String configClusterName,</span></span></span><br><span class="line"><span class="function"><span class="params">    String configNamespace, String dataCenter, ApolloNotificationMessages clientMessages)</span> </span>&#123;</span><br><span class="line">  <span class="comment">// 优先，获得指定 Cluster 的 Release 。若存在，直接返回。</span></span><br><span class="line">  <span class="comment">// load from specified cluster fist</span></span><br><span class="line">  <span class="keyword">if</span> (!Objects.equals(ConfigConsts.CLUSTER_NAME_DEFAULT, configClusterName)) &#123;</span><br><span class="line">    Release clusterRelease = findRelease(clientAppId, clientIp, configAppId, configClusterName, configNamespace,</span><br><span class="line">        clientMessages);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (!Objects.isNull(clusterRelease)) &#123;</span><br><span class="line">      <span class="keyword">return</span> clusterRelease;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 其次，获得所属 IDC 的 Cluster 的 Release 。若存在，直接返回</span></span><br><span class="line">  <span class="comment">// try to load via data center</span></span><br><span class="line">  <span class="keyword">if</span> (!Strings.isNullOrEmpty(dataCenter) &amp;&amp; !Objects.equals(dataCenter, configClusterName)) &#123;</span><br><span class="line">    Release dataCenterRelease = findRelease(clientAppId, clientIp, configAppId, dataCenter, configNamespace,</span><br><span class="line">        clientMessages);</span><br><span class="line">    <span class="keyword">if</span> (!Objects.isNull(dataCenterRelease)) &#123;</span><br><span class="line">      <span class="keyword">return</span> dataCenterRelease;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 最后，获得默认 Cluster 的 Release 。</span></span><br><span class="line">  <span class="comment">// fallback to default release</span></span><br><span class="line">  <span class="keyword">return</span> findRelease(clientAppId, clientIp, configAppId, ConfigConsts.CLUSTER_NAME_DEFAULT, configNamespace,</span><br><span class="line">      clientMessages);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 获得release对象</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> Release <span class="title">findRelease</span><span class="params">(String clientAppId, String clientIp, String configAppId, String configClusterName,</span></span></span><br><span class="line"><span class="function"><span class="params">                            String configNamespace, ApolloNotificationMessages clientMessages)</span> </span>&#123;</span><br><span class="line">  <span class="comment">// 读取灰度发布编号</span></span><br><span class="line">  Long grayReleaseId = grayReleaseRulesHolder.findReleaseIdFromGrayReleaseRule(clientAppId, clientIp, configAppId,</span><br><span class="line">                                                                               configClusterName, configNamespace);</span><br><span class="line"></span><br><span class="line">  Release release = <span class="keyword">null</span>;</span><br><span class="line">  <span class="comment">//  读取灰度 Release 对象</span></span><br><span class="line">  <span class="keyword">if</span> (grayReleaseId != <span class="keyword">null</span>) &#123;</span><br><span class="line">    release = findActiveOne(grayReleaseId, clientMessages);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 非灰度，获得最新的，并且有效的 Release 对象</span></span><br><span class="line">  <span class="keyword">if</span> (release == <span class="keyword">null</span>) &#123;</span><br><span class="line">    release = findLatestActiveRelease(configAppId, configClusterName, configNamespace, clientMessages);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> release;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>判断是否关联类型的namespace,如果是需要拉取被关联的配置的发布记录</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">boolean</span> <span class="title">namespaceBelongsToAppId</span><span class="params">(String appId, String namespaceName)</span> </span>&#123;</span><br><span class="line">  <span class="comment">// Namespace 非 'application' ，因为每个 App 都有</span></span><br><span class="line">  <span class="comment">//Every app has an 'application' namespace</span></span><br><span class="line">  <span class="keyword">if</span> (Objects.equals(ConfigConsts.NAMESPACE_APPLICATION, namespaceName)) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">//if no appId is present, then no other namespace belongs to it</span></span><br><span class="line">  <span class="keyword">if</span> (ConfigConsts.NO_APPID_PLACEHOLDER.equalsIgnoreCase(appId)) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 非当前 App 下的 Namespace</span></span><br><span class="line">  AppNamespace appNamespace = appNamespaceService.findByAppIdAndNamespace(appId, namespaceName);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> appNamespace != <span class="keyword">null</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">// 获取被关联的配置的发布记录</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> Release <span class="title">findPublicConfig</span><span class="params">(String clientAppId, String clientIp, String clusterName,</span></span></span><br><span class="line"><span class="function"><span class="params">                                 String namespace, String dataCenter, ApolloNotificationMessages clientMessages)</span> </span>&#123;</span><br><span class="line">  <span class="comment">// 获得公用类型的 AppNamespace 对象</span></span><br><span class="line">  AppNamespace appNamespace = appNamespaceService.findPublicNamespaceByName(namespace);</span><br><span class="line">	</span><br><span class="line">  <span class="comment">// 判断非当前 App 下的，那么就是关联类型。</span></span><br><span class="line">  <span class="comment">//check whether the namespace's appId equals to current one</span></span><br><span class="line">  <span class="keyword">if</span> (Objects.isNull(appNamespace) || Objects.equals(clientAppId, appNamespace.getAppId())) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  String publicConfigAppId = appNamespace.getAppId();</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 获得 Namespace 最新的 Release 对象</span></span><br><span class="line">  <span class="keyword">return</span> configService.loadConfig(clientAppId, clientIp, publicConfigAppId, clusterName, namespace, dataCenter,</span><br><span class="line">                                  clientMessages);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><ul>
+<li><a href="http://www.iocoder.cn/categories/Apollo/" target="_blank" rel="noopener">Apollo源码分析</a></li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div></div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.jpg" alt="zch 微信支付">
+        <p>微信支付</p>
+      </div>
+    
+
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/apollo/" rel="tag"># apollo</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/09/11/apollo/apollo--发布配置/" rel="next" title="apollo--发布配置">
+                <i class="fa fa-chevron-left"></i> apollo--发布配置
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/09/16/apollo/apollo--Portal端的api/" rel="prev" title="apollo--Portal端的api">
+                apollo--Portal端的api <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        
+  <div class="bdsharebuttonbox">
+    <a href="#" class="bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+    <a href="#" class="bds_douban" data-cmd="douban" title="分享到豆瓣网"></a>
+    <a href="#" class="bds_sqq" data-cmd="sqq" title="分享到QQ好友"></a>
+    <a href="#" class="bds_qzone" data-cmd="qzone" title="分享到QQ空间"></a>
+    <a href="#" class="bds_weixin" data-cmd="weixin" title="分享到微信"></a>
+    <a href="#" class="bds_tieba" data-cmd="tieba" title="分享到百度贴吧"></a>
+    <a href="#" class="bds_twi" data-cmd="twi" title="分享到Twitter"></a>
+    <a href="#" class="bds_fbook" data-cmd="fbook" title="分享到Facebook"></a>
+    <a href="#" class="bds_more" data-cmd="more"></a>
+    <a class="bds_count" data-cmd="count"></a>
+  </div>
+  <script>
+    window._bd_share_config = {
+      "common": {
+        "bdText": "",
+        "bdMini": "2",
+        "bdMiniList": false,
+        "bdPic": ""
+      },
+      "share": {
+        "bdSize": "16",
+        "bdStyle": "0"
+      },
+      "image": {
+        "viewList": ["tsina", "douban", "sqq", "qzone", "weixin", "twi", "fbook"],
+        "viewText": "分享到：",
+        "viewSize": "16"
+      }
+    }
+  </script>
+
+<script>
+  with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='//bdimg.share.baidu.com/static/api/js/share.js?cdnversion='+~(-new Date()/36e5)];
+</script>
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar.png" alt="zch">
+            
+              <p class="site-author-name" itemprop="name">zch</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">160</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">29</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">117</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#整体流程"><span class="nav-number">1.</span> <span class="nav-text">整体流程</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#约定"><span class="nav-number">1.1.</span> <span class="nav-text">约定</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#推送客户端发布消息"><span class="nav-number">2.</span> <span class="nav-text">推送客户端发布消息</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#推送配置流程图"><span class="nav-number">2.1.</span> <span class="nav-text">推送配置流程图</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ReleaseMessageScanner"><span class="nav-number">2.2.</span> <span class="nav-text">ReleaseMessageScanner</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#初始化-Scan-任务"><span class="nav-number">2.2.1.</span> <span class="nav-text">初始化 Scan 任务</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#fireMessageScanned"><span class="nav-number">2.2.2.</span> <span class="nav-text">fireMessageScanned</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#NotificationControllerV2"><span class="nav-number">2.3.</span> <span class="nav-text">NotificationControllerV2</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#客户端拉取配置"><span class="nav-number">3.</span> <span class="nav-text">客户端拉取配置</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#拉取配置流程图"><span class="nav-number">3.1.</span> <span class="nav-text">拉取配置流程图</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#RemoteConfigRepository"><span class="nav-number">3.2.</span> <span class="nav-text">RemoteConfigRepository</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#构造方法"><span class="nav-number">3.2.1.</span> <span class="nav-text">构造方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#sync"><span class="nav-number">3.2.2.</span> <span class="nav-text">sync</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#RemoteConfigLongPollService"><span class="nav-number">3.3.</span> <span class="nav-text">RemoteConfigLongPollService</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#startLongPolling"><span class="nav-number">3.3.0.1.</span> <span class="nav-text">startLongPolling</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#onLongPollNotified"><span class="nav-number">3.3.0.2.</span> <span class="nav-text">onLongPollNotified</span></a></li></ol></li></ol></li></ol><li class="nav-item nav-level-1"><a class="nav-link" href="#服务端拉取配置"><span class="nav-number">4.</span> <span class="nav-text">服务端拉取配置</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#ConfigController"><span class="nav-number">4.1.</span> <span class="nav-text">ConfigController</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考"><span class="nav-number">5.</span> <span class="nav-text">参考</span></a></li></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<div class="copyright">&copy; <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">zch</span>
+
+  
+</div>
+
+
+  <div class="powered-by">个人学习和工作中总结的笔记</div>
+  <i class="fa fa-user-md"></i>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+<script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? "https://" : "http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1276375036'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s5.cnzz.com/z_stat.php%3Fid%3D1276375036%26online%3D1%26show%3Dline' type='text/javascript'%3E%3C/script%3E"));</script>
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/three/three.min.js"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/three/canvas_sphere.min.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+  
+  <script type="text/javascript">
+    var GUEST = ['nick','mail','link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item=>{
+      return GUEST.indexOf(item)>-1;
+    });
+    new Valine({
+        el: '#comments' ,
+        verify: true,
+        notify: true,
+        appId: 'qlLpITiuRGP5wGRRqD1TTe7y-gzGzoHsz',
+        appKey: 'Xu6NC8eq2DCotEgOrHgbA2St',
+        placeholder: 'ヾﾉ≧∀≦)o来啊，快活啊!',
+        avatar:'mm',
+        guest_info:guest,
+        pageSize:'10' || 10,
+    });
+  </script>
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

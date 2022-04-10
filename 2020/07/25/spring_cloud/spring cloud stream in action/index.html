@@ -1,0 +1,1353 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+<meta name="google-site-verification" content="6pSprQE3BiN_wM4uIQnTSoO5EAKab52jQ86zdl_VH84">
+<meta name="google-site-verification" content="pa5VzMThwxpvSOgHS15kDjiLdeww7kHG5LcJjH6EQko">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/science-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/science-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="spring cloud,stream,">
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="ZCH NOTES" type="application/atom+xml">
+
+
+
+
+
+
+<meta name="description" content="是什么？ Spring Cloud Stream 是一个用来为微服务应用构建消息驱动能力的框架。它可以基于Spring Boot 来创建独立的，可用于生产的Spring 应用程序。他通过使用Spring Integration来连接消息代理中间件以实现消息事件驱动。Spring Cloud Stream 为一些供应商的消息中间件产品提供了个性化的自动化配置实现，引用了发布-订阅、消费组、分区的三个">
+<meta name="keywords" content="spring cloud,stream">
+<meta property="og:type" content="article">
+<meta property="og:title" content="spring cloud stream in action">
+<meta property="og:url" content="http://yoursite.com/2020/07/25/spring_cloud/spring cloud stream in action/index.html">
+<meta property="og:site_name" content="ZCH NOTES">
+<meta property="og:description" content="是什么？ Spring Cloud Stream 是一个用来为微服务应用构建消息驱动能力的框架。它可以基于Spring Boot 来创建独立的，可用于生产的Spring 应用程序。他通过使用Spring Integration来连接消息代理中间件以实现消息事件驱动。Spring Cloud Stream 为一些供应商的消息中间件产品提供了个性化的自动化配置实现，引用了发布-订阅、消费组、分区的三个">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/images/1540891032246.jpg">
+<meta property="og:image" content="http://yoursite.com/images/1540891934961.jpg">
+<meta property="og:image" content="http://yoursite.com/images/1540892466075.jpg">
+<meta property="og:updated_time" content="2020-07-25T08:52:41.672Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="spring cloud stream in action">
+<meta name="twitter:description" content="是什么？ Spring Cloud Stream 是一个用来为微服务应用构建消息驱动能力的框架。它可以基于Spring Boot 来创建独立的，可用于生产的Spring 应用程序。他通过使用Spring Integration来连接消息代理中间件以实现消息事件驱动。Spring Cloud Stream 为一些供应商的消息中间件产品提供了个性化的自动化配置实现，引用了发布-订阅、消费组、分区的三个">
+<meta name="twitter:image" content="http://yoursite.com/images/1540891032246.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"right","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2020/07/25/spring_cloud/spring cloud stream in action/">
+
+
+
+
+
+  <title>spring cloud stream in action | ZCH NOTES</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-right page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">ZCH NOTES</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <h1 class="site-subtitle" itemprop="description">博学笃志 切问近思</h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404.html" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br>
+            
+            公益404
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/07/25/spring_cloud/spring cloud stream in action/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="zch">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ZCH NOTES">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">spring cloud stream in action</h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-07-25T16:52:41+08:00">
+                2020-07-25
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/spring-cloud/" itemprop="url" rel="index">
+                    <span itemprop="name">spring cloud</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2020/07/25/spring_cloud/spring cloud stream in action/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2020/07/25/spring_cloud/spring cloud stream in action/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="是什么？"><a href="#是什么？" class="headerlink" title="是什么？"></a>是什么？</h1><blockquote>
+<p>Spring Cloud Stream 是一个用来为微服务应用构建消息驱动能力的框架。它可以基于Spring Boot 来创建独立的，可用于生产的Spring 应用程序。他通过使用Spring Integration来连接消息代理中间件以实现消息事件驱动。Spring Cloud Stream 为一些供应商的消息中间件产品提供了个性化的自动化配置实现，引用了发布-订阅、消费组、分区的三个核心概念。目前仅支持RabbitMQ、Kafka。</p>
+</blockquote>
+<h1 id="为什么？"><a href="#为什么？" class="headerlink" title="为什么？"></a>为什么？</h1><p>各种各样的消息队列的产生和更新，使MQ组件学习成本越来越高，String Cloud Stream为一些供应商的消息中间件产品提供了个性化的自动化配置，引入发布订阅、消费组、以及分区这3个概念，有效的简化了上层研发人员对MQ使用的复杂度，让开发人员更多的精力投入到核心业务的处理。</p>
+<h1 id="Spring-Cloud-Stream的核心概念"><a href="#Spring-Cloud-Stream的核心概念" class="headerlink" title="Spring Cloud Stream的核心概念"></a>Spring Cloud Stream的核心概念</h1><blockquote>
+<p>官方文档 <a href="https://docs.spring.io/spring-cloud-stream/docs/Ditmars.SR4/reference/htmlsingle/" target="_blank" rel="noopener">spring cloud stream docs</a></p>
+</blockquote>
+<h2 id="Stream应用模型"><a href="#Stream应用模型" class="headerlink" title="Stream应用模型"></a>Stream应用模型</h2><p><img src="/images/1540891032246.jpg" alt="stream model"></p>"
+<ul>
+<li>Middleware:一些消息中间件，本文用例使用kafka</li>
+<li>Binder：粘合剂，将Middleware和Stream应用粘合起来，不同Middleware对应不同的Binder。</li>
+<li>Channel：通道，应用程序通过一个明确的Binder与外界（中间件）通信。</li>
+<li>ApplicationCore：Stream自己实现的消息机制封装，包括分区、分组、发布订阅的语义，与具体中间件无关，这会让开发人员很容易地以相同的代码使用不同类型的中间件。</li>
+</ul>
+<h2 id="消费者组"><a href="#消费者组" class="headerlink" title="消费者组"></a>消费者组</h2><p>发布-订阅模型可以很容易地通过共享topics连接应用程序，但创建一个应用多实例的的水平扩展能力同等重要。当这样做时，应用程序的不同实例被放置在一个竞争的消费者关系中，其中只有一个实例将处理一个给定的消息，这种分组类似于Kafka consumer groups，灵感也来源于此。每个消费者通过<code>spring.cloud.stream.bindings.&lt;channelName&gt;.group</code>指定一个组名称，channelName是代码中定义好的通道名称，下文会有介绍。</p>
+<p>消费者组订阅是持久的，如果你的应用指定了group，那即便你这个组下的所有应用实例都挂掉了，你的应用也会在重新启动后从未读取过的位置继续读取。但如果不指定groupStream将分配给一个匿名的、独立的只有一个成员的消费组，该组与所有其他组都处于一个发布－订阅关系中，还要注意的是匿名订阅不是持久的，意味着如果你的应用挂掉，那么在修复重启之前topics中错过的数据是不能被重新读取到的。所以为了水平扩展和持久订阅，建议最好指定一个消费者组。</p>
+<h3 id="官方例子"><a href="#官方例子" class="headerlink" title="官方例子"></a>官方例子</h3><p> 如下图中：<code>spring.cloud.stream.bindings.&lt;channelName&gt;.group=hdfsWrite</code> or <code>spring.cloud.stream.bindings.&lt;channelName&gt;.group=average</code>.</p>
+<p><img src="/images/1540891934961.jpg" alt="customer group"></p>"
+<blockquote>
+<p>所有订阅的组都会受到消息，但是只有组中的一个消费者能受到理消息</p>
+</blockquote>
+<h2 id="分区"><a href="#分区" class="headerlink" title="分区"></a>分区</h2><blockquote>
+<p>Spring Cloud Stream provides support for partitioning data between multiple instances of a given application. In a partitioned scenario, the physical communication medium (e.g., the broker topic) is viewed as being structured into multiple partitions. One or more producer application instances send data to multiple consumer application instances and ensure that data identified by common characteristics are processed by the same consumer instance.<br>大意：spring cloud stream支持把数据划分到多个实例中。在分区的场景下，具有相同特征的数据会被相同的消费者处理</p>
+</blockquote>
+<p><img src="/images/1540892466075.jpg" alt="Spring Cloud Stream Partitioning"></p>"
+<h1 id="demo"><a href="#demo" class="headerlink" title="demo"></a>demo</h1><p><a href="https://gitee.com/buxiaoxia/spring-demo/blob/master/spring-cloud-stream/spring-cloud-stream-rabbitmq/src/main/resources/application.yml" target="_blank" rel="noopener">配置demo</a></p>
+<h1 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h1><p><a href="https://docs.spring.io/spring-cloud-stream/docs/Ditmars.SR4/reference/htmlsingle/#_apache_kafka_binder" target="_blank" rel="noopener">Apache Kafka Binder</a></p>
+<h2 id="spring-cloud-stream的配置"><a href="#spring-cloud-stream的配置" class="headerlink" title="spring.cloud.stream的配置"></a>spring.cloud.stream的配置</h2><ul>
+<li><p>spring.cloud.stream.instanceCount<br>The number of deployed instances of an application. Must be set for partitioning and if using Kafka.<br>Default: 1.</p>
+</li>
+<li><p>spring.cloud.stream.instanceIndex<br>The instance index of the application: a number from 0 to instanceCount-1. Used for partitioning and with Kafka. Automatically set in Cloud Foundry to match the application’s instance index.</p>
+</li>
+<li><p>spring.cloud.stream.dynamicDestinations<br>A list of destinations that can be bound dynamically (for example, in a dynamic routing scenario). If set, only listed destinations can be bound.<br>Default: empty (allowing any destination to be bound).</p>
+</li>
+</ul>
+<h3 id="spring-cloud-stream-defualt"><a href="#spring-cloud-stream-defualt" class="headerlink" title="spring.cloud.stream.defualt"></a>spring.cloud.stream.defualt</h3><p>Binding properties are supplied using the format <code>spring.cloud.stream.default.</code>.</p>
+<ul>
+<li><p>destination<br>The target destination of a channel on the bound middleware (e.g., the RabbitMQ exchange or Kafka topic). If the channel is bound as a consumer, it could be bound to multiple destinations and the destination names can be specified as comma separated String values. If not set, the channel name is used instead. The default value of this property cannot be overridden.</p>
+</li>
+<li><p>group<br>The consumer group of the channel. Applies only to inbound bindings. See Consumer Groups.<br>Default: null (indicating an anonymous consumer).</p>
+</li>
+<li><p>contentType<br>The content type of the channel.<br>Default: null (so that no type coercion is performed).</p>
+</li>
+<li><p>binder<br>The binder used by this binding. See Multiple Binders on the Classpath for details.<br>Default: null (the default binder will be used, if one exists).</p>
+</li>
+</ul>
+<h2 id="通用配置"><a href="#通用配置" class="headerlink" title="通用配置"></a>通用配置</h2><h3 id="消费者"><a href="#消费者" class="headerlink" title="消费者"></a>消费者</h3><p>format:<code>spring.cloud.stream.bindings.&lt;channelName&gt;.consumer.</code></p>
+<ul>
+<li><p>concurrency<br>The concurrency of the inbound consumer.<br>Default: 1.</p>
+</li>
+<li><p>partitioned<br>Whether the consumer receives data from a partitioned producer.<br>Default: false.</p>
+</li>
+<li><p>maxAttempts<br>If processing fails, the number of attempts to process the message (including the first). Set to 1 to disable retry.<br>Default: 3.</p>
+</li>
+<li><p>instanceIndex<br>When set to a value greater than equal to zero, allows customizing the instance index of this consumer (if different from <code>spring.cloud.stream.instanceIndex</code>). When set to a negative value, it will default to spring.cloud.stream.instanceIndex.<br>Default: -1.</p>
+</li>
+<li><p>instanceCount<br>When set to a value greater than equal to zero, allows customizing the instance count of this consumer (if different from <code>spring.cloud.stream.instanceCount</code>). When set to a negative value, it will default to spring.cloud.stream.instanceCount.<br>Default: -1.</p>
+</li>
+</ul>
+<h3 id="生产者"><a href="#生产者" class="headerlink" title="生产者"></a>生产者</h3><p>format: <code>spring.cloud.stream.bindings.&lt;channelName&gt;.producer.</code></p>
+<ul>
+<li><p>partitionKeyExpression<br>A SpEL expression that determines how to partition outbound data. If set, outbound data on this channel will be partitioned, and partitionCount must be set to a value greater than 1 to be effective. The two options are mutually exclusive.<br>Default: null.</p>
+</li>
+<li><p>partitionCount<br>The number of target partitions for the data, if partitioning is enabled. Must be set to a value greater than 1 if the producer is partitioned. On Kafka, interpreted as a hint; the larger of this and the partition count of the target topic is used instead.<br>Default: 1.</p>
+</li>
+</ul>
+<h2 id="kafka配置"><a href="#kafka配置" class="headerlink" title="kafka配置"></a>kafka配置</h2><h3 id="kafka-binder"><a href="#kafka-binder" class="headerlink" title="kafka binder"></a>kafka binder</h3><ul>
+<li><p>spring.cloud.stream.kafka.binder.brokers<br>A list of brokers to which the Kafka binder will connect.<br>Default: localhost.</p>
+</li>
+<li><p>spring.cloud.stream.kafka.binder.defaultBrokerPort<br>brokers allows hosts specified with or without port information (e.g., host1,host2:port2). This sets the default port when no port is configured in the broker list.<br>Default: 9092.</p>
+</li>
+<li><p>spring.cloud.stream.kafka.binder.zkNodes<br>A list of ZooKeeper nodes to which the Kafka binder can connect.<br>Default: localhost.</p>
+</li>
+<li><p>spring.cloud.stream.kafka.binder.defaultZkPort<br>zkNodes allows hosts specified with or without port information (e.g., host1,host2:port2). This sets the default port when no port is configured in the node list.<br>Default: 2181.</p>
+</li>
+<li><p>spring.cloud.stream.kafka.binder.configuration<br>Key/Value map of client properties (both producers and consumer) passed to all clients created by the binder. Due to the fact that these properties will be used by both producers and consumers, usage should be restricted to common properties, especially security settings.<br>Default: Empty map.</p>
+</li>
+<li><p>spring.cloud.stream.kafka.binder.headers<br>The list of custom headers that will be transported by the binder.<br>Default: empty.</p>
+</li>
+<li><p>spring.cloud.stream.kafka.binder.healthTimeout<br>The time to wait to get partition information in seconds; default 60. Health will report as down if this timer expires.<br>Default: 10.</p>
+</li>
+<li><p>spring.cloud.stream.kafka.binder.offsetUpdateTimeWindow<br>The frequency, in milliseconds, with which offsets are saved. Ignored if 0.<br>Default: 10000.</p>
+</li>
+<li><p>spring.cloud.stream.kafka.binder.offsetUpdateCount<br>The frequency, in number of updates, which which consumed offsets are persisted. Ignored if 0. Mutually exclusive with offsetUpdateTimeWindow.<br>Default: 0.</p>
+</li>
+<li><p>spring.cloud.stream.kafka.binder.requiredAcks<br>The number of required acks on the broker.<br>Default: 1.</p>
+</li>
+<li><p>spring.cloud.stream.kafka.binder.minPartitionCount<br>Effective only if autoCreateTopics or autoAddPartitions is set. The global minimum number of partitions that the binder will configure on topics on which it produces/consumes data. It can be superseded by the partitionCount setting of the producer or by the value of <code>instanceCount * concurrency</code> settings of the producer (if either is larger).<br>Default: 1.</p>
+</li>
+<li><p>spring.cloud.stream.kafka.binder.replicationFactor<br>The replication factor of auto-created topics if autoCreateTopics is active.<br>Default: 1.</p>
+</li>
+<li><p>spring.cloud.stream.kafka.binder.autoCreateTopics<br>If set to true, the binder will create new topics automatically. If set to false, the binder will rely on the topics being already configured. In the latter case, if the topics do not exist, the binder will fail to start. Of note, this setting is independent of the auto.topic.create.enable setting of the broker and it does not influence it: if the server is set to auto-create topics, they may be created as part of the metadata retrieval request, with default broker settings.<br>Default: true.</p>
+</li>
+<li><p>spring.cloud.stream.kafka.binder.autoAddPartitions<br>If set to true, the binder will create add new partitions if required. If set to false, the binder will rely on the partition size of the topic being already configured. If the partition count of the target topic is smaller than the expected value, the binder will fail to start.<br>Default: false.</p>
+</li>
+<li><p>spring.cloud.stream.kafka.binder.socketBufferSize<br>Size (in bytes) of the socket buffer to be used by the Kafka consumers.<br>Default: 2097152.</p>
+</li>
+</ul>
+<h3 id="Kafka-Consumer配置"><a href="#Kafka-Consumer配置" class="headerlink" title="Kafka Consumer配置"></a>Kafka Consumer配置</h3><p><code>spring.cloud.stream.kafka.bindings.&lt;channelName&gt;.consumer..</code></p>
+<ul>
+<li><p>autoRebalanceEnabled<br>When true, topic partitions will be automatically rebalanced between the members of a consumer group. When false, each consumer will be assigned a fixed set of partitions based on <code>spring.cloud.stream.instanceCount</code> and <code>spring.cloud.stream.instanceIndex</code>. This requires both <code>spring.cloud.stream.instanceCount</code> and <code>spring.cloud.stream.instanceIndex</code> properties to be set appropriately on each launched instance. The property <code>spring.cloud.stream.instanceCount</code> must typically be greater than 1 in this case.<br>Default: true.</p>
+</li>
+<li><p>autoCommitOffset<br>Whether to autocommit offsets when a message has been processed. If set to false, a header with the key <code>kafka_acknowledgment</code> of the type <code>org.springframework.kafka.support.Acknowledgment</code> header will be present in the inbound message. Applications may use this header for acknowledging messages. See the examples section for details. When this property is set to false, Kafka binder will set the ack mode to <code>org.springframework.kafka.listener.AbstractMessageListenerContainer.AckMode.MANUAL</code>.<br>Default: true.</p>
+</li>
+<li><p>autoCommitOnError<br>Effective only if autoCommitOffset is set to true. If set to false it suppresses auto-commits for messages that result in errors, and will commit only for successful messages, allows a stream to automatically replay from the last successfully processed message, in case of persistent failures. If set to true, it will always auto-commit (if auto-commit is enabled). If not set (default), it effectively has the same value as enableDlq, auto-committing erroneous messages if they are sent to a DLQ, and not committing them otherwise.<br>Default: not set.</p>
+</li>
+<li><p>recoveryInterval<br>The interval between connection recovery attempts, in milliseconds.<br>Default: 5000.</p>
+</li>
+<li><p>startOffset<br>The starting offset for new groups. Allowed values: earliest, latest. If the consumer group is set explicitly for the consumer ‘binding’ (via <code>spring.cloud.stream.bindings.&lt;channelName&gt;.group</code>), then ‘startOffset’ is set to earliest; otherwise it is set to latest for the anonymous consumer group.<br>Default: null (equivalent to earliest).</p>
+</li>
+<li><p>enableDlq<br>When set to true, it will send enable DLQ behavior for the consumer. By default, messages that result in errors will be forwarded to a topic named <code>error.&lt;destination&gt;.&lt;group&gt;</code>. The DLQ topic name can be configurable via the property dlqName. This provides an alternative option to the more common Kafka replay scenario for the case when the number of errors is relatively small and replaying the entire original topic may be too cumbersome.<br>Default: false.</p>
+</li>
+<li><p>configuration<br>Map with a key/value pair containing generic Kafka consumer properties.<br>Default: Empty map.</p>
+</li>
+<li><p>dlqName<br>The name of the DLQ topic to receive the error messages.<br>Default: null (If not specified, messages that result in errors will be forwarded to a topic named <code>error.&lt;destination&gt;.&lt;group&gt;</code>).</p>
+</li>
+</ul>
+<h3 id="kafka生产者配置"><a href="#kafka生产者配置" class="headerlink" title="kafka生产者配置"></a>kafka生产者配置</h3><p><code>spring.cloud.stream.kafka.bindings.&lt;channelName&gt;.producer..</code></p>
+<ul>
+<li><p>bufferSize<br>Upper limit, in bytes, of how much data the Kafka producer will attempt to batch before sending.<br>Default: 16384.</p>
+</li>
+<li><p>sync<br>Whether the producer is synchronous.<br>Default: false.</p>
+</li>
+<li><p>batchTimeout<br>How long the producer will wait before sending in order to allow more messages to accumulate in the same batch. (Normally the producer does not wait at all, and simply sends all the messages that accumulated while the previous send was in progress.) A non-zero value may increase throughput at the expense of latency.<br>Default: 0.</p>
+</li>
+<li><p>messageKeyExpression<br>A SpEL expression evaluated against the outgoing message used to populate the key of the produced Kafka message. For example headers.key or payload.myKey.<br>Default: none.</p>
+</li>
+<li><p>configuration<br>Map with a key/value pair containing generic Kafka producer properties.<br>Default: Empty map.</p>
+</li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div></div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.jpg" alt="zch 微信支付">
+        <p>微信支付</p>
+      </div>
+    
+
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/spring-cloud/" rel="tag"># spring cloud</a>
+          
+            <a href="/tags/stream/" rel="tag"># stream</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/07/25/spring_cloud/spring cloud--config server客户端刷新配置的过程/" rel="next" title="spring cloud--config server客户端刷新配置的过程">
+                <i class="fa fa-chevron-left"></i> spring cloud--config server客户端刷新配置的过程
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/07/25/spring源码/Spring源码解析-自定义标签解析/" rel="prev" title="Spring源码解析-自定义标签解析">
+                Spring源码解析-自定义标签解析 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        
+  <div class="bdsharebuttonbox">
+    <a href="#" class="bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+    <a href="#" class="bds_douban" data-cmd="douban" title="分享到豆瓣网"></a>
+    <a href="#" class="bds_sqq" data-cmd="sqq" title="分享到QQ好友"></a>
+    <a href="#" class="bds_qzone" data-cmd="qzone" title="分享到QQ空间"></a>
+    <a href="#" class="bds_weixin" data-cmd="weixin" title="分享到微信"></a>
+    <a href="#" class="bds_tieba" data-cmd="tieba" title="分享到百度贴吧"></a>
+    <a href="#" class="bds_twi" data-cmd="twi" title="分享到Twitter"></a>
+    <a href="#" class="bds_fbook" data-cmd="fbook" title="分享到Facebook"></a>
+    <a href="#" class="bds_more" data-cmd="more"></a>
+    <a class="bds_count" data-cmd="count"></a>
+  </div>
+  <script>
+    window._bd_share_config = {
+      "common": {
+        "bdText": "",
+        "bdMini": "2",
+        "bdMiniList": false,
+        "bdPic": ""
+      },
+      "share": {
+        "bdSize": "16",
+        "bdStyle": "0"
+      },
+      "image": {
+        "viewList": ["tsina", "douban", "sqq", "qzone", "weixin", "twi", "fbook"],
+        "viewText": "分享到：",
+        "viewSize": "16"
+      }
+    }
+  </script>
+
+<script>
+  with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='//bdimg.share.baidu.com/static/api/js/share.js?cdnversion='+~(-new Date()/36e5)];
+</script>
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar.png" alt="zch">
+            
+              <p class="site-author-name" itemprop="name">zch</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">160</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">29</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">117</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#是什么？"><span class="nav-number">1.</span> <span class="nav-text">是什么？</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#为什么？"><span class="nav-number">2.</span> <span class="nav-text">为什么？</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Spring-Cloud-Stream的核心概念"><span class="nav-number">3.</span> <span class="nav-text">Spring Cloud Stream的核心概念</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Stream应用模型"><span class="nav-number">3.1.</span> <span class="nav-text">Stream应用模型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#消费者组"><span class="nav-number">3.2.</span> <span class="nav-text">消费者组</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#官方例子"><span class="nav-number">3.2.1.</span> <span class="nav-text">官方例子</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#分区"><span class="nav-number">3.3.</span> <span class="nav-text">分区</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#demo"><span class="nav-number">4.</span> <span class="nav-text">demo</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#配置"><span class="nav-number">5.</span> <span class="nav-text">配置</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#spring-cloud-stream的配置"><span class="nav-number">5.1.</span> <span class="nav-text">spring.cloud.stream的配置</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#spring-cloud-stream-defualt"><span class="nav-number">5.1.1.</span> <span class="nav-text">spring.cloud.stream.defualt</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#通用配置"><span class="nav-number">5.2.</span> <span class="nav-text">通用配置</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#消费者"><span class="nav-number">5.2.1.</span> <span class="nav-text">消费者</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#生产者"><span class="nav-number">5.2.2.</span> <span class="nav-text">生产者</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#kafka配置"><span class="nav-number">5.3.</span> <span class="nav-text">kafka配置</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#kafka-binder"><span class="nav-number">5.3.1.</span> <span class="nav-text">kafka binder</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Kafka-Consumer配置"><span class="nav-number">5.3.2.</span> <span class="nav-text">Kafka Consumer配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#kafka生产者配置"><span class="nav-number">5.3.3.</span> <span class="nav-text">kafka生产者配置</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<div class="copyright">&copy; <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">zch</span>
+
+  
+</div>
+
+
+  <div class="powered-by">个人学习和工作中总结的笔记</div>
+  <i class="fa fa-user-md"></i>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+<script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? "https://" : "http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1276375036'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s5.cnzz.com/z_stat.php%3Fid%3D1276375036%26online%3D1%26show%3Dline' type='text/javascript'%3E%3C/script%3E"));</script>
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/three/three.min.js"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/three/canvas_sphere.min.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+  
+  <script type="text/javascript">
+    var GUEST = ['nick','mail','link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item=>{
+      return GUEST.indexOf(item)>-1;
+    });
+    new Valine({
+        el: '#comments' ,
+        verify: true,
+        notify: true,
+        appId: 'qlLpITiuRGP5wGRRqD1TTe7y-gzGzoHsz',
+        appKey: 'Xu6NC8eq2DCotEgOrHgbA2St',
+        placeholder: 'ヾﾉ≧∀≦)o来啊，快活啊!',
+        avatar:'mm',
+        guest_info:guest,
+        pageSize:'10' || 10,
+    });
+  </script>
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

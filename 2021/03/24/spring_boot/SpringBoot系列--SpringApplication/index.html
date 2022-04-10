@@ -1,0 +1,1282 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+<meta name="google-site-verification" content="6pSprQE3BiN_wM4uIQnTSoO5EAKab52jQ86zdl_VH84">
+<meta name="google-site-verification" content="pa5VzMThwxpvSOgHS15kDjiLdeww7kHG5LcJjH6EQko">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/science-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/science-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="SpringBoot,">
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="ZCH NOTES" type="application/atom+xml">
+
+
+
+
+
+
+<meta name="description" content="1 SpringApplication对象的构建过程本小节开始讲解SpringApplication对象的构造过程，因为一个对象的构造无非就是在其构造函数里给它的一些成员属性赋值，很少包含其他额外的业务逻辑（当然有时候我们可能也会在构造函数里开启一些线程啥的）。那么，我们先来看下构造SpringApplication对象时需要用到的一些成员属性哈： 123456789101112131415161">
+<meta name="keywords" content="SpringBoot">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SpringBoot--SpringApplication">
+<meta property="og:url" content="http://yoursite.com/2021/03/24/spring_boot/SpringBoot系列--SpringApplication/index.html">
+<meta property="og:site_name" content="ZCH NOTES">
+<meta property="og:description" content="1 SpringApplication对象的构建过程本小节开始讲解SpringApplication对象的构造过程，因为一个对象的构造无非就是在其构造函数里给它的一些成员属性赋值，很少包含其他额外的业务逻辑（当然有时候我们可能也会在构造函数里开启一些线程啥的）。那么，我们先来看下构造SpringApplication对象时需要用到的一些成员属性哈： 123456789101112131415161">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/images/1616637193914.jpg">
+<meta property="og:updated_time" content="2021-03-25T02:06:22.992Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="SpringBoot--SpringApplication">
+<meta name="twitter:description" content="1 SpringApplication对象的构建过程本小节开始讲解SpringApplication对象的构造过程，因为一个对象的构造无非就是在其构造函数里给它的一些成员属性赋值，很少包含其他额外的业务逻辑（当然有时候我们可能也会在构造函数里开启一些线程啥的）。那么，我们先来看下构造SpringApplication对象时需要用到的一些成员属性哈： 123456789101112131415161">
+<meta name="twitter:image" content="http://yoursite.com/images/1616637193914.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"right","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2021/03/24/spring_boot/SpringBoot系列--SpringApplication/">
+
+
+
+
+
+  <title>SpringBoot--SpringApplication | ZCH NOTES</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-right page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">ZCH NOTES</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <h1 class="site-subtitle" itemprop="description">博学笃志 切问近思</h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404.html" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br>
+            
+            公益404
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2021/03/24/spring_boot/SpringBoot系列--SpringApplication/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="zch">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ZCH NOTES">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">SpringBoot--SpringApplication</h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-03-24T20:29:46+08:00">
+                2021-03-24
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/SpringBoot/" itemprop="url" rel="index">
+                    <span itemprop="name">SpringBoot</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2021/03/24/spring_boot/SpringBoot系列--SpringApplication/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2021/03/24/spring_boot/SpringBoot系列--SpringApplication/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="1-SpringApplication对象的构建过程"><a href="#1-SpringApplication对象的构建过程" class="headerlink" title="1 SpringApplication对象的构建过程"></a>1 SpringApplication对象的构建过程</h1><p>本小节开始讲解<code>SpringApplication</code>对象的构造过程，因为一个对象的构造无非就是在其构造函数里给它的一些成员属性赋值，很少包含其他额外的业务逻辑（当然有时候我们可能也会在构造函数里开启一些线程啥的）。那么，我们先来看下构造<code>SpringApplication</code>对象时需要用到的一些成员属性哈：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// SpringApplication.java</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * SpringBoot的启动类即包含main函数的主类</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">private</span> Set&lt;Class&lt;?&gt;&gt; primarySources;</span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 包含main函数的主类</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">private</span> Class&lt;?&gt; mainApplicationClass;</span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 资源加载器</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">private</span> ResourceLoader resourceLoader;</span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 应用类型</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">private</span> WebApplicationType webApplicationType;</span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 初始化器</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">private</span> List&lt;ApplicationContextInitializer&lt;?&gt;&gt; initializers;</span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 监听器</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">private</span> List&lt;ApplicationListener&lt;?&gt;&gt; listeners;</span><br></pre></td></tr></table></figure>
+<p>可以看到构建<code>SpringApplication</code>对象时主要是给上面代码中的六个成员属性赋值，现在我接着来看<code>SpringApplication</code>对象的构造过程。</p>
+<p>我们先回到上一篇文章讲解的构建<code>SpringApplication</code>对象的代码处:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// SpringApplication.java</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// run方法是一个静态方法，用于启动SpringBoot</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> ConfigurableApplicationContext <span class="title">run</span><span class="params">(Class&lt;?&gt;[] primarySources,</span></span></span><br><span class="line"><span class="function"><span class="params">		String[] args)</span> </span>&#123;</span><br><span class="line">	<span class="comment">// 构建一个SpringApplication对象，并调用其run方法来启动</span></span><br><span class="line">	<span class="keyword">return</span> <span class="keyword">new</span> SpringApplication(primarySources).run(args);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>跟进<code>SpringApplication</code>的构造函数中：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// SpringApplication.java</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">SpringApplication</span><span class="params">(Class&lt;?&gt;... primarySources)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 继续调用SpringApplication另一个构造函数</span></span><br><span class="line">	<span class="keyword">this</span>(<span class="keyword">null</span>, primarySources);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>继续跟进<code>SpringApplication</code>另一个构造函数：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// SpringApplication.java</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">SpringApplication</span><span class="params">(ResourceLoader resourceLoader, Class&lt;?&gt;... primarySources)</span> </span>&#123;</span><br><span class="line">	<span class="comment">// 【1】给resourceLoader属性赋值，注意传入的resourceLoader参数为null</span></span><br><span class="line">	<span class="keyword">this</span>.resourceLoader = resourceLoader;</span><br><span class="line">	Assert.notNull(primarySources, <span class="string">"PrimarySources must not be null"</span>);</span><br><span class="line">	<span class="comment">// 【2】给primarySources属性赋值，传入的primarySources其实就是SpringApplication.run(MainApplication.class, args);中的MainApplication.class</span></span><br><span class="line">	<span class="keyword">this</span>.primarySources = <span class="keyword">new</span> LinkedHashSet&lt;&gt;(Arrays.asList(primarySources));</span><br><span class="line">	<span class="comment">// 【3】给webApplicationType属性赋值，根据classpath中存在哪种类型的类来确定是哪种应用类型</span></span><br><span class="line">	<span class="keyword">this</span>.webApplicationType = WebApplicationType.deduceFromClasspath();</span><br><span class="line">	<span class="comment">// 【4】给initializers属性赋值，利用SpringBoot自定义的SPI从spring.factories中加载ApplicationContextInitializer接口的实现类并赋值给initializers属性</span></span><br><span class="line">	setInitializers((Collection) getSpringFactoriesInstances(</span><br><span class="line">			ApplicationContextInitializer<span class="class">.<span class="keyword">class</span>))</span>;</span><br><span class="line">	<span class="comment">// 【5】给listeners属性赋值，利用SpringBoot自定义的SPI从spring.factories中加载ApplicationListener接口的实现类并赋值给listeners属性</span></span><br><span class="line">	setListeners((Collection) getSpringFactoriesInstances(ApplicationListener<span class="class">.<span class="keyword">class</span>))</span>;</span><br><span class="line">	<span class="comment">// 【6】给mainApplicationClass属性赋值，即这里要推断哪个类调用了main函数，然后再赋值给mainApplicationClass属性，用于后面启动流程中打印一些日志。</span></span><br><span class="line">	<span class="keyword">this</span>.mainApplicationClass = deduceMainApplicationClass();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>可以看到构建<code>SpringApplication</code>对象时其实就是给前面讲的6个<code>SpringApplication</code>类的成员属性赋值而已，做一些初始化工作：</p>
+<ol>
+<li><strong>给<code>resourceLoader</code>属性赋值</strong>，<code>resourceLoader</code>属性，资源加载器，此时传入的<code>resourceLoader</code>参数为<code>null</code>；</li>
+<li><strong>给<code>primarySources</code>属性赋值</strong>，<code>primarySources</code>属性<code>即SpringApplication.run(MainApplication.class,args);</code>中传入的<code>MainApplication.class</code>，该类为SpringBoot项目的启动类，主要通过该类来扫描<code>Configuration</code>类加载<code>bean</code>；</li>
+<li><strong>给<code>webApplicationType</code>属性赋值</strong>，<code>webApplicationType</code>属性，代表应用类型，根据<code>classpath</code>存在的相应<code>Application</code>类来判断。因为后面要根据<code>webApplicationType</code>来确定创建哪种<code>Environment</code>对象和创建哪种<code>ApplicationContext</code>，详细分析请见后面的<code>第3.1小节</code>；</li>
+<li><strong>给<code>initializers</code>属性赋值</strong>，<code>initializers</code>属性为<code>List&lt;ApplicationContextInitializer&lt;?&gt;&gt;</code>集合，利用SpringBoot的SPI机制从<code>spring.factories</code>配置文件中加载，后面在初始化容器的时候会应用这些初始化器来执行一些初始化工作。因为SpringBoot自己实现的SPI机制比较重要，因此独立成一小节来分析，详细分析请见后面的<code>第4小节</code>；</li>
+<li><strong>给<code>listeners</code>属性赋值</strong>，<code>listeners</code>属性为<code>List&lt;ApplicationListener&lt;?&gt;&gt;</code>集合，同样利用利用SpringBoot的SPI机制从<code>spring.factories</code>配置文件中加载。因为SpringBoot启动过程中会在不同的阶段发射一些事件，所以这些加载的监听器们就是来监听SpringBoot启动过程中的一些生命周期事件的；</li>
+<li><strong>给<code>mainApplicationClass</code>属性赋值</strong>，<code>mainApplicationClass</code>属性表示包含<code>main</code>函数的类，即这里要推断哪个类调用了<code>main</code>函数，然后把这个类的全限定名赋值给<code>mainApplicationClass</code>属性，用于后面启动流程中打印一些日志，详细分析见后面的<code>第3.2小节</code>。</li>
+</ol>
+<h2 id="2-1-推断项目应用类型"><a href="#2-1-推断项目应用类型" class="headerlink" title="2.1 推断项目应用类型"></a>2.1 推断项目应用类型</h2><p>我们接着分析构造<code>SpringApplication</code>对象的第<code>【3】</code>步<code>WebApplicationType.deduceFromClasspath();</code>这句代码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// WebApplicationType.java</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">enum</span> WebApplicationType &#123;</span><br><span class="line">        <span class="comment">// 普通的应用</span></span><br><span class="line">	NONE,</span><br><span class="line">	<span class="comment">// Servlet类型的web应用</span></span><br><span class="line">	SERVLET,</span><br><span class="line">	<span class="comment">// Reactive类型的web应用</span></span><br><span class="line">	REACTIVE;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String[] SERVLET_INDICATOR_CLASSES = &#123; <span class="string">"javax.servlet.Servlet"</span>,</span><br><span class="line">			<span class="string">"org.springframework.web.context.ConfigurableWebApplicationContext"</span> &#125;;</span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String WEBMVC_INDICATOR_CLASS = <span class="string">"org.springframework."</span></span><br><span class="line">			+ <span class="string">"web.servlet.DispatcherServlet"</span>;</span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String WEBFLUX_INDICATOR_CLASS = <span class="string">"org."</span></span><br><span class="line">			+ <span class="string">"springframework.web.reactive.DispatcherHandler"</span>;</span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String JERSEY_INDICATOR_CLASS = <span class="string">"org.glassfish.jersey.servlet.ServletContainer"</span>;</span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String SERVLET_APPLICATION_CONTEXT_CLASS = <span class="string">"org.springframework.web.context.WebApplicationContext"</span>;</span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String REACTIVE_APPLICATION_CONTEXT_CLASS = <span class="string">"org.springframework.boot.web.reactive.context.ReactiveWebApplicationContext"</span>;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">static</span> WebApplicationType <span class="title">deduceFromClasspath</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="comment">// 若classpath中不存在"org.springframework." + "web.servlet.DispatcherServlet"和"org.glassfish.jersey.servlet.ServletContainer"</span></span><br><span class="line">		<span class="comment">// 则返回WebApplicationType.REACTIVE，表明是reactive应用</span></span><br><span class="line">		<span class="keyword">if</span> (ClassUtils.isPresent(WEBFLUX_INDICATOR_CLASS, <span class="keyword">null</span>)</span><br><span class="line">				&amp;&amp; !ClassUtils.isPresent(WEBMVC_INDICATOR_CLASS, <span class="keyword">null</span>)</span><br><span class="line">				&amp;&amp; !ClassUtils.isPresent(JERSEY_INDICATOR_CLASS, <span class="keyword">null</span>)) &#123;</span><br><span class="line">			<span class="keyword">return</span> WebApplicationType.REACTIVE;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="comment">// 若&#123; "javax.servlet.Servlet",</span></span><br><span class="line">		<span class="comment">//       "org.springframework.web.context.ConfigurableWebApplicationContext" &#125;</span></span><br><span class="line">		<span class="comment">// 都不存在在classpath，则说明是不是web应用</span></span><br><span class="line">		<span class="keyword">for</span> (String className : SERVLET_INDICATOR_CLASSES) &#123;</span><br><span class="line">			<span class="keyword">if</span> (!ClassUtils.isPresent(className, <span class="keyword">null</span>)) &#123;</span><br><span class="line">				<span class="keyword">return</span> WebApplicationType.NONE;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="comment">// 最终返回普通的web应用</span></span><br><span class="line">		<span class="keyword">return</span> WebApplicationType.SERVLET;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>如上代码，根据<code>classpath</code>判断应用类型，即通过反射加载<code>classpath</code>判断指定的标志类存在与否来分别判断是<code>Reactive</code>应用，<code>Servlet</code>类型的web应用还是普通的应用。</p>
+<h2 id="3-2-推断哪个类调用了main函数"><a href="#3-2-推断哪个类调用了main函数" class="headerlink" title="3.2 推断哪个类调用了main函数"></a>3.2 推断哪个类调用了main函数</h2><p>我们先跳过构造<code>SpringApplication</code>对象的第<code>【4】</code>步和第<code>【5】</code>步，先来分析构造<code>SpringApplication</code>对象的第<code>【6】</code>步<code>this.mainApplicationClass = deduceMainApplicationClass();</code>这句代码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// SpringApplication.java</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span> Class&lt;?&gt; deduceMainApplicationClass() &#123;</span><br><span class="line">	<span class="keyword">try</span> &#123;</span><br><span class="line">		<span class="comment">// 获取StackTraceElement对象数组stackTrace，StackTraceElement对象存储了调用栈相关信息（比如类名，方法名等）</span></span><br><span class="line">		StackTraceElement[] stackTrace = <span class="keyword">new</span> RuntimeException().getStackTrace();</span><br><span class="line">		<span class="comment">// 遍历stackTrace数组</span></span><br><span class="line">		<span class="keyword">for</span> (StackTraceElement stackTraceElement : stackTrace) &#123;</span><br><span class="line">			<span class="comment">// 若stackTraceElement记录的调用方法名等于main</span></span><br><span class="line">			<span class="keyword">if</span> (<span class="string">"main"</span>.equals(stackTraceElement.getMethodName())) &#123;</span><br><span class="line">				<span class="comment">// 那么就返回stackTraceElement记录的类名即包含main函数的类名</span></span><br><span class="line">				<span class="keyword">return</span> Class.forName(stackTraceElement.getClassName());</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">catch</span> (ClassNotFoundException ex) &#123;</span><br><span class="line">		<span class="comment">// Swallow and continue</span></span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>可以看到<code>deduceMainApplicationClass</code>方法的主要作用就是从<code>StackTraceElement</code>调用栈数组中获取哪个类调用了<code>main</code>方法，然后再返回赋值给<code>mainApplicationClass</code>属性，然后用于后面启动流程中打印一些日志。</p>
+<h1 id="2-SpringBoot的SPI机制原理解读"><a href="#2-SpringBoot的SPI机制原理解读" class="headerlink" title="2 SpringBoot的SPI机制原理解读"></a>2 SpringBoot的SPI机制原理解读</h1><p>由于SpringBoot的SPI机制是一个很重要的知识点，因此这里单独一小节来分析。我们都知道，SpringBoot没有使用Java的SPI机制(Java的SPI机制可以看看笔者的<a href="https://juejin.im/post/6844904105786212366" target="_blank" rel="noopener">Java是如何实现自己的SPI机制的？</a>,真的是干货满满)，而是自定义实现了一套自己的SPI机制。SpringBoot利用自定义实现的SPI机制可以加载初始化器实现类，监听器实现类和自动配置类等等。如果我们要添加自动配置类或自定义监听器，那么我们很重要的一步就是在<code>spring.factories</code>中进行配置，然后才会被SpringBoot加载。</p>
+<p>好了，那么接下来我们就来重点分析下<strong>SpringBoot是如何是实现自己的SPI机制的</strong>。</p>
+<p>这里接第3小节的构造<code>SpringApplication</code>对象的第<code>【4】</code>步和第<code>【5】</code>步代码，因为第<code>【4】</code>步和第<code>【5】</code>步都是利用SpringBoot的SPI机制来加载扩展实现类，因此这里只分析第<code>【4】</code>步的<code>setInitializers((Collection) getSpringFactoriesInstances(ApplicationContextInitializer.class));</code>这句代码，看看<code>getSpringFactoriesInstances</code>方法中SpringBoot是如何实现自己的一套SPI来加载<code>ApplicationContextInitializer</code>初始化器接口的扩展实现类的？</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// SpringApplication.java</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span> &lt;T&gt; <span class="function">Collection&lt;T&gt; <span class="title">getSpringFactoriesInstances</span><span class="params">(Class&lt;T&gt; type)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 继续调用重载的getSpringFactoriesInstances方法进行加载</span></span><br><span class="line">    <span class="keyword">return</span> getSpringFactoriesInstances(type, <span class="keyword">new</span> Class&lt;?&gt;[] &#123;&#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>继续跟进重载的<code>getSpringFactoriesInstances</code>方法：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// SpringApplication.java</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span> &lt;T&gt; <span class="function">Collection&lt;T&gt; <span class="title">getSpringFactoriesInstances</span><span class="params">(Class&lt;T&gt; type,</span></span></span><br><span class="line"><span class="function"><span class="params">		Class&lt;?&gt;[] parameterTypes, Object... args)</span> </span>&#123;</span><br><span class="line">	<span class="comment">// 【1】获得类加载器</span></span><br><span class="line">	ClassLoader classLoader = getClassLoader();</span><br><span class="line">	<span class="comment">// Use names and ensure unique to protect against duplicates</span></span><br><span class="line">	<span class="comment">// 【2】将接口类型和类加载器作为参数传入loadFactoryNames方法，从spring.factories配置文件中进行加载接口实现类</span></span><br><span class="line">	Set&lt;String&gt; names = <span class="keyword">new</span> LinkedHashSet&lt;&gt;(</span><br><span class="line">			SpringFactoriesLoader.loadFactoryNames(type, classLoader));</span><br><span class="line">	<span class="comment">// 【3】实例化从spring.factories中加载的接口实现类</span></span><br><span class="line">	List&lt;T&gt; instances = createSpringFactoriesInstances(type, parameterTypes,</span><br><span class="line">			classLoader, args, names);</span><br><span class="line">	<span class="comment">// 【4】进行排序</span></span><br><span class="line">	AnnotationAwareOrderComparator.sort(instances);</span><br><span class="line">	<span class="comment">// 【5】返回加载并实例化好的接口实现类</span></span><br><span class="line">	<span class="keyword">return</span> instances;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>可以看到，SpringBoot自定义实现的SPI机制代码中最重要的是上面代码的<code>【1】</code>,<code>【2】</code>,<code>【3】</code>步，这3步下面分别进行重点分析。</p>
+<h2 id="2-1-获得类加载器"><a href="#2-1-获得类加载器" class="headerlink" title="2.1 获得类加载器"></a>2.1 获得类加载器</h2><p>还记得<a href="https://juejin.im/post/6844904105786212366" target="_blank" rel="noopener">Java是如何实现自己的SPI机制的？</a>这篇文章中Java的SPI机制默认是利用线程上下文类加载器去加载扩展类的，那么，<strong>SpringBoot自己实现的SPI机制又是利用哪种类加载器去加载<code>spring.factories</code>配置文件中的扩展实现类呢？</strong></p>
+<p>我们直接看第<code>【1】</code>步的<code>ClassLoader classLoader = getClassLoader();</code>这句代码，先睹为快：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// SpringApplication.java</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> ClassLoader <span class="title">getClassLoader</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	<span class="comment">// 前面在构造SpringApplicaiton对象时，传入的resourceLoader参数是null，因此不会执行if语句里面的逻辑</span></span><br><span class="line">	<span class="keyword">if</span> (<span class="keyword">this</span>.resourceLoader != <span class="keyword">null</span>) &#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">this</span>.resourceLoader.getClassLoader();</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">// 获取默认的类加载器</span></span><br><span class="line">	<span class="keyword">return</span> ClassUtils.getDefaultClassLoader();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>继续跟进<code>getDefaultClassLoader</code>方法：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// ClassUtils.java</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> ClassLoader <span class="title">getDefaultClassLoader</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	ClassLoader cl = <span class="keyword">null</span>;</span><br><span class="line">	<span class="keyword">try</span> &#123;</span><br><span class="line">	        <span class="comment">// 【重点】获取线程上下文类加载器</span></span><br><span class="line">		cl = Thread.currentThread().getContextClassLoader();</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">catch</span> (Throwable ex) &#123;</span><br><span class="line">		<span class="comment">// Cannot access thread context ClassLoader - falling back...</span></span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">// 这里的逻辑不会执行</span></span><br><span class="line">	<span class="keyword">if</span> (cl == <span class="keyword">null</span>) &#123;</span><br><span class="line">		<span class="comment">// No thread context class loader -&gt; use class loader of this class.</span></span><br><span class="line">		cl = ClassUtils<span class="class">.<span class="keyword">class</span>.<span class="title">getClassLoader</span>()</span>;</span><br><span class="line">		<span class="keyword">if</span> (cl == <span class="keyword">null</span>) &#123;</span><br><span class="line">			<span class="comment">// getClassLoader() returning null indicates the bootstrap ClassLoader</span></span><br><span class="line">			<span class="keyword">try</span> &#123;</span><br><span class="line">				cl = ClassLoader.getSystemClassLoader();</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="keyword">catch</span> (Throwable ex) &#123;</span><br><span class="line">				<span class="comment">// Cannot access system ClassLoader - oh well, maybe the caller can live with null...</span></span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">// 返回刚才获取的线程上下文类加载器</span></span><br><span class="line">	<span class="keyword">return</span> cl;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>可以看到，原来SpringBoot的SPI机制中也是用线程上下文类加载器去加载<code>spring.factories</code>文件中的扩展实现类的！</p>
+<h2 id="2-2-加载spring-factories配置文件中的SPI扩展类"><a href="#2-2-加载spring-factories配置文件中的SPI扩展类" class="headerlink" title="2.2 加载spring.factories配置文件中的SPI扩展类"></a>2.2 加载spring.factories配置文件中的SPI扩展类</h2><p>我们再来看下第<code>【2】</code>步中的<code>SpringFactoriesLoader.loadFactoryNames(type, classLoader)</code>这句代码是如何加载<code>spring.factories</code>配置文件中的SPI扩展类的？</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// SpringFactoriesLoader.java</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> List&lt;String&gt; <span class="title">loadFactoryNames</span><span class="params">(Class&lt;?&gt; factoryClass, @Nullable ClassLoader classLoader)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// factoryClass即SPI接口，比如ApplicationContextInitializer,EnableAutoConfiguration等接口</span></span><br><span class="line">	String factoryClassName = factoryClass.getName();</span><br><span class="line">	<span class="comment">// 【主线，重点关注】继续调用loadSpringFactories方法加载SPI扩展类</span></span><br><span class="line">	<span class="keyword">return</span> loadSpringFactories(classLoader).getOrDefault(factoryClassName, Collections.emptyList());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>继续跟进<code>loadSpringFactories</code>方法：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// SpringFactoriesLoader.java</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * The location to look for factories.</span></span><br><span class="line"><span class="comment"> * &lt;p&gt;Can be present in multiple JAR files.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> String FACTORIES_RESOURCE_LOCATION = <span class="string">"META-INF/spring.factories"</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> Map&lt;String, List&lt;String&gt;&gt; loadSpringFactories(<span class="meta">@Nullable</span> ClassLoader classLoader) &#123;</span><br><span class="line">	<span class="comment">// 以classLoader作为键先从缓存中取，若能取到则直接返回</span></span><br><span class="line">	MultiValueMap&lt;String, String&gt; result = cache.get(classLoader);</span><br><span class="line">	<span class="keyword">if</span> (result != <span class="keyword">null</span>) &#123;</span><br><span class="line">		<span class="keyword">return</span> result;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">// 若缓存中无记录，则去spring.factories配置文件中获取</span></span><br><span class="line">	<span class="keyword">try</span> &#123;</span><br><span class="line">		<span class="comment">// 这里加载所有jar包中包含"MATF-INF/spring.factories"文件的url路径</span></span><br><span class="line">		Enumeration&lt;URL&gt; urls = (classLoader != <span class="keyword">null</span> ?</span><br><span class="line">				classLoader.getResources(FACTORIES_RESOURCE_LOCATION) :</span><br><span class="line">				ClassLoader.getSystemResources(FACTORIES_RESOURCE_LOCATION));</span><br><span class="line">		result = <span class="keyword">new</span> LinkedMultiValueMap&lt;&gt;();</span><br><span class="line">		<span class="comment">// 遍历urls路径，将所有spring.factories文件的键值对（key:SPI接口类名 value:SPI扩展类名）</span></span><br><span class="line">		<span class="comment">// 加载放到 result集合中</span></span><br><span class="line">		<span class="keyword">while</span> (urls.hasMoreElements()) &#123;</span><br><span class="line">			<span class="comment">// 取出一条url</span></span><br><span class="line">			URL url = urls.nextElement();</span><br><span class="line">			<span class="comment">// 将url封装到UrlResource对象中</span></span><br><span class="line">			UrlResource resource = <span class="keyword">new</span> UrlResource(url);</span><br><span class="line">			<span class="comment">// 利用PropertiesLoaderUtils的loadProperties方法将spring.factories文件键值对内容加载进Properties对象中</span></span><br><span class="line">			Properties properties = PropertiesLoaderUtils.loadProperties(resource);</span><br><span class="line">			<span class="comment">// 遍历刚加载的键值对properties对象</span></span><br><span class="line">			<span class="keyword">for</span> (Map.Entry&lt;?, ?&gt; entry : properties.entrySet()) &#123;</span><br><span class="line">				<span class="comment">// 取出SPI接口名</span></span><br><span class="line">				String factoryClassName = ((String) entry.getKey()).trim();</span><br><span class="line">				<span class="comment">// 遍历SPI接口名对应的实现类即SPI扩展类</span></span><br><span class="line">				<span class="keyword">for</span> (String factoryName : StringUtils.commaDelimitedListToStringArray((String) entry.getValue())) &#123;</span><br><span class="line">					<span class="comment">// SPI接口名作为key，SPI扩展类作为value放入result中</span></span><br><span class="line">					result.add(factoryClassName, factoryName.trim());</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="comment">// 以classLoader作为key，result作为value放入cache缓存</span></span><br><span class="line">		cache.put(classLoader, result);</span><br><span class="line">		<span class="comment">// 最终返回result对象</span></span><br><span class="line">		<span class="keyword">return</span> result;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">catch</span> (IOException ex) &#123;</span><br><span class="line">		<span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException(<span class="string">"Unable to load factories from location ["</span> +</span><br><span class="line">				FACTORIES_RESOURCE_LOCATION + <span class="string">"]"</span>, ex);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>如上代码，<code>loadSpringFactories</code>方法主要做的事情就是利用之前获取的线程上下文类加载器将<code>classpath</code>中的所有<code>spring.factories</code>配置文件中所有SPI接口的所有扩展实现类给加载出来，然后放入缓存中。<strong>注意</strong>，这里是一次性加载所有的SPI扩展实现类哈，所以之后根据SPI接口就直接从缓存中获取SPI扩展类了，就不用再次去<code>spring.factories</code>配置文件中获取SPI接口对应的扩展实现类了。比如之后的获取<code>ApplicationListener</code>,<code>FailureAnalyzer</code>和<code>EnableAutoConfiguration</code>接口的扩展实现类都直接从缓存中获取即可。</p>
+<blockquote>
+<p><strong>思考1：</strong> 这里为啥要一次性从<code>spring.factories</code>配置文件中获取所有的扩展类放入缓存中呢？而不是每次都是根据SPI接口去<code>spring.factories</code>配置文件中获取呢？</p>
+</blockquote>
+<blockquote>
+<p><strong>思考2：</strong> 还记得之前讲的SpringBoot的自动配置源码时提到的<code>AutoConfigurationImportFilter</code>这个接口的作用吗？现在我们应该能更清楚的理解这个接口的作用了吧。</p>
+</blockquote>
+<p>将所有的SPI扩展实现类加载出来后，此时再调用<code>getOrDefault(factoryClassName, Collections.emptyList())</code>方法根据SPI接口名去筛选当前对应的扩展实现类，比如这里传入的<code>factoryClassName</code>参数名为<code>ApplicationContextInitializer</code>接口，那么这个接口将会作为<code>key</code>从刚才缓存数据中取出<code>ApplicationContextInitializer</code>接口对应的SPI扩展实现类。其中从<code>spring.factories</code>中获取的<code>ApplicationContextInitializer</code>接口对应的所有SPI扩展实现类如下图所示：</p>
+<p><img src="/images/1616637193914.jpg" alt="1616637193914"></p>"
+<h2 id="2-3-实例化从spring-factories中加载的SPI扩展类"><a href="#2-3-实例化从spring-factories中加载的SPI扩展类" class="headerlink" title="2.3 实例化从spring.factories中加载的SPI扩展类"></a>2.3 实例化从spring.factories中加载的SPI扩展类</h2><p>前面从<code>spring.factories</code>中获取到<code>ApplicationContextInitializer</code>接口对应的所有SPI扩展实现类后，此时会将这些SPI扩展类进行实例化。</p>
+<p>此时我们再来看下前面的第<code>【3】</code>步的实例化代码： <code>List&lt;T&gt; instances = createSpringFactoriesInstances(type, parameterTypes,classLoader, args, names);</code>。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// SpringApplication.java</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span> &lt;T&gt; <span class="function">List&lt;T&gt; <span class="title">createSpringFactoriesInstances</span><span class="params">(Class&lt;T&gt; type,</span></span></span><br><span class="line"><span class="function"><span class="params">		Class&lt;?&gt;[] parameterTypes, ClassLoader classLoader, Object[] args,</span></span></span><br><span class="line"><span class="function"><span class="params">		Set&lt;String&gt; names)</span> </span>&#123;</span><br><span class="line">	<span class="comment">// 新建instances集合，用于存储稍后实例化后的SPI扩展类对象</span></span><br><span class="line">	List&lt;T&gt; instances = <span class="keyword">new</span> ArrayList&lt;&gt;(names.size());</span><br><span class="line">	<span class="comment">// 遍历name集合，names集合存储了所有SPI扩展类的全限定名</span></span><br><span class="line">	<span class="keyword">for</span> (String name : names) &#123;</span><br><span class="line">		<span class="keyword">try</span> &#123;</span><br><span class="line">			<span class="comment">// 根据全限定名利用反射加载类</span></span><br><span class="line">			Class&lt;?&gt; instanceClass = ClassUtils.forName(name, classLoader);</span><br><span class="line">			<span class="comment">// 断言刚才加载的SPI扩展类是否属于SPI接口类型</span></span><br><span class="line">			Assert.isAssignable(type, instanceClass);</span><br><span class="line">			<span class="comment">// 获得SPI扩展类的构造器</span></span><br><span class="line">			Constructor&lt;?&gt; constructor = instanceClass</span><br><span class="line">					.getDeclaredConstructor(parameterTypes);</span><br><span class="line">			<span class="comment">// 实例化SPI扩展类</span></span><br><span class="line">			T instance = (T) BeanUtils.instantiateClass(constructor, args);</span><br><span class="line">			<span class="comment">// 添加进instances集合</span></span><br><span class="line">			instances.add(instance);</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">catch</span> (Throwable ex) &#123;</span><br><span class="line">			<span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException(</span><br><span class="line">					<span class="string">"Cannot instantiate "</span> + type + <span class="string">" : "</span> + name, ex);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">// 返回</span></span><br><span class="line">	<span class="keyword">return</span> instances;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>上面代码很简单，主要做的事情就是实例化SPI扩展类。 好了，SpringBoot自定义的SPI机制就已经分析完了。</p>
+<blockquote>
+<p><strong>思考3：</strong> SpringBoot为何弃用Java的SPI而自定义了一套SPI？</p>
+</blockquote>
+<h1 id="3-小结"><a href="#3-小结" class="headerlink" title="3 小结"></a>3 小结</h1><p>好了，本片就到此结束了，先将前面的知识点再总结下：</p>
+<ol>
+<li>分析了<code>SpringApplication</code>对象的构造过程；</li>
+<li>分析了SpringBoot自己实现的一套SPI机制。</li>
+</ol>
+<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><p><a href="https://juejin.cn/post/6844904113184981006" target="_blank" rel="noopener">SpringApplication对象是如何构建的？ SpringBoot源码（八）</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div></div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.jpg" alt="zch 微信支付">
+        <p>微信支付</p>
+      </div>
+    
+
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/SpringBoot/" rel="tag"># SpringBoot</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2021/03/22/spring_boot/SpringBoot系列--配置属性值绑定/" rel="next" title="SpringBoot--配置属性值绑定">
+                <i class="fa fa-chevron-left"></i> SpringBoot--配置属性值绑定
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2021/03/25/spring_boot/SpringBoot系列--事件监听/" rel="prev" title="SpringBoot--事件监听">
+                SpringBoot--事件监听 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        
+  <div class="bdsharebuttonbox">
+    <a href="#" class="bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+    <a href="#" class="bds_douban" data-cmd="douban" title="分享到豆瓣网"></a>
+    <a href="#" class="bds_sqq" data-cmd="sqq" title="分享到QQ好友"></a>
+    <a href="#" class="bds_qzone" data-cmd="qzone" title="分享到QQ空间"></a>
+    <a href="#" class="bds_weixin" data-cmd="weixin" title="分享到微信"></a>
+    <a href="#" class="bds_tieba" data-cmd="tieba" title="分享到百度贴吧"></a>
+    <a href="#" class="bds_twi" data-cmd="twi" title="分享到Twitter"></a>
+    <a href="#" class="bds_fbook" data-cmd="fbook" title="分享到Facebook"></a>
+    <a href="#" class="bds_more" data-cmd="more"></a>
+    <a class="bds_count" data-cmd="count"></a>
+  </div>
+  <script>
+    window._bd_share_config = {
+      "common": {
+        "bdText": "",
+        "bdMini": "2",
+        "bdMiniList": false,
+        "bdPic": ""
+      },
+      "share": {
+        "bdSize": "16",
+        "bdStyle": "0"
+      },
+      "image": {
+        "viewList": ["tsina", "douban", "sqq", "qzone", "weixin", "twi", "fbook"],
+        "viewText": "分享到：",
+        "viewSize": "16"
+      }
+    }
+  </script>
+
+<script>
+  with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='//bdimg.share.baidu.com/static/api/js/share.js?cdnversion='+~(-new Date()/36e5)];
+</script>
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar.png" alt="zch">
+            
+              <p class="site-author-name" itemprop="name">zch</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">160</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">29</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">117</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-SpringApplication对象的构建过程"><span class="nav-number">1.</span> <span class="nav-text">1 SpringApplication对象的构建过程</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#2-1-推断项目应用类型"><span class="nav-number">1.1.</span> <span class="nav-text">2.1 推断项目应用类型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-2-推断哪个类调用了main函数"><span class="nav-number">1.2.</span> <span class="nav-text">3.2 推断哪个类调用了main函数</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-SpringBoot的SPI机制原理解读"><span class="nav-number">2.</span> <span class="nav-text">2 SpringBoot的SPI机制原理解读</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#2-1-获得类加载器"><span class="nav-number">2.1.</span> <span class="nav-text">2.1 获得类加载器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-2-加载spring-factories配置文件中的SPI扩展类"><span class="nav-number">2.2.</span> <span class="nav-text">2.2 加载spring.factories配置文件中的SPI扩展类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-3-实例化从spring-factories中加载的SPI扩展类"><span class="nav-number">2.3.</span> <span class="nav-text">2.3 实例化从spring.factories中加载的SPI扩展类</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-小结"><span class="nav-number">3.</span> <span class="nav-text">3 小结</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考"><span class="nav-number">4.</span> <span class="nav-text">参考</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<div class="copyright">&copy; <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">zch</span>
+
+  
+</div>
+
+
+  <div class="powered-by">个人学习和工作中总结的笔记</div>
+  <i class="fa fa-user-md"></i>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+<script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? "https://" : "http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1276375036'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s5.cnzz.com/z_stat.php%3Fid%3D1276375036%26online%3D1%26show%3Dline' type='text/javascript'%3E%3C/script%3E"));</script>
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/three/three.min.js"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/three/canvas_sphere.min.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+  
+  <script type="text/javascript">
+    var GUEST = ['nick','mail','link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item=>{
+      return GUEST.indexOf(item)>-1;
+    });
+    new Valine({
+        el: '#comments' ,
+        verify: true,
+        notify: true,
+        appId: 'qlLpITiuRGP5wGRRqD1TTe7y-gzGzoHsz',
+        appKey: 'Xu6NC8eq2DCotEgOrHgbA2St',
+        placeholder: 'ヾﾉ≧∀≦)o来啊，快活啊!',
+        avatar:'mm',
+        guest_info:guest,
+        pageSize:'10' || 10,
+    });
+  </script>
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

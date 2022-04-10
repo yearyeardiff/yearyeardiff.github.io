@@ -1,0 +1,1330 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+<meta name="google-site-verification" content="6pSprQE3BiN_wM4uIQnTSoO5EAKab52jQ86zdl_VH84">
+<meta name="google-site-verification" content="pa5VzMThwxpvSOgHS15kDjiLdeww7kHG5LcJjH6EQko">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/science-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/science-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="分布式,SSO,分布式session,">
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="ZCH NOTES" type="application/atom+xml">
+
+
+
+
+
+
+<meta name="description" content="一、什么是单点登录？单点登录的英文名叫做：Single Sign On（简称SSO）。 在初学/以前的时候，一般我们就单系统，所有的功能都在同一个系统上。 &quot; 后来，我们为了合理利用资源和降低耦合性，于是把单系统拆分成多个子系统。 &quot; 比如阿里系的淘宝和天猫，很明显地我们可以知道这是两个系统，但是你在使用的时候，登录了天猫，淘宝也会自动登录。 &quot; 简单来说，单点登录就是在多个系统中，用户只需一次登">
+<meta name="keywords" content="分布式,SSO,分布式session">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SSO">
+<meta property="og:url" content="http://yoursite.com/2020/07/25/分布式/SSO/index.html">
+<meta property="og:site_name" content="ZCH NOTES">
+<meta property="og:description" content="一、什么是单点登录？单点登录的英文名叫做：Single Sign On（简称SSO）。 在初学/以前的时候，一般我们就单系统，所有的功能都在同一个系统上。 &quot; 后来，我们为了合理利用资源和降低耦合性，于是把单系统拆分成多个子系统。 &quot; 比如阿里系的淘宝和天猫，很明显地我们可以知道这是两个系统，但是你在使用的时候，登录了天猫，淘宝也会自动登录。 &quot; 简单来说，单点登录就是在多个系统中，用户只需一次登">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/images/1558062779797.jpg">
+<meta property="og:image" content="http://yoursite.com/images/1558062796519.jpg">
+<meta property="og:image" content="http://yoursite.com/images/1558062821112.jpg">
+<meta property="og:image" content="http://yoursite.com/images/1558063436952.jpg">
+<meta property="og:image" content="http://yoursite.com/images/1558063456476.jpg">
+<meta property="og:image" content="http://yoursite.com/images/1558063534745.jpg">
+<meta property="og:image" content="http://yoursite.com/images/1558063547723.jpg">
+<meta property="og:image" content="http://yoursite.com/images/1558063561284.jpg">
+<meta property="og:image" content="http://yoursite.com/images/1558063616854.jpg">
+<meta property="og:updated_time" content="2020-07-25T08:52:41.700Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="SSO">
+<meta name="twitter:description" content="一、什么是单点登录？单点登录的英文名叫做：Single Sign On（简称SSO）。 在初学/以前的时候，一般我们就单系统，所有的功能都在同一个系统上。 &quot; 后来，我们为了合理利用资源和降低耦合性，于是把单系统拆分成多个子系统。 &quot; 比如阿里系的淘宝和天猫，很明显地我们可以知道这是两个系统，但是你在使用的时候，登录了天猫，淘宝也会自动登录。 &quot; 简单来说，单点登录就是在多个系统中，用户只需一次登">
+<meta name="twitter:image" content="http://yoursite.com/images/1558062779797.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"right","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2020/07/25/分布式/SSO/">
+
+
+
+
+
+  <title>SSO | ZCH NOTES</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-right page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">ZCH NOTES</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <h1 class="site-subtitle" itemprop="description">博学笃志 切问近思</h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404.html" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br>
+            
+            公益404
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/07/25/分布式/SSO/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="zch">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ZCH NOTES">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">SSO</h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-07-25T16:52:41+08:00">
+                2020-07-25
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/分布式/" itemprop="url" rel="index">
+                    <span itemprop="name">分布式</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2020/07/25/分布式/SSO/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2020/07/25/分布式/SSO/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="一、什么是单点登录？"><a href="#一、什么是单点登录？" class="headerlink" title="一、什么是单点登录？"></a>一、什么是单点登录？</h1><p>单点登录的英文名叫做：Single Sign On（简称<strong>SSO</strong>）。</p>
+<p>在<strong>初学/以前</strong>的时候，一般我们就<strong>单系统</strong>，所有的功能都在同一个系统上。</p>
+<p><img src="/images/1558062779797.jpg" alt="enter description here"></p>"
+<p>后来，我们为了<strong>合理利用资源和降低耦合性</strong>，于是把单系统<strong>拆分</strong>成多个子系统。</p>
+<p><img src="/images/1558062796519.jpg" alt="enter description here"></p>"
+<p>比如阿里系的<strong>淘宝和天猫</strong>，很明显地我们可以知道这是两个系统，但是你在使用的时候，登录了天猫，淘宝也会自动登录。</p>
+<p><img src="/images/1558062821112.jpg" alt="enter description here"></p>"
+<p>简单来说，单点登录就是<strong>在多个系统中，用户只需一次登录，各个系统即可感知该用户已经登录。</strong></p>
+<h1 id="二、回顾单系统登录"><a href="#二、回顾单系统登录" class="headerlink" title="二、回顾单系统登录"></a>二、回顾单系统登录</h1><p>在我初学JavaWeb的时候，登录和注册是我做得最多的一个功能了（初学Servlet的时候做过、学SpringMVC的时候做过、跟着做项目的时候做过…），反正我也数不清我做了多少次登录和注册的功能了…这里简单讲述一下我们初学时是怎么做登录功能的。</p>
+<p>众所周知，HTTP是<strong>无状态</strong>的协议，这意味着<strong>服务器无法确认用户的信息</strong>。于是乎，W3C就提出了：给每一个用户都发一个通行证，无论谁访问的时候都需要携带通行证，这样服务器就可以从通行证上确认用户的信息。通行证就是<strong>Cookie</strong>。</p>
+<p>如果说Cookie是检查用户身上的”通行证“来确认用户的身份，那么Session就是通过检查服务器上的”客户明细表“来确认用户的身份的。<strong>Session相当于在服务器中建立了一份“客户明细表”</strong>。</p>
+<p>HTTP协议是无状态的，Session不能依据HTTP连接来判断是否为同一个用户。于是乎：服务器向用户浏览器发送了一个名为JESSIONID的Cookie，它的值是Session的id值。<strong>其实Session是依据Cookie来识别是否是同一个用户</strong>。</p>
+<p>所以，一般我们单系统实现登录会这样做：</p>
+<ul>
+<li><strong>登录</strong>：将用户信息保存在Session对象中<ul>
+<li>如果在Session对象中能查到，说明已经登录</li>
+<li>如果在Session对象中查不到，说明没登录（或者已经退出了登录）</li>
+</ul>
+</li>
+<li><strong>注销（退出登录）</strong>：从Session中删除用户的信息</li>
+<li><strong>记住我（关闭掉浏览器后，重新打开浏览器还能保持登录状态）</strong>：配合Cookie来用</li>
+</ul>
+<p>我之前Demo的代码，可以参考一下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br></pre></td><td class="code"><pre><span class="line"> <span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 用户登陆</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@PostMapping</span>(value = <span class="string">"/user/session"</span>, produces = &#123;<span class="string">"application/json;charset=UTF-8"</span>&#125;)</span><br><span class="line"><span class="function"><span class="keyword">public</span> Result <span class="title">login</span><span class="params">(String mobileNo, String password, String inputCaptcha, HttpSession session, HttpServletResponse response)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//判断验证码是否正确</span></span><br><span class="line">    <span class="keyword">if</span> (WebUtils.validateCaptcha(inputCaptcha, <span class="string">"captcha"</span>, session)) &#123;</span><br><span class="line"></span><br><span class="line">        <span class="comment">//判断有没有该用户</span></span><br><span class="line">        User user = userService.userLogin(mobileNo, password);</span><br><span class="line">        <span class="keyword">if</span> (user != <span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="comment">/*设置自动登陆，一个星期.  将token保存在数据库中*/</span></span><br><span class="line">            String loginToken = WebUtils.md5(<span class="keyword">new</span> Date().toString() + session.getId());</span><br><span class="line">            user.setLoginToken(loginToken);</span><br><span class="line">            User user1 = userService.userUpload(user);</span><br><span class="line"></span><br><span class="line">            session.setAttribute(<span class="string">"user"</span>, user1);</span><br><span class="line"></span><br><span class="line">            CookieUtil.addCookie(response,<span class="string">"loginToken"</span>,loginToken,<span class="number">604800</span>);</span><br><span class="line"></span><br><span class="line">            <span class="keyword">return</span> ResultUtil.success(user1);</span><br><span class="line"></span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> ResultUtil.error(ResultEnum.LOGIN_ERROR);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> ResultUtil.error(ResultEnum.CAPTCHA_ERROR);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 用户退出</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@DeleteMapping</span>(value = <span class="string">"/session"</span>, produces = &#123;<span class="string">"application/json;charset=UTF-8"</span>&#125;)</span><br><span class="line"><span class="function"><span class="keyword">public</span> Result <span class="title">logout</span><span class="params">(HttpSession session,HttpServletRequest request,HttpServletResponse response )</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//删除session和cookie</span></span><br><span class="line">    session.removeAttribute(<span class="string">"user"</span>);</span><br><span class="line"></span><br><span class="line">    CookieUtil.clearCookie(request, response, <span class="string">"loginToken"</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> ResultUtil.success();</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">* <span class="doctag">@author</span> ozc</span></span><br><span class="line"><span class="comment">* <span class="doctag">@version</span> 1.0</span></span><br><span class="line"><span class="comment">* &lt;p&gt;</span></span><br><span class="line"><span class="comment">* 拦截器；实现自动登陆功能</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">UserInterceptor</span> <span class="keyword">implements</span> <span class="title">HandlerInterceptor</span> </span>&#123;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">@Autowired</span></span><br><span class="line"><span class="keyword">private</span> UserService userService;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">preHandle</span><span class="params">(HttpServletRequest request, HttpServletResponse response, Object o)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">    User sessionUser = (User) request.getSession().getAttribute(<span class="string">"user"</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 已经登陆了，放行</span></span><br><span class="line">    <span class="keyword">if</span> (sessionUser != <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="comment">//得到带过来cookie是否存在</span></span><br><span class="line">        String loginToken = CookieUtil.findCookieByName(request, <span class="string">"loginToken"</span>);</span><br><span class="line">        <span class="keyword">if</span> (StringUtils.isNotBlank(loginToken)) &#123;</span><br><span class="line">            <span class="comment">//到数据库查询有没有该Cookie</span></span><br><span class="line">            User user = userService.findUserByLoginToken(loginToken);</span><br><span class="line">            <span class="keyword">if</span> (user != <span class="keyword">null</span>) &#123;</span><br><span class="line">                request.getSession().setAttribute(<span class="string">"user"</span>, user);</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="comment">//没有该Cookie与之对应的用户(Cookie不匹配)</span></span><br><span class="line">                CookieUtil.clearCookie(request, response, <span class="string">"loginToken"</span>);</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line"></span><br><span class="line">            <span class="comment">//没有cookie、也没有登陆。是index请求获取用户信息，可以放行</span></span><br><span class="line">            <span class="keyword">if</span> (request.getRequestURI().contains(<span class="string">"session"</span>)) &#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="comment">//没有cookie凭证</span></span><br><span class="line">            response.sendRedirect(<span class="string">"/login.html"</span>);</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>总结一下上面代码的思路：</p>
+<ul>
+<li>用户登录时，验证用户的账户和密码</li>
+<li>生成一个Token保存在数据库中，将Token写到Cookie中</li>
+<li>将用户数据保存在Session中</li>
+<li>请求时都会带上Cookie，检查有没有登录，如果已经登录则放行</li>
+</ul>
+<h1 id="三、多系统登录的问题与解决"><a href="#三、多系统登录的问题与解决" class="headerlink" title="三、多系统登录的问题与解决"></a>三、多系统登录的问题与解决</h1><h2 id="3-1-Session不共享问题"><a href="#3-1-Session不共享问题" class="headerlink" title="3.1 Session不共享问题"></a>3.1 Session不共享问题</h2><p>单系统登录功能主要是用Session保存用户信息来实现的，但我们清楚的是：多系统即可能有多个Tomcat，而Session是依赖当前系统的Tomcat，所以系统A的Session和系统B的Session是<strong>不共享</strong>的。</p>
+<p><img src="/images/1558063436952.jpg" alt="enter description here"></p>"
+<p>解决系统之间Session不共享问题有一下几种方案：</p>
+<ul>
+<li>Tomcat集群Session全局复制（集群内每个tomcat的session完全同步）【会影响集群的性能呢，不建议】</li>
+<li>根据请求的IP进行<strong>Hash映射</strong>到对应的机器上（这就相当于请求的IP一直会访问同一个服务器）【如果服务器宕机了，会丢失了一大部分Session的数据，不建议】</li>
+<li>把Session数据放在Redis中（使用Redis模拟Session）【<strong>建议</strong>】</li>
+</ul>
+<p>我们可以将登录功能<strong>单独抽取</strong>出来，做成一个子系统。</p>
+<p><img src="/images/1558063456476.jpg" alt="enter description here"></p>"
+<p>SSO（登录系统）的逻辑如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 登录功能(SSO单独的服务)</span></span><br><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> TaotaoResult <span class="title">login</span><span class="params">(String username, String password)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//根据用户名查询用户信息</span></span><br><span class="line">    TbUserExample example = <span class="keyword">new</span> TbUserExample();</span><br><span class="line">    Criteria criteria = example.createCriteria();</span><br><span class="line">    criteria.andUsernameEqualTo(username);</span><br><span class="line">    List&lt;TbUser&gt; list = userMapper.selectByExample(example);</span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">null</span> == list || list.isEmpty()) &#123;</span><br><span class="line">        <span class="keyword">return</span> TaotaoResult.build(<span class="number">400</span>, <span class="string">"用户不存在"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//核对密码</span></span><br><span class="line">    TbUser user = list.get(<span class="number">0</span>);</span><br><span class="line">    <span class="keyword">if</span> (!DigestUtils.md5DigestAsHex(password.getBytes()).equals(user.getPassword())) &#123;</span><br><span class="line">        <span class="keyword">return</span> TaotaoResult.build(<span class="number">400</span>, <span class="string">"密码错误"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//登录成功，把用户信息写入redis</span></span><br><span class="line">    <span class="comment">//生成一个用户token</span></span><br><span class="line">    String token = UUID.randomUUID().toString();</span><br><span class="line">    jedisCluster.set(USER_TOKEN_KEY + <span class="string">":"</span> + token, JsonUtils.objectToJson(user));</span><br><span class="line">    <span class="comment">//设置session过期时间</span></span><br><span class="line">    jedisCluster.expire(USER_TOKEN_KEY + <span class="string">":"</span> + token, SESSION_EXPIRE_TIME);</span><br><span class="line">    <span class="keyword">return</span> TaotaoResult.ok(token);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>其他子系统登录时，<strong>请求SSO（登录系统）进行登录，将返回的token写到Cookie中</strong>，下次访问时则把Cookie带上：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> TaotaoResult <span class="title">login</span><span class="params">(String username, String password, </span></span></span><br><span class="line"><span class="function"><span class="params">        HttpServletRequest request, HttpServletResponse response)</span> </span>&#123;</span><br><span class="line">    <span class="comment">//请求参数</span></span><br><span class="line">    Map&lt;String, String&gt; param = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">    param.put(<span class="string">"username"</span>, username);</span><br><span class="line">    param.put(<span class="string">"password"</span>, password);</span><br><span class="line">    <span class="comment">//登录处理</span></span><br><span class="line">    String stringResult = HttpClientUtil.doPost(REGISTER_USER_URL + USER_LOGIN_URL, param);</span><br><span class="line">    TaotaoResult result = TaotaoResult.format(stringResult);</span><br><span class="line">    <span class="comment">//登录出错</span></span><br><span class="line">    <span class="keyword">if</span> (result.getStatus() != <span class="number">200</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> result;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//登录成功后把取token信息，并写入cookie</span></span><br><span class="line">    String token = (String) result.getData();</span><br><span class="line">    <span class="comment">//写入cookie</span></span><br><span class="line">    CookieUtils.setCookie(request, response, <span class="string">"TT_TOKEN"</span>, token);</span><br><span class="line">    <span class="comment">//返回成功</span></span><br><span class="line">    <span class="keyword">return</span> result;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>总结：</p>
+<ul>
+<li>SSO系统生成一个token，并将用户信息存到Redis中，并设置过期时间</li>
+<li>其他系统请求SSO系统进行登录，得到SSO返回的token，写到Cookie中</li>
+<li>每次请求时，Cookie都会带上，拦截器得到token，判断是否已经登录</li>
+</ul>
+<p>到这里，其实我们会发现其实就两个变化：</p>
+<ul>
+<li><strong>将登陆功能抽取为一个系统（SSO），其他系统请求SSO进行登录</strong></li>
+<li><strong>本来将用户信息存到Session，现在将用户信息存到Redis</strong></li>
+</ul>
+<h2 id="3-2-Cookie跨域的问题"><a href="#3-2-Cookie跨域的问题" class="headerlink" title="3.2 Cookie跨域的问题"></a>3.2 Cookie跨域的问题</h2><p>上面我们解决了Session不能共享的问题，但其实还有另一个问题。<strong>Cookie是不能跨域的</strong><br>比如说，我们请求<code>&lt;https://www.google.com/&gt;</code>时，浏览器会自动把<code>google.com</code>的Cookie带过去给<code>google</code>的服务器，而不会把<code>&lt;https://www.baidu.com/&gt;</code>的Cookie带过去给<code>google</code>的服务器。<br>这就意味着，<strong>由于域名不同</strong>，用户向系统A登录后，系统A返回给浏览器的Cookie，用户再请求系统B的时候不会将系统A的Cookie带过去。</p>
+<p>针对Cookie存在跨域问题，有几种解决方案：</p>
+<ol>
+<li>服务端将Cookie写到客户端后，客户端对Cookie进行解析，将Token解析出来，此后请求都把这个Token带上就行了</li>
+<li>多个域名共享Cookie，在写到客户端的时候设置Cookie的domain。</li>
+<li>将Token保存在SessionStroage中（不依赖Cookie就没有跨域的问题了）</li>
+</ol>
+<p>到这里，我们已经可以实现单点登录了。</p>
+<h2 id="3-3-CAS原理"><a href="#3-3-CAS原理" class="headerlink" title="3.3 CAS原理"></a>3.3 CAS原理</h2><p>说到单点登录，就肯定会见到这个名词：CAS （Central Authentication Service），下面说说CAS是怎么搞的。<br><strong>如果已经将登录单独抽取成系统出来</strong>，我们还能这样玩。现在我们有两个系统，分别是<code>www.java3y.com</code>和<code>www.java4y.com</code>，一个SSO<code>www.sso.com</code></p>
+<p><img src="/images/1558063534745.jpg" alt="enter description here"></p>"
+<p>首先，用户想要访问系统A<code>www.java3y.com</code>受限的资源(比如说购物车功能，购物车功能需要登录后才能访问)，系统A<code>www.java3y.com</code>发现用户并没有登录，于是<strong>重定向到sso认证中心，并将自己的地址作为参数</strong>。请求的地址如下：</p>
+<ul>
+<li><code>www.sso.com?service=www.java3y.com</code></li>
+</ul>
+<p>sso认证中心发现用户未登录，将用户引导至登录页面，用户进行输入用户名和密码进行登录，用户与认证中心建立<strong>全局会话（生成一份Token，写到Cookie中，保存在浏览器上）</strong></p>
+<p><img src="/images/1558063547723.jpg" alt="enter description here"></p>"
+<p>随后，认证中心<strong>重定向回系统A</strong>，并把Token携带过去给系统A，重定向的地址如下：</p>
+<ul>
+<li><code>www.java3y.com?token=xxxxxxx</code></li>
+</ul>
+<p>接着，系统A去sso认证中心验证这个Token是否正确，如果正确，则系统A和用户建立局部会话（<strong>创建Session</strong>）。到此，系统A和用户已经是登录状态了。</p>
+<p><img src="/images/1558063561284.jpg" alt="enter description here"></p>"
+<p>此时，用户想要访问系统B<code>www.java4y.com</code>受限的资源(比如说订单功能，订单功能需要登录后才能访问)，系统B<code>www.java4y.com</code>发现用户并没有登录，于是<strong>重定向到sso认证中心，并将自己的地址作为参数</strong>。请求的地址如下：</p>
+<ul>
+<li><code>www.sso.com?service=www.java4y.com</code></li>
+</ul>
+<p>注意，因为之前用户与认证中心<code>www.sso.com</code>已经建立了全局会话（当时已经把Cookie保存到浏览器上了），所以这次系统B<strong>重定向</strong>到认证中心<code>www.sso.com</code>是可以带上Cookie的。<br>认证中心<strong>根据带过来的Cookie</strong>发现已经与用户建立了全局会话了，认证中心<strong>重定向回系统B</strong>，并把Token携带过去给系统B，重定向的地址如下：</p>
+<ul>
+<li><code>www.java4y.com?token=xxxxxxx</code></li>
+</ul>
+<p>接着，系统B去sso认证中心验证这个Token是否正确，如果正确，则系统B和用户建立局部会话（<strong>创建Session</strong>）。到此，系统B和用户已经是登录状态了。</p>
+<p><img src="/images/1558063616854.jpg" alt="enter description here"></p>"
+<p>看到这里，其实SSO认证中心就类似一个<strong>中转站</strong>。</p>
+<p>参考资料：</p>
+<ul>
+<li><a href="https://www.cnblogs.com/EzrealLiu/p/5559255.html" target="_blank" rel="noopener">https://www.cnblogs.com/EzrealLiu/p/5559255.html</a></li>
+<li><a href="http://www.cnblogs.com/ywlaker/p/6113927.html" target="_blank" rel="noopener">http://www.cnblogs.com/ywlaker/p/6113927.html</a></li>
+<li><a href="https://blog.csdn.net/javaloveiphone/article/details/52439613" target="_blank" rel="noopener">https://blog.csdn.net/javaloveiphone/article/details/52439613</a></li>
+</ul>
+<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><ul>
+<li>转自：<a href="https://mp.weixin.qq.com/s/2T0lAKrRN3ZeioHC8budbg" target="_blank" rel="noopener">什么是单点登录（SSO）</a></li>
+<li><a href="https://blog.csdn.net/xiaoliuliu2050/article/details/103802467" target="_blank" rel="noopener">单点登录（SSO）</a></li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div></div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.jpg" alt="zch 微信支付">
+        <p>微信支付</p>
+      </div>
+    
+
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/分布式/" rel="tag"># 分布式</a>
+          
+            <a href="/tags/SSO/" rel="tag"># SSO</a>
+          
+            <a href="/tags/分布式session/" rel="tag"># 分布式session</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/07/25/spring源码/spring--ioc bean的循环依赖/" rel="next" title="spring--ioc bean的循环依赖">
+                <i class="fa fa-chevron-left"></i> spring--ioc bean的循环依赖
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/07/25/分布式/RPC框架几行代码就够了/" rel="prev" title="RPC框架几行代码就够了">
+                RPC框架几行代码就够了 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        
+  <div class="bdsharebuttonbox">
+    <a href="#" class="bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+    <a href="#" class="bds_douban" data-cmd="douban" title="分享到豆瓣网"></a>
+    <a href="#" class="bds_sqq" data-cmd="sqq" title="分享到QQ好友"></a>
+    <a href="#" class="bds_qzone" data-cmd="qzone" title="分享到QQ空间"></a>
+    <a href="#" class="bds_weixin" data-cmd="weixin" title="分享到微信"></a>
+    <a href="#" class="bds_tieba" data-cmd="tieba" title="分享到百度贴吧"></a>
+    <a href="#" class="bds_twi" data-cmd="twi" title="分享到Twitter"></a>
+    <a href="#" class="bds_fbook" data-cmd="fbook" title="分享到Facebook"></a>
+    <a href="#" class="bds_more" data-cmd="more"></a>
+    <a class="bds_count" data-cmd="count"></a>
+  </div>
+  <script>
+    window._bd_share_config = {
+      "common": {
+        "bdText": "",
+        "bdMini": "2",
+        "bdMiniList": false,
+        "bdPic": ""
+      },
+      "share": {
+        "bdSize": "16",
+        "bdStyle": "0"
+      },
+      "image": {
+        "viewList": ["tsina", "douban", "sqq", "qzone", "weixin", "twi", "fbook"],
+        "viewText": "分享到：",
+        "viewSize": "16"
+      }
+    }
+  </script>
+
+<script>
+  with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='//bdimg.share.baidu.com/static/api/js/share.js?cdnversion='+~(-new Date()/36e5)];
+</script>
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar.png" alt="zch">
+            
+              <p class="site-author-name" itemprop="name">zch</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">160</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">29</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">117</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#一、什么是单点登录？"><span class="nav-number">1.</span> <span class="nav-text">一、什么是单点登录？</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#二、回顾单系统登录"><span class="nav-number">2.</span> <span class="nav-text">二、回顾单系统登录</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#三、多系统登录的问题与解决"><span class="nav-number">3.</span> <span class="nav-text">三、多系统登录的问题与解决</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#3-1-Session不共享问题"><span class="nav-number">3.1.</span> <span class="nav-text">3.1 Session不共享问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-2-Cookie跨域的问题"><span class="nav-number">3.2.</span> <span class="nav-text">3.2 Cookie跨域的问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-3-CAS原理"><span class="nav-number">3.3.</span> <span class="nav-text">3.3 CAS原理</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考"><span class="nav-number">4.</span> <span class="nav-text">参考</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<div class="copyright">&copy; <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">zch</span>
+
+  
+</div>
+
+
+  <div class="powered-by">个人学习和工作中总结的笔记</div>
+  <i class="fa fa-user-md"></i>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+<script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? "https://" : "http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1276375036'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s5.cnzz.com/z_stat.php%3Fid%3D1276375036%26online%3D1%26show%3Dline' type='text/javascript'%3E%3C/script%3E"));</script>
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/three/three.min.js"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/three/canvas_sphere.min.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+  
+  <script type="text/javascript">
+    var GUEST = ['nick','mail','link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item=>{
+      return GUEST.indexOf(item)>-1;
+    });
+    new Valine({
+        el: '#comments' ,
+        verify: true,
+        notify: true,
+        appId: 'qlLpITiuRGP5wGRRqD1TTe7y-gzGzoHsz',
+        appKey: 'Xu6NC8eq2DCotEgOrHgbA2St',
+        placeholder: 'ヾﾉ≧∀≦)o来啊，快活啊!',
+        avatar:'mm',
+        guest_info:guest,
+        pageSize:'10' || 10,
+    });
+  </script>
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

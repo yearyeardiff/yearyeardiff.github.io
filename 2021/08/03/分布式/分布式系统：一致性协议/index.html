@@ -1,0 +1,1259 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+<meta name="google-site-verification" content="6pSprQE3BiN_wM4uIQnTSoO5EAKab52jQ86zdl_VH84">
+<meta name="google-site-verification" content="pa5VzMThwxpvSOgHS15kDjiLdeww7kHG5LcJjH6EQko">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/science-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/science-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="分布式,">
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="ZCH NOTES" type="application/atom+xml">
+
+
+
+
+
+
+<meta name="description" content="一致性模型本质上是进程与数据存储的约定，通过一致性模型我们可以理解和推理在分布式系统中数据复制需要考虑的问题和基本假设。那么，一致性模型的具体实现有一些呢？本文会介绍一致性协议实现的主要思想和方法。 什么是一致性协议一致性协议描述了特定一致性模型的实际实现。一致性模型就像是接口，而一致性协议就像是接口的具体实现。一致性模型提供了分布式系统中数据复制时保持一致性的约束，为了实现一致性模型的约束，需要">
+<meta name="keywords" content="分布式">
+<meta property="og:type" content="article">
+<meta property="og:title" content="一致性协议">
+<meta property="og:url" content="http://yoursite.com/2021/08/03/分布式/分布式系统：一致性协议/index.html">
+<meta property="og:site_name" content="ZCH NOTES">
+<meta property="og:description" content="一致性模型本质上是进程与数据存储的约定，通过一致性模型我们可以理解和推理在分布式系统中数据复制需要考虑的问题和基本假设。那么，一致性模型的具体实现有一些呢？本文会介绍一致性协议实现的主要思想和方法。 什么是一致性协议一致性协议描述了特定一致性模型的实际实现。一致性模型就像是接口，而一致性协议就像是接口的具体实现。一致性模型提供了分布式系统中数据复制时保持一致性的约束，为了实现一致性模型的约束，需要">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2021-08-03T09:53:47.401Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="一致性协议">
+<meta name="twitter:description" content="一致性模型本质上是进程与数据存储的约定，通过一致性模型我们可以理解和推理在分布式系统中数据复制需要考虑的问题和基本假设。那么，一致性模型的具体实现有一些呢？本文会介绍一致性协议实现的主要思想和方法。 什么是一致性协议一致性协议描述了特定一致性模型的实际实现。一致性模型就像是接口，而一致性协议就像是接口的具体实现。一致性模型提供了分布式系统中数据复制时保持一致性的约束，为了实现一致性模型的约束，需要">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"right","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2021/08/03/分布式/分布式系统：一致性协议/">
+
+
+
+
+
+  <title>一致性协议 | ZCH NOTES</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-right page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">ZCH NOTES</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <h1 class="site-subtitle" itemprop="description">博学笃志 切问近思</h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404.html" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br>
+            
+            公益404
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2021/08/03/分布式/分布式系统：一致性协议/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="zch">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ZCH NOTES">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">一致性协议</h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-08-03T17:50:49+08:00">
+                2021-08-03
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/分布式/" itemprop="url" rel="index">
+                    <span itemprop="name">分布式</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2021/08/03/分布式/分布式系统：一致性协议/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2021/08/03/分布式/分布式系统：一致性协议/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>一致性模型本质上是进程与数据存储的约定，通过一致性模型我们可以理解和推理在分布式系统中数据复制需要考虑的问题和基本假设。那么，一致性模型的具体实现有一些呢？本文会介绍一致性协议实现的主要思想和方法。</p>
+<h2 id="什么是一致性协议"><a href="#什么是一致性协议" class="headerlink" title="什么是一致性协议"></a>什么是一致性协议</h2><p><strong>一致性协议描述了特定一致性模型的实际实现。</strong>一致性模型就像是接口，而一致性协议就像是接口的具体实现。一致性模型提供了分布式系统中数据复制时保持一致性的约束，为了实现一致性模型的约束，需要通过一致性协议来保证。</p>
+<p>一致性协议根据是否允许数据分歧可以分为两种：</p>
+<ul>
+<li><strong>单主协议（不允许数据分歧）</strong>：整个分布式系统就像一个单体系统，所有写操作都由主节点处理并且同步给其他副本。例如主备同步、2PC、Paxos 都属于这类协议。</li>
+<li><strong>多主协议（允许数据分歧）</strong>：所有写操作可以由不同节点发起，并且同步给其他副本。例如 Gossip、POW。</li>
+</ul>
+<p>可以发现，<strong>它们的核心区别在于是否允许多个节点发起写操作，单主协议只允许由主节点发起写操作，因此它可以保证操作有序性，一致性更强。而多主协议允许多个节点发起写操作，因此它不能保证操作的有序性，只能做到弱一致性。</strong></p>
+<p>值得注意的是，一致性协议的分类方式有很多种，主要是看从哪个角度出发进行归类，常用的另一个归类方式是根据同步/异步复制来划分，这里就不多做讨论了。下面对单主协议和多主协议分别做一些共性的分析，篇幅所限，不会深入到协议细节。</p>
+<h2 id="单主协议"><a href="#单主协议" class="headerlink" title="单主协议"></a>单主协议</h2><p>单主协议的共同点在于都会用一个主节点来负责写操作，这样能够保证全局写的顺序一致性，它有另一个名字叫定序器，非常的形象。</p>
+<h3 id="主备复制"><a href="#主备复制" class="headerlink" title="主备复制"></a>主备复制</h3><p>主备复制可以说是最常用的数据复制方法，也是最基础的方法，很多其他协议都是基于它的变种。 <strong>主备复制要求所有的写操作都在主节点上进行，然后将操作的日志发送给其他副本。</strong>可以发现由于主备复制是有延迟的，所以它实现的是最终一致性。</p>
+<p>主备复制的实现方式：主节点处理完写操作之后立即返回结果给客户端，写操作的日志异步同步给其他副本。这样的好处是性能高，客户端不需要等待数据同步，缺点是如果主节点同步数据给副本之前数据缺失了，那么这些数据就永久丢失了。MySQL 的主备同步就是典型的异步复制。</p>
+<h3 id="两阶段提交"><a href="#两阶段提交" class="headerlink" title="两阶段提交"></a>两阶段提交</h3><p>两阶段提交（2PC）是关系型数据库常用的保持分布式事务一致性的协议，它也属于同步复制协议，即数据都同步完成之后才返回客户端结果。可以发现 2PC 保证所有节点数据一致之后才返回给客户端，实现了顺序一致性。</p>
+<p>2PC 把数据复制分为两步：</p>
+<ol>
+<li><strong>表决阶段</strong>：主节点将数据发送给所有副本，每个副本都要响应提交或者回滚，如果副本投票提交，那么它会将数据放到暂存区域，等待最终提交。</li>
+<li><strong>提交阶段</strong>：主节点收到其他副本的响应，如果副本都认为可以提交，那么就发送确认提交给所有副本让它们提交更新，数据就会从暂存区域移到永久区域。只要有一个副本返回回滚就整体回滚。</li>
+</ol>
+<p>可以发现 2PC 是典型的 CA 系统，为了保证一致性和可用性，2PC 一旦出现网络分区或者节点不可用就会被拒绝写操作，把系统变成只读的。由于 2PC 容易出现节点宕机导致一直阻塞的情况，所以在数据复制的场景中不常用，一般多用于分布式事务中（注：实际应用过程中会有很多优化）。</p>
+<h3 id="分区容忍的一致性协议"><a href="#分区容忍的一致性协议" class="headerlink" title="分区容忍的一致性协议"></a>分区容忍的一致性协议</h3><p>分区容忍的一致性协议跟所有的单主协议一样，它也是只有一个主节点负责写入（提供顺序一致性），但它跟 2PC 的区别在于它只需要保证大多数节点（一般是超过半数）达成一致就可以返回客户端结果，这样可以提高了性能，同时也能容忍网络分区（少数节点分区不会导致整个系统无法运行）。分区容忍的一致性算法保证大多数节点数据一致后才返回客户端，同样实现了顺序一致性。</p>
+<p>下面用一个简单的示例来说明这类算法的核心思想。假设现在有一个分布式文件系统，它的文件都被复制到 3 个服务器上，我们规定：要更新一个文件，客户端必须先访问至少 2 个服务器（大多数），得到它们同意之后才能执行更新，同时每个文件都会有版本号标识；要读取文件的时候，客户端也必须要访问至少 2 个服务器获取该文件的版本号，如果所有的版本号一致，那么该版本必定是最新的版本，因为如果前面的更新操作要求必须要有大多数服务器的同意才能更新文件。</p>
+<p>以上就是我们熟知的 Paxos、ZAB、Raft 等分区容忍的一致性协议的核心思想：<strong>一致性的保证不一定非要所有节点都保持一致，只要大多数节点更新了，对于整个分布式系统来说数据也是一致性的。</strong>上面只是一个简单的阐述，真正的算法实现是比较复杂的，这里就不展开了。</p>
+<p>分区容忍的一致性协议如 Paxos 是典型的 CP 系统，为了保证一致性和分区容忍，在网络分区的情况下，允许大多数节点的写入，通过大多数节点的一致性实现整个系统的一致性，同时让少数节点停止服务（不能读写），放弃整体系统的可用性，也就是说客户端访问到少数节点时会失败。</p>
+<p>值得注意的是，根据 CAP 理论，假设现在有三个节点 A、B、C，当 C 被网络分区时，有查询请求过来，此时 C 因为不能和其他节点通信，所以 C 无法对查询做出响应，也就不具备可用性。但在工程实现上，这个问题是可以被绕过的，当客户端访问 C 无法得到响应时，它可以去访问 A、B，实际上对于整个系统来说还是部分可用性的，并不是说 CP 的系统一定就失去可用性。详细的分析参考<a href="https://blog.xiaohansong.com/cap-theorem.html" target="_blank" rel="noopener">分布式系统：CAP 理论的前世今生</a></p>
+<h2 id="多主协议"><a href="#多主协议" class="headerlink" title="多主协议"></a>多主协议</h2><p>相比单主协议为了实现顺序一致性，不允许多个节点并发写，多主协议恰恰相反，只保证最终一致性，允许多个节点并发写，能够显著提升系统性能。由于多主协议一般提供的都是最终一致性，所以常用在对数据一致性要求不高的场景中。</p>
+<p>Gossip 协议就是一种典型的多主协议，很多分布式系统都使用它来做数据复制，例如比特币，作为一条去中心化的公链，所有节点的数据同步都用的是 Gossip 协议。此外，Gossip 协议也在一些分布式数据库中如 Dynamo 中被用来做分布式故障检测的状态同步，当有节点故障离开集群时，其他节点可以快速检测到。</p>
+<p>从名称上就可以看出 Gossip 协议的核心思想，Gossip 是流言八卦的意思，想想我们日常生活人与人之间传八卦的场景，在学校里面一个八卦一旦有一个人知道了，通过人传人，基本上整个学校的人最终都会知道了。因此 Gossip 协议的核心思想就是：<strong>每个节点都可以对其他节点发送消息，接收到消息的节点随机选择其他节点发送消息，接收到消息的节点也做同样的事情。</strong></p>
+<p><strong>多主协议允许运行多个节点并发写，就一定会出现对一个数据并发写导致数据冲突的情况，因此这类协议都需要解决并发写的问题。</strong>单主协议通过主节点控制写入，保证不会出现并发写的情况，因为所有写操作最终都会通过主节点排序，从某种意义上讲，使用单主协议的系统对于写入实际上是串行的，因此其性能是有瓶颈的。而多主协议允许多节点并发写，提搞了写入的性能，但是实际上它是把数据合并的操作延迟了，单主协议在写入的时候就进行了数据合并，因此读取数据的时候如果出现数据冲突的时候，就需要对数据进行合并，保证全局一致性。</p>
+<p>前面我们提到比特币使用的是 Gossip 协议做数据复制，那么问题来了，不是说多主协议性能会比较高吗，为什么比特币的性能那么差？这里实际上要分开来看，由于比特币是去中心化的，但是它的支付功能需要保证全局数据一致性，因此它用了一种很巧妙的一致性算法 POW：所有节点都做一道数学题，谁先算出答案谁有权利将交易写到链上，然后利用 Gossip 协议传播它的答案和交易，其他节点验证它的答案正确就将数据保存起来。</p>
+<p>到这里你可能会有一个疑问：POW 作为多主协议为什么性能这么低？任何协议都有它适用的场景。在比特币这个场景中，它对于数据一致性是有强需求的，理论上用单主协议是最优的选择。但是比特币作为去中心化的数字货币是不会使用单主协议的，否则又变成中心化的系统了。因此比特币只能选择多主协议，通过 POW 协议将比特币整条链操作进行了<strong>近似串行化</strong>，这样才能降低出现双花的概率（并发写的时候一个比特币被消费多次），鱼与熊掌不可兼得，既然要强一致性，那么只能牺牲性能来换取。</p>
+<p>由于多主协议允许了数据分歧，那么就需要有解决数据冲突的策略来保证最终一致性。如果要严格区分的话，比特币实际上应用了两个一致性协议：</p>
+<ul>
+<li><strong>POW</strong>：决定节点的记账权，起到类似单主协议中定序器的作用。注意 POW 也是多主协议，尽管概率很低，但是它有可能出现多个节点同时算出答案，一起出块（并发写）的情况，此时我们称比特币出现了分叉，即出现了数据冲突。</li>
+<li><strong>Gossip</strong>：用于将出块的交易同步到全球所有节点。由于 POW 会出现并发写的情况，当一个节点同时接受到多个节点写入请求时，就需要解决数据冲突的问题。<strong>比特币解决数据冲突的方式就是当出现分叉时，选取最长的那条链作为主链，其他分叉的链上的交易会被回滚，等待重新打包出块。</strong></li>
+</ul>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>本文主要<strong>从是否允许数据分歧的角度将分布式一致性协议分为两种：单主协议和多主协议。</strong>其中单主协议会用一个主节点来负责写操作，这样能够保证全局写的顺序一致性，但因此也牺牲了一部分性能。而多主协议则允许写操作可以由不同节点发起，并且同步给其他副本，只能保证最终一致性，但因此也提升了系统并发写入的性能。对数据一致性要求高的场景例如分布式数据库，主要会使用单主协议，对数据一致性要求不高例如故障检测，主要会使用多主协议来提高性能，当然也有特例，像比特币为了去中心化使用 POW 和 Gossip 结合进行数据复制。</p>
+<p>值得注意的是，文中提到的单主、多主协议只是我个人对分布式一致性协议的一种分类方式，帮助我们更好的理解。读者可以看一下参考资料，看一下不同作者对分布式协议是如何分类的，这样对分布式一致性协议会有更深入的理解。</p>
+<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><p>转自：<a href="https://blog.xiaohansong.com/consistency-protocol.html" target="_blank" rel="noopener">分布式系统：一致性协议</a></p>
+<ul>
+<li>《分布式系统原理与范型》</li>
+<li><a href="http://book.mixu.net/distsys/" target="_blank" rel="noopener">Distributed systems for fun and profit</a></li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div></div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.jpg" alt="zch 微信支付">
+        <p>微信支付</p>
+      </div>
+    
+
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/分布式/" rel="tag"># 分布式</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2021/08/03/分布式/分布式系统：持续一致性/" rel="next" title="持续一致性">
+                <i class="fa fa-chevron-left"></i> 持续一致性
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2021/08/03/分布式/分布式系统：一致性模型/" rel="prev" title="一致性模型">
+                一致性模型 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        
+  <div class="bdsharebuttonbox">
+    <a href="#" class="bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+    <a href="#" class="bds_douban" data-cmd="douban" title="分享到豆瓣网"></a>
+    <a href="#" class="bds_sqq" data-cmd="sqq" title="分享到QQ好友"></a>
+    <a href="#" class="bds_qzone" data-cmd="qzone" title="分享到QQ空间"></a>
+    <a href="#" class="bds_weixin" data-cmd="weixin" title="分享到微信"></a>
+    <a href="#" class="bds_tieba" data-cmd="tieba" title="分享到百度贴吧"></a>
+    <a href="#" class="bds_twi" data-cmd="twi" title="分享到Twitter"></a>
+    <a href="#" class="bds_fbook" data-cmd="fbook" title="分享到Facebook"></a>
+    <a href="#" class="bds_more" data-cmd="more"></a>
+    <a class="bds_count" data-cmd="count"></a>
+  </div>
+  <script>
+    window._bd_share_config = {
+      "common": {
+        "bdText": "",
+        "bdMini": "2",
+        "bdMiniList": false,
+        "bdPic": ""
+      },
+      "share": {
+        "bdSize": "16",
+        "bdStyle": "0"
+      },
+      "image": {
+        "viewList": ["tsina", "douban", "sqq", "qzone", "weixin", "twi", "fbook"],
+        "viewText": "分享到：",
+        "viewSize": "16"
+      }
+    }
+  </script>
+
+<script>
+  with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='//bdimg.share.baidu.com/static/api/js/share.js?cdnversion='+~(-new Date()/36e5)];
+</script>
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar.png" alt="zch">
+            
+              <p class="site-author-name" itemprop="name">zch</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">160</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">29</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">117</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#什么是一致性协议"><span class="nav-number">1.</span> <span class="nav-text">什么是一致性协议</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#单主协议"><span class="nav-number">2.</span> <span class="nav-text">单主协议</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#主备复制"><span class="nav-number">2.1.</span> <span class="nav-text">主备复制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#两阶段提交"><span class="nav-number">2.2.</span> <span class="nav-text">两阶段提交</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#分区容忍的一致性协议"><span class="nav-number">2.3.</span> <span class="nav-text">分区容忍的一致性协议</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#多主协议"><span class="nav-number">3.</span> <span class="nav-text">多主协议</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">4.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考资料"><span class="nav-number">5.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<div class="copyright">&copy; <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">zch</span>
+
+  
+</div>
+
+
+  <div class="powered-by">个人学习和工作中总结的笔记</div>
+  <i class="fa fa-user-md"></i>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+<script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? "https://" : "http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1276375036'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s5.cnzz.com/z_stat.php%3Fid%3D1276375036%26online%3D1%26show%3Dline' type='text/javascript'%3E%3C/script%3E"));</script>
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/three/three.min.js"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/three/canvas_sphere.min.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+  
+  <script type="text/javascript">
+    var GUEST = ['nick','mail','link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item=>{
+      return GUEST.indexOf(item)>-1;
+    });
+    new Valine({
+        el: '#comments' ,
+        verify: true,
+        notify: true,
+        appId: 'qlLpITiuRGP5wGRRqD1TTe7y-gzGzoHsz',
+        appKey: 'Xu6NC8eq2DCotEgOrHgbA2St',
+        placeholder: 'ヾﾉ≧∀≦)o来啊，快活啊!',
+        avatar:'mm',
+        guest_info:guest,
+        pageSize:'10' || 10,
+    });
+  </script>
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

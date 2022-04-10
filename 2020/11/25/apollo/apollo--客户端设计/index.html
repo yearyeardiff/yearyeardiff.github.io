@@ -1,0 +1,1253 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+<meta name="google-site-verification" content="6pSprQE3BiN_wM4uIQnTSoO5EAKab52jQ86zdl_VH84">
+<meta name="google-site-verification" content="pa5VzMThwxpvSOgHS15kDjiLdeww7kHG5LcJjH6EQko">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/science-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/science-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="apollo,">
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="ZCH NOTES" type="application/atom+xml">
+
+
+
+
+
+
+<meta name="description" content="UML&quot; 源码分析ConfigServicecom.ctrip.framework.apollo.ConfigService ，客户端配置服务，作为配置使用的入口。 1234567891011121314151617public class ConfigService &amp;#123;  private static final ConfigService s_instance = new Confi">
+<meta name="keywords" content="apollo">
+<meta property="og:type" content="article">
+<meta property="og:title" content="apollo--客户端设计">
+<meta property="og:url" content="http://yoursite.com/2020/11/25/apollo/apollo--客户端设计/index.html">
+<meta property="og:site_name" content="ZCH NOTES">
+<meta property="og:description" content="UML&quot; 源码分析ConfigServicecom.ctrip.framework.apollo.ConfigService ，客户端配置服务，作为配置使用的入口。 1234567891011121314151617public class ConfigService &amp;#123;  private static final ConfigService s_instance = new Confi">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/images/UML-9668975.png">
+<meta property="og:image" content="http://yoursite.com/images/Config.png">
+<meta property="og:updated_time" content="2022-04-07T09:49:35.967Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="apollo--客户端设计">
+<meta name="twitter:description" content="UML&quot; 源码分析ConfigServicecom.ctrip.framework.apollo.ConfigService ，客户端配置服务，作为配置使用的入口。 1234567891011121314151617public class ConfigService &amp;#123;  private static final ConfigService s_instance = new Confi">
+<meta name="twitter:image" content="http://yoursite.com/images/UML-9668975.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"right","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2020/11/25/apollo/apollo--客户端设计/">
+
+
+
+
+
+  <title>apollo--客户端设计 | ZCH NOTES</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-right page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">ZCH NOTES</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <h1 class="site-subtitle" itemprop="description">博学笃志 切问近思</h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404.html" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br>
+            
+            公益404
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/11/25/apollo/apollo--客户端设计/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="zch">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ZCH NOTES">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">apollo--客户端设计</h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-11-25T20:24:10+08:00">
+                2020-11-25
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/apollo/" itemprop="url" rel="index">
+                    <span itemprop="name">apollo</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2020/11/25/apollo/apollo--客户端设计/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2020/11/25/apollo/apollo--客户端设计/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="UML"><a href="#UML" class="headerlink" title="UML"></a>UML</h1><p><img src="/images/UML-9668975.png" alt="UML"></p>"
+<h1 id="源码分析"><a href="#源码分析" class="headerlink" title="源码分析"></a>源码分析</h1><h2 id="ConfigService"><a href="#ConfigService" class="headerlink" title="ConfigService"></a>ConfigService</h2><p><code>com.ctrip.framework.apollo.ConfigService</code> ，客户端配置<strong>服务</strong>，作为配置使用的<strong>入口</strong>。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ConfigService</span> </span>&#123;</span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> ConfigService s_instance = <span class="keyword">new</span> ConfigService();</span><br><span class="line"></span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">volatile</span> ConfigManager m_configManager;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 获取ConfigManager实例，典型的DCL单例模型写法</span></span><br><span class="line">  <span class="function"><span class="keyword">private</span> ConfigManager <span class="title">getManager</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (m_configManager == <span class="keyword">null</span>) &#123;</span><br><span class="line">      <span class="keyword">synchronized</span> (<span class="keyword">this</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> (m_configManager == <span class="keyword">null</span>) &#123;</span><br><span class="line">          m_configManager = ApolloInjector.getInstance(ConfigManager<span class="class">.<span class="keyword">class</span>)</span>;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> m_configManager;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="ConfigManager"><a href="#ConfigManager" class="headerlink" title="ConfigManager"></a>ConfigManager</h2><p><code>com.ctrip.framework.apollo.internals.ConfigManager</code> ，配置<em>管理器**</em>接口**。提供获得 Config 和 ConfigFile 对象的接口，代码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">ConfigManager</span> </span>&#123;</span><br><span class="line">  <span class="comment">/**</span></span><br><span class="line"><span class="comment">   * Get the config instance for the namespace specified.</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@param</span> namespace the namespace</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@return</span> the config instance for the namespace</span></span><br><span class="line"><span class="comment">   */</span></span><br><span class="line">  <span class="function">Config <span class="title">getConfig</span><span class="params">(String namespace)</span></span>;</span><br><span class="line"></span><br><span class="line">  <span class="comment">/**</span></span><br><span class="line"><span class="comment">   * Get the config file instance for the namespace specified.</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@param</span> namespace the namespace</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@param</span> configFileFormat the config file format</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@return</span> the config file instance for the namespace</span></span><br><span class="line"><span class="comment">   */</span></span><br><span class="line">  <span class="function">ConfigFile <span class="title">getConfigFile</span><span class="params">(String namespace, ConfigFileFormat configFileFormat)</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="DefaultConfigManager"><a href="#DefaultConfigManager" class="headerlink" title="DefaultConfigManager"></a>DefaultConfigManager</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">DefaultConfigManager</span> <span class="keyword">implements</span> <span class="title">ConfigManager</span> </span>&#123;</span><br><span class="line">  <span class="keyword">private</span> ConfigFactoryManager m_factoryManager;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">private</span> Map&lt;String, Config&gt; m_configs = Maps.newConcurrentMap();</span><br><span class="line">  <span class="keyword">private</span> Map&lt;String, ConfigFile&gt; m_configFiles = Maps.newConcurrentMap();</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="title">DefaultConfigManager</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    m_factoryManager = ApolloInjector.getInstance(ConfigFactoryManager<span class="class">.<span class="keyword">class</span>)</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@Override</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> Config <span class="title">getConfig</span><span class="params">(String namespace)</span> </span>&#123;</span><br><span class="line">    Config config = m_configs.get(namespace);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (config == <span class="keyword">null</span>) &#123;</span><br><span class="line">      <span class="keyword">synchronized</span> (<span class="keyword">this</span>) &#123;</span><br><span class="line">        config = m_configs.get(namespace);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (config == <span class="keyword">null</span>) &#123;</span><br><span class="line">          ConfigFactory factory = m_factoryManager.getFactory(namespace);</span><br><span class="line"></span><br><span class="line">          config = factory.create(namespace);</span><br><span class="line">          <span class="comment">// 添加到缓存</span></span><br><span class="line">          m_configs.put(namespace, config);</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> config;</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  ...getConfigFile代码省略...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="ConfigFactoryManager"><a href="#ConfigFactoryManager" class="headerlink" title="ConfigFactoryManager"></a>ConfigFactoryManager</h2><p><code>com.ctrip.framework.apollo.spi.ConfigFactoryManager</code> ，ConfigFactory <em>管理器**</em>接口**。代码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">ConfigFactoryManager</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Get the config factory for the namespace.</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> namespace the namespace</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> the config factory for this namespace</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function">ConfigFactory <span class="title">getFactory</span><span class="params">(String namespace)</span></span>;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>ConfigFactoryManager 管理的是 ConfigFactory ，而 ConfigManager 管理的是 Config 。</li>
+</ul>
+<h3 id="DefaultConfigFactoryManager"><a href="#DefaultConfigFactoryManager" class="headerlink" title="DefaultConfigFactoryManager"></a>DefaultConfigFactoryManager</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">DefaultConfigFactoryManager</span> <span class="keyword">implements</span> <span class="title">ConfigFactoryManager</span> </span>&#123;</span><br><span class="line">  <span class="keyword">private</span> ConfigRegistry m_registry;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">private</span> Map&lt;String, ConfigFactory&gt; m_factories = Maps.newConcurrentMap();</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="title">DefaultConfigFactoryManager</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    m_registry = ApolloInjector.getInstance(ConfigRegistry<span class="class">.<span class="keyword">class</span>)</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@Override</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> ConfigFactory <span class="title">getFactory</span><span class="params">(String namespace)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// step 1: check hacked factory</span></span><br><span class="line">    ConfigFactory factory = m_registry.getFactory(namespace);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (factory != <span class="keyword">null</span>) &#123;</span><br><span class="line">      <span class="keyword">return</span> factory;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// step 2: check cache</span></span><br><span class="line">    factory = m_factories.get(namespace);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (factory != <span class="keyword">null</span>) &#123;</span><br><span class="line">      <span class="keyword">return</span> factory;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// step 3: check declared config factory</span></span><br><span class="line">    factory = ApolloInjector.getInstance(ConfigFactory<span class="class">.<span class="keyword">class</span>, <span class="title">namespace</span>)</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (factory != <span class="keyword">null</span>) &#123;</span><br><span class="line">      <span class="keyword">return</span> factory;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// step 4: check default config factory</span></span><br><span class="line">    factory = ApolloInjector.getInstance(ConfigFactory<span class="class">.<span class="keyword">class</span>)</span>;</span><br><span class="line"></span><br><span class="line">    m_factories.put(namespace, factory);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// factory should not be null</span></span><br><span class="line">    <span class="keyword">return</span> factory;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="ConfigFactory"><a href="#ConfigFactory" class="headerlink" title="ConfigFactory"></a>ConfigFactory</h2><p><code>com.ctrip.framework.apollo.spi.ConfigFactory</code> ，配置工厂<strong>接口</strong>，其每个接口方法和 ConfigManager <strong>一一</strong>对应。代码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">ConfigFactory</span> </span>&#123;</span><br><span class="line">  <span class="comment">/**</span></span><br><span class="line"><span class="comment">   * Create the config instance for the namespace.</span></span><br><span class="line"><span class="comment">   *</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@param</span> namespace the namespace</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@return</span> the newly created config instance</span></span><br><span class="line"><span class="comment">   */</span></span><br><span class="line">  <span class="function">Config <span class="title">create</span><span class="params">(String namespace)</span></span>;</span><br><span class="line"></span><br><span class="line">  <span class="comment">/**</span></span><br><span class="line"><span class="comment">   * Create the config file instance for the namespace</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@param</span> namespace the namespace</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@return</span> the newly created config file instance</span></span><br><span class="line"><span class="comment">   */</span></span><br><span class="line">  <span class="function">ConfigFile <span class="title">createConfigFile</span><span class="params">(String namespace, ConfigFileFormat configFileFormat)</span></span>;</span><br></pre></td></tr></table></figure>
+<h3 id="DefaultConfigFactory"><a href="#DefaultConfigFactory" class="headerlink" title="DefaultConfigFactory"></a>DefaultConfigFactory</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">DefaultConfigFactory</span> <span class="keyword">implements</span> <span class="title">ConfigFactory</span> </span>&#123;</span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Logger logger = LoggerFactory.getLogger(DefaultConfigFactory<span class="class">.<span class="keyword">class</span>)</span>;</span><br><span class="line">  <span class="keyword">private</span> ConfigUtil m_configUtil;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="title">DefaultConfigFactory</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    m_configUtil = ApolloInjector.getInstance(ConfigUtil<span class="class">.<span class="keyword">class</span>)</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 创建 Config 对象</span></span><br><span class="line">  <span class="meta">@Override</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> Config <span class="title">create</span><span class="params">(String namespace)</span> </span>&#123;</span><br><span class="line">    ConfigFileFormat format = determineFileFormat(namespace);</span><br><span class="line">    <span class="keyword">if</span> (ConfigFileFormat.isPropertiesCompatible(format)) &#123;</span><br><span class="line">      <span class="comment">// YAML,YML格式的配置 特殊处理</span></span><br><span class="line">      <span class="keyword">return</span> <span class="keyword">new</span> DefaultConfig(namespace, createPropertiesCompatibleFileConfigRepository(namespace, format));</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// properties格式的配置</span></span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> DefaultConfig(namespace, createLocalConfigRepository(namespace));</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  <span class="function">LocalFileConfigRepository <span class="title">createLocalConfigRepository</span><span class="params">(String namespace)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 本地模式，使用 LocalFileConfigRepository 对象</span></span><br><span class="line">    <span class="keyword">if</span> (m_configUtil.isInLocalMode()) &#123;</span><br><span class="line">      logger.warn(</span><br><span class="line">          <span class="string">"==== Apollo is in local mode! Won't pull configs from remote server for namespace &#123;&#125; ! ===="</span>,</span><br><span class="line">          namespace);</span><br><span class="line">      <span class="keyword">return</span> <span class="keyword">new</span> LocalFileConfigRepository(namespace);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 非本地模式，使用 LocalFileConfigRepository + RemoteConfigRepository 对象</span></span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> LocalFileConfigRepository(namespace, createRemoteConfigRepository(namespace));</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  <span class="comment">// 创建RemoteConfigRepository 对象</span></span><br><span class="line">  <span class="function">RemoteConfigRepository <span class="title">createRemoteConfigRepository</span><span class="params">(String namespace)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> RemoteConfigRepository(namespace);</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  ..<span class="function"><span class="keyword">public</span> ConfigFile <span class="title">createConfigFile</span><span class="params">(String namespace, ConfigFileFormat configFileFormat)</span> ..</span></span><br><span class="line"><span class="function">&#125;</span></span><br></pre></td></tr></table></figure>
+<h2 id="Config"><a href="#Config" class="headerlink" title="Config"></a>Config</h2><h3 id="Uml"><a href="#Uml" class="headerlink" title="Uml"></a>Uml</h3><p><img src="/images/Config.png" alt="Config"></p>"
+<h3 id="AbstractConfig"><a href="#AbstractConfig" class="headerlink" title="AbstractConfig"></a>AbstractConfig</h3><p><code>com.ctrip.framework.apollo.internals.AbstractConfig</code> ，实现 Config 接口，Config 抽象类，实现了</p>
+<p>1）缓存读取属性值、2）异步通知监听器、3）计算属性变化等等特性。</p>
+<h4 id="获取属性值"><a href="#获取属性值" class="headerlink" title="获取属性值"></a>获取属性值</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">AbstractConfig</span> <span class="keyword">implements</span> <span class="title">Config</span> </span>&#123;</span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Logger logger = LoggerFactory.getLogger(AbstractConfig<span class="class">.<span class="keyword">class</span>)</span>;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> ExecutorService m_executorService;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 观察者</span></span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">final</span> List&lt;ConfigChangeListener&gt; m_listeners = Lists.newCopyOnWriteArrayList();</span><br><span class="line">  <span class="comment">// cache</span></span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">final</span> Map&lt;ConfigChangeListener, Set&lt;String&gt;&gt; m_interestedKeys = Maps.newConcurrentMap();</span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">final</span> Map&lt;ConfigChangeListener, Set&lt;String&gt;&gt; m_interestedKeyPrefixes = Maps.newConcurrentMap();</span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">final</span> ConfigUtil m_configUtil;</span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">volatile</span> Cache&lt;String, Integer&gt; m_integerCache;</span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">volatile</span> Cache&lt;String, Long&gt; m_longCache;</span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">volatile</span> Cache&lt;String, Short&gt; m_shortCache;</span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">volatile</span> Cache&lt;String, Float&gt; m_floatCache;</span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">volatile</span> Cache&lt;String, Double&gt; m_doubleCache;</span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">volatile</span> Cache&lt;String, Byte&gt; m_byteCache;</span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">volatile</span> Cache&lt;String, Boolean&gt; m_booleanCache;</span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">volatile</span> Cache&lt;String, Date&gt; m_dateCache;</span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">volatile</span> Cache&lt;String, Long&gt; m_durationCache;</span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">final</span> Map&lt;String, Cache&lt;String, String[]&gt;&gt; m_arrayCache;</span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">final</span> List&lt;Cache&gt; allCaches;</span><br><span class="line">  <span class="comment">// 缓存版本号，用于解决更新缓存可能存在的并发问题详细见getValueAndStoreToCache</span></span><br><span class="line">	<span class="keyword">private</span> AtomicLong m_configVersion; <span class="comment">//indicate config version</span></span><br><span class="line"></span><br><span class="line">	...........</span><br><span class="line">  <span class="meta">@Override</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> Integer <span class="title">getIntProperty</span><span class="params">(String key, Integer defaultValue)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">      <span class="keyword">if</span> (m_integerCache == <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">synchronized</span> (<span class="keyword">this</span>) &#123;</span><br><span class="line">          <span class="keyword">if</span> (m_integerCache == <span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="comment">// 初始化缓存</span></span><br><span class="line">            m_integerCache = newCache();</span><br><span class="line">          &#125;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line"> 			<span class="comment">// 从缓存中，读取属性值</span></span><br><span class="line">      <span class="keyword">return</span> getValueFromCache(key, Functions.TO_INT_FUNCTION, m_integerCache, defaultValue);</span><br><span class="line">    &#125; <span class="keyword">catch</span> (Throwable ex) &#123;</span><br><span class="line">      Tracer.logError(<span class="keyword">new</span> ApolloConfigException(</span><br><span class="line">          String.format(<span class="string">"getIntProperty for %s failed, return default value %d"</span>, key,</span><br><span class="line">              defaultValue), ex));</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> defaultValue;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">  <span class="keyword">private</span> &lt;T&gt; <span class="function">T <span class="title">getValueFromCache</span><span class="params">(String key, Function&lt;String, T&gt; parser, Cache&lt;String, T&gt; cache, T defaultValue)</span> </span>&#123;</span><br><span class="line">    T result = cache.getIfPresent(key);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (result != <span class="keyword">null</span>) &#123;</span><br><span class="line">      <span class="keyword">return</span> result;</span><br><span class="line">    &#125;</span><br><span class="line">		<span class="comment">// 获得值，并更新到缓存</span></span><br><span class="line">    <span class="keyword">return</span> getValueAndStoreToCache(key, parser, cache, defaultValue);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">private</span> &lt;T&gt; <span class="function">T <span class="title">getValueAndStoreToCache</span><span class="params">(String key, Function&lt;String, T&gt; parser, Cache&lt;String, T&gt; cache, T defaultValue)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">long</span> currentConfigVersion = m_configVersion.get();</span><br><span class="line">    String value = getProperty(key, <span class="keyword">null</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (value != <span class="keyword">null</span>) &#123;</span><br><span class="line">      T result = parser.apply(value);</span><br><span class="line"></span><br><span class="line">      <span class="keyword">if</span> (result != <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">synchronized</span> (<span class="keyword">this</span>) &#123;</span><br><span class="line">          <span class="comment">// 若版本号未变化，则更新到缓存，从而解决并发的问题。</span></span><br><span class="line">          <span class="keyword">if</span> (m_configVersion.get() == currentConfigVersion) &#123;</span><br><span class="line">            cache.put(key, result);</span><br><span class="line">          &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> result;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> defaultValue;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">Functions</span> </span>&#123;</span><br><span class="line">    Function&lt;String, Integer&gt; TO_INT_FUNCTION = <span class="keyword">new</span> Function&lt;String, Integer&gt;() &#123;</span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> Integer <span class="title">apply</span><span class="params">(String input)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">return</span> Integer.parseInt(input);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="添加配置变更监听器"><a href="#添加配置变更监听器" class="headerlink" title="添加配置变更监听器"></a>添加配置变更监听器</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">addChangeListener</span><span class="params">(ConfigChangeListener listener)</span> </span>&#123;</span><br><span class="line">  addChangeListener(listener, <span class="keyword">null</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">addChangeListener</span><span class="params">(ConfigChangeListener listener, Set&lt;String&gt; interestedKeys)</span> </span>&#123;</span><br><span class="line">  addChangeListener(listener, interestedKeys, <span class="keyword">null</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">addChangeListener</span><span class="params">(ConfigChangeListener listener, Set&lt;String&gt; interestedKeys, Set&lt;String&gt; interestedKeyPrefixes)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (!m_listeners.contains(listener)) &#123;</span><br><span class="line">    m_listeners.add(listener);</span><br><span class="line">    <span class="keyword">if</span> (interestedKeys != <span class="keyword">null</span> &amp;&amp; !interestedKeys.isEmpty()) &#123;</span><br><span class="line">      m_interestedKeys.put(listener, Sets.newHashSet(interestedKeys));</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (interestedKeyPrefixes != <span class="keyword">null</span> &amp;&amp; !interestedKeyPrefixes.isEmpty()) &#123;</span><br><span class="line">      m_interestedKeyPrefixes.put(listener, Sets.newHashSet(interestedKeyPrefixes));</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="触发配置变更监听器们"><a href="#触发配置变更监听器们" class="headerlink" title="触发配置变更监听器们"></a>触发配置变更监听器们</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">fireConfigChange</span><span class="params">(<span class="keyword">final</span> ConfigChangeEvent changeEvent)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">final</span> ConfigChangeListener listener : m_listeners) &#123;</span><br><span class="line">    <span class="comment">// check whether the listener is interested in this change event</span></span><br><span class="line">    <span class="keyword">if</span> (!isConfigChangeListenerInterested(listener, changeEvent)) &#123;</span><br><span class="line">      <span class="keyword">continue</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    m_executorService.submit(<span class="keyword">new</span> Runnable() &#123;</span><br><span class="line">      <span class="meta">@Override</span></span><br><span class="line">      <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        String listenerName = listener.getClass().getName();</span><br><span class="line">        Transaction transaction = Tracer.newTransaction(<span class="string">"Apollo.ConfigChangeListener"</span>, listenerName);</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">          <span class="comment">// 通知监听器</span></span><br><span class="line">          listener.onChange(changeEvent);</span><br><span class="line">          transaction.setStatus(Transaction.SUCCESS);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (Throwable ex) &#123;</span><br><span class="line">          transaction.setStatus(ex);</span><br><span class="line">          Tracer.logError(ex);</span><br><span class="line">          logger.error(<span class="string">"Failed to invoke config change listener &#123;&#125;"</span>, listenerName, ex);</span><br><span class="line">        &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">          transaction.complete();</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>提交到线程池中，异步并发通知监听器们，从而避免有些监听器<strong>执行时间过长</strong>。</p>
+<h3 id="DefaultConfig"><a href="#DefaultConfig" class="headerlink" title="DefaultConfig"></a>DefaultConfig</h3><p><code>com.ctrip.framework.apollo.internals.DefaultConfig</code> ，实现 RepositoryChangeListener 接口，继承 AbstractConfig 抽象类，<strong>默认</strong> Config 实现类。</p>
+<h4 id="构造方法"><a href="#构造方法" class="headerlink" title="构造方法"></a>构造方法</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Logger logger = LoggerFactory.getLogger(DefaultConfig<span class="class">.<span class="keyword">class</span>)</span>;</span><br><span class="line"><span class="keyword">private</span> <span class="keyword">final</span> String m_namespace;</span><br><span class="line"><span class="keyword">private</span> <span class="keyword">final</span> Properties m_resourceProperties;</span><br><span class="line"><span class="keyword">private</span> <span class="keyword">final</span> AtomicReference&lt;Properties&gt; m_configProperties;</span><br><span class="line"><span class="keyword">private</span> <span class="keyword">final</span> ConfigRepository m_configRepository;</span><br><span class="line"><span class="keyword">private</span> <span class="keyword">final</span> RateLimiter m_warnLogRateLimiter;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">volatile</span> ConfigSourceType m_sourceType = ConfigSourceType.NONE;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Constructor.</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> namespace        the namespace of this config instance</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> configRepository the config repository for this config instance</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">DefaultConfig</span><span class="params">(String namespace, ConfigRepository configRepository)</span> </span>&#123;</span><br><span class="line">  m_namespace = namespace;</span><br><span class="line">  m_resourceProperties = loadFromResource(m_namespace);</span><br><span class="line">  m_configRepository = configRepository;</span><br><span class="line">  m_configProperties = <span class="keyword">new</span> AtomicReference&lt;&gt;();</span><br><span class="line">  m_warnLogRateLimiter = RateLimiter.create(<span class="number">0.017</span>); <span class="comment">// 1 warning log output per minute</span></span><br><span class="line">  initialize();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 从本地资源加载配置</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> Properties <span class="title">loadFromResource</span><span class="params">(String namespace)</span> </span>&#123;</span><br><span class="line">  String name = String.format(<span class="string">"META-INF/config/%s.properties"</span>, namespace);</span><br><span class="line">  InputStream in = ClassLoaderUtil.getLoader().getResourceAsStream(name);</span><br><span class="line">  Properties properties = <span class="keyword">null</span>;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (in != <span class="keyword">null</span>) &#123;</span><br><span class="line">    properties = propertiesFactory.getPropertiesInstance();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">      properties.load(in);</span><br><span class="line">    &#125; <span class="keyword">catch</span> (IOException ex) &#123;</span><br><span class="line">      Tracer.logError(ex);</span><br><span class="line">      logger.error(<span class="string">"Load resource config for namespace &#123;&#125; failed"</span>, namespace, ex);</span><br><span class="line">    &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">      <span class="keyword">try</span> &#123;</span><br><span class="line">        in.close();</span><br><span class="line">      &#125; <span class="keyword">catch</span> (IOException ex) &#123;</span><br><span class="line">        <span class="comment">// ignore</span></span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line"><span class="comment">// 从ConfigRepository加载配置，并注册事件</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">initialize</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="keyword">try</span> &#123;</span><br><span class="line">    <span class="comment">// DefaultConfig 会从 ConfigRepository 中，加载配置 Properties ，并更新到 m_configProperties 中</span></span><br><span class="line">    updateConfig(m_configRepository.getConfig(), m_configRepository.getSourceType());</span><br><span class="line">  &#125; <span class="keyword">catch</span> (Throwable ex) &#123;</span><br><span class="line">    Tracer.logError(ex);</span><br><span class="line">    logger.warn(<span class="string">"Init Apollo Local Config failed - namespace: &#123;&#125;, reason: &#123;&#125;."</span>,</span><br><span class="line">        m_namespace, ExceptionUtil.getDetailMessage(ex));</span><br><span class="line">  &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">    <span class="comment">// 注册自己到 ConfigRepository 为监听器</span></span><br><span class="line">    m_configRepository.addChangeListener(<span class="keyword">this</span>);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">  </span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">updateConfig</span><span class="params">(Properties newConfigProperties, ConfigSourceType sourceType)</span> </span>&#123;</span><br><span class="line">   m_configProperties.set(newConfigProperties);</span><br><span class="line">   m_sourceType = sourceType;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="获得属性值"><a href="#获得属性值" class="headerlink" title="获得属性值"></a>获得属性值</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">getProperty</span><span class="params">(String key, String defaultValue)</span> </span>&#123;</span><br><span class="line">  <span class="comment">// step 1: check system properties, i.e. -Dkey=value</span></span><br><span class="line">  String value = System.getProperty(key);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// step 2: check local cached properties file</span></span><br><span class="line">  <span class="keyword">if</span> (value == <span class="keyword">null</span> &amp;&amp; m_configProperties.get() != <span class="keyword">null</span>) &#123;</span><br><span class="line">    value = m_configProperties.get().getProperty(key);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">/**</span></span><br><span class="line"><span class="comment">   * step 3: check env variable, i.e. PATH=...</span></span><br><span class="line"><span class="comment">   * normally system environment variables are in UPPERCASE, however there might be exceptions.</span></span><br><span class="line"><span class="comment">   * so the caller should provide the key in the right case</span></span><br><span class="line"><span class="comment">   */</span></span><br><span class="line">  <span class="keyword">if</span> (value == <span class="keyword">null</span>) &#123;</span><br><span class="line">    value = System.getenv(key);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// step 4: check properties file from classpath</span></span><br><span class="line">  <span class="keyword">if</span> (value == <span class="keyword">null</span> &amp;&amp; m_resourceProperties != <span class="keyword">null</span>) &#123;</span><br><span class="line">    value = m_resourceProperties.getProperty(key);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (value == <span class="keyword">null</span> &amp;&amp; m_configProperties.get() == <span class="keyword">null</span> &amp;&amp; m_warnLogRateLimiter.tryAcquire()) &#123;</span><br><span class="line">    logger.warn(<span class="string">"Could not load config for namespace &#123;&#125; from Apollo, please check whether the configs are released in Apollo! Return default value now!"</span>, m_namespace);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> value == <span class="keyword">null</span> ? defaultValue : value;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="onRepositoryChange"><a href="#onRepositoryChange" class="headerlink" title="onRepositoryChange"></a>onRepositoryChange</h4><p><code>#onRepositoryChange(namespace, newProperties)</code> 方法，当 ConfigRepository 读取到配置发生变更时，计算配置变更集合，并通知监听器们。代码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">synchronized</span> <span class="keyword">void</span> <span class="title">onRepositoryChange</span><span class="params">(String namespace, Properties newProperties)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (newProperties.equals(m_configProperties.get())) &#123;</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 读取新的 Properties 对象</span></span><br><span class="line">  ConfigSourceType sourceType = m_configRepository.getSourceType();</span><br><span class="line">  Properties newConfigProperties = propertiesFactory.getPropertiesInstance();</span><br><span class="line">  newConfigProperties.putAll(newProperties);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 计算配置变更集合</span></span><br><span class="line">  Map&lt;String, ConfigChange&gt; actualChanges = updateAndCalcConfigChanges(newConfigProperties, sourceType);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (actualChanges.isEmpty()) &#123;</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 通知监听器们</span></span><br><span class="line">  <span class="keyword">this</span>.fireConfigChange(<span class="keyword">new</span> ConfigChangeEvent(m_namespace, actualChanges));</span><br><span class="line"></span><br><span class="line">  Tracer.logEvent(<span class="string">"Apollo.Client.ConfigChanges"</span>, m_namespace);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 更新配置，并且计算出变更的配置</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> Map&lt;String, ConfigChange&gt; <span class="title">updateAndCalcConfigChanges</span><span class="params">(Properties newConfigProperties,</span></span></span><br><span class="line"><span class="function"><span class="params">                                                             ConfigSourceType sourceType)</span> </span>&#123;</span><br><span class="line">  <span class="comment">//0. 先计算出ConfigRepository变更的配置</span></span><br><span class="line">  List&lt;ConfigChange&gt; configChanges =</span><br><span class="line">    calcPropertyChanges(m_namespace, m_configProperties.get(), newConfigProperties);</span><br><span class="line"></span><br><span class="line">  ImmutableMap.Builder&lt;String, ConfigChange&gt; actualChanges =</span><br><span class="line">    <span class="keyword">new</span> ImmutableMap.Builder&lt;&gt;();</span><br><span class="line"></span><br><span class="line">  <span class="comment">/** === Double check since DefaultConfig has multiple config sources ==== **/</span></span><br><span class="line"></span><br><span class="line">  <span class="comment">//1. use getProperty to update configChanges's old value</span></span><br><span class="line">  <span class="keyword">for</span> (ConfigChange change : configChanges) &#123;</span><br><span class="line">    change.setOldValue(<span class="keyword">this</span>.getProperty(change.getPropertyName(), change.getOldValue()));</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">//2. 更新配置</span></span><br><span class="line">  updateConfig(newConfigProperties, sourceType);</span><br><span class="line">  clearConfigCache();</span><br><span class="line"></span><br><span class="line">  <span class="comment">//3. use getProperty to update configChange's new value and calc the final changes</span></span><br><span class="line">  <span class="keyword">for</span> (ConfigChange change : configChanges) &#123;</span><br><span class="line">    change.setNewValue(<span class="keyword">this</span>.getProperty(change.getPropertyName(), change.getNewValue()));</span><br><span class="line">    <span class="keyword">switch</span> (change.getChangeType()) &#123;</span><br><span class="line">      <span class="keyword">case</span> ADDED:</span><br><span class="line">        <span class="keyword">if</span> (Objects.equals(change.getOldValue(), change.getNewValue())) &#123;</span><br><span class="line">          <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (change.getOldValue() != <span class="keyword">null</span>) &#123;</span><br><span class="line">          change.setChangeType(PropertyChangeType.MODIFIED);</span><br><span class="line">        &#125;</span><br><span class="line">        actualChanges.put(change.getPropertyName(), change);</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">      <span class="keyword">case</span> MODIFIED:</span><br><span class="line">        <span class="keyword">if</span> (!Objects.equals(change.getOldValue(), change.getNewValue())) &#123;</span><br><span class="line">          actualChanges.put(change.getPropertyName(), change);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">      <span class="keyword">case</span> DELETED:</span><br><span class="line">        <span class="keyword">if</span> (Objects.equals(change.getOldValue(), change.getNewValue())) &#123;</span><br><span class="line">          <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (change.getNewValue() != <span class="keyword">null</span>) &#123;</span><br><span class="line">          change.setChangeType(PropertyChangeType.MODIFIED);</span><br><span class="line">        &#125;</span><br><span class="line">        actualChanges.put(change.getPropertyName(), change);</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">      <span class="keyword">default</span>:</span><br><span class="line">        <span class="comment">//do nothing</span></span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> actualChanges.build();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Clear config cache</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">clearConfigCache</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="comment">// synchronized，用于和 `#getValueAndStoreToCache` 方法，在更新缓存时的互斥，避免并发。</span></span><br><span class="line">  <span class="comment">// 每次过期完所有的缓存后，版本号 +1 。</span></span><br><span class="line">  <span class="keyword">synchronized</span> (<span class="keyword">this</span>) &#123;</span><br><span class="line">    <span class="keyword">for</span> (Cache c : allCaches) &#123;</span><br><span class="line">      <span class="keyword">if</span> (c != <span class="keyword">null</span>) &#123;</span><br><span class="line">         <span class="comment">// 过期缓存</span></span><br><span class="line">        c.invalidateAll();</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 新增版本号</span></span><br><span class="line">    m_configVersion.incrementAndGet();</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="备注"><a href="#备注" class="headerlink" title="备注"></a>备注</h1><ol>
+<li><p><a href="http://www.iocoder.cn/Apollo/client-config-api-1/" target="_blank" rel="noopener">Apollo 源码解析 —— 客户端 API 配置（一）之一览</a></p>
+</li>
+<li><p><a href="http://www.iocoder.cn/Apollo/client-config-api-2/" target="_blank" rel="noopener">Apollo 源码解析 —— 客户端 API 配置（二）之 Config</a></p>
+</li>
+</ol>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div></div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.jpg" alt="zch 微信支付">
+        <p>微信支付</p>
+      </div>
+    
+
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/apollo/" rel="tag"># apollo</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/09/16/apollo/apollo--Portal端的api/" rel="next" title="apollo--Portal端的api">
+                <i class="fa fa-chevron-left"></i> apollo--Portal端的api
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2021/01/03/apollo/apollo--集成spring/" rel="prev" title="apollo--集成spring">
+                apollo--集成spring <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        
+  <div class="bdsharebuttonbox">
+    <a href="#" class="bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+    <a href="#" class="bds_douban" data-cmd="douban" title="分享到豆瓣网"></a>
+    <a href="#" class="bds_sqq" data-cmd="sqq" title="分享到QQ好友"></a>
+    <a href="#" class="bds_qzone" data-cmd="qzone" title="分享到QQ空间"></a>
+    <a href="#" class="bds_weixin" data-cmd="weixin" title="分享到微信"></a>
+    <a href="#" class="bds_tieba" data-cmd="tieba" title="分享到百度贴吧"></a>
+    <a href="#" class="bds_twi" data-cmd="twi" title="分享到Twitter"></a>
+    <a href="#" class="bds_fbook" data-cmd="fbook" title="分享到Facebook"></a>
+    <a href="#" class="bds_more" data-cmd="more"></a>
+    <a class="bds_count" data-cmd="count"></a>
+  </div>
+  <script>
+    window._bd_share_config = {
+      "common": {
+        "bdText": "",
+        "bdMini": "2",
+        "bdMiniList": false,
+        "bdPic": ""
+      },
+      "share": {
+        "bdSize": "16",
+        "bdStyle": "0"
+      },
+      "image": {
+        "viewList": ["tsina", "douban", "sqq", "qzone", "weixin", "twi", "fbook"],
+        "viewText": "分享到：",
+        "viewSize": "16"
+      }
+    }
+  </script>
+
+<script>
+  with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='//bdimg.share.baidu.com/static/api/js/share.js?cdnversion='+~(-new Date()/36e5)];
+</script>
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar.png" alt="zch">
+            
+              <p class="site-author-name" itemprop="name">zch</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">160</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">29</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">117</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#UML"><span class="nav-number">1.</span> <span class="nav-text">UML</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#源码分析"><span class="nav-number">2.</span> <span class="nav-text">源码分析</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#ConfigService"><span class="nav-number">2.1.</span> <span class="nav-text">ConfigService</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ConfigManager"><span class="nav-number">2.2.</span> <span class="nav-text">ConfigManager</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#DefaultConfigManager"><span class="nav-number">2.2.1.</span> <span class="nav-text">DefaultConfigManager</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ConfigFactoryManager"><span class="nav-number">2.3.</span> <span class="nav-text">ConfigFactoryManager</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#DefaultConfigFactoryManager"><span class="nav-number">2.3.1.</span> <span class="nav-text">DefaultConfigFactoryManager</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ConfigFactory"><span class="nav-number">2.4.</span> <span class="nav-text">ConfigFactory</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#DefaultConfigFactory"><span class="nav-number">2.4.1.</span> <span class="nav-text">DefaultConfigFactory</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Config"><span class="nav-number">2.5.</span> <span class="nav-text">Config</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Uml"><span class="nav-number">2.5.1.</span> <span class="nav-text">Uml</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#AbstractConfig"><span class="nav-number">2.5.2.</span> <span class="nav-text">AbstractConfig</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#获取属性值"><span class="nav-number">2.5.2.1.</span> <span class="nav-text">获取属性值</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#添加配置变更监听器"><span class="nav-number">2.5.2.2.</span> <span class="nav-text">添加配置变更监听器</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#触发配置变更监听器们"><span class="nav-number">2.5.2.3.</span> <span class="nav-text">触发配置变更监听器们</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#DefaultConfig"><span class="nav-number">2.5.3.</span> <span class="nav-text">DefaultConfig</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#构造方法"><span class="nav-number">2.5.3.1.</span> <span class="nav-text">构造方法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#获得属性值"><span class="nav-number">2.5.3.2.</span> <span class="nav-text">获得属性值</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#onRepositoryChange"><span class="nav-number">2.5.3.3.</span> <span class="nav-text">onRepositoryChange</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#备注"><span class="nav-number">3.</span> <span class="nav-text">备注</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<div class="copyright">&copy; <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">zch</span>
+
+  
+</div>
+
+
+  <div class="powered-by">个人学习和工作中总结的笔记</div>
+  <i class="fa fa-user-md"></i>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+<script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? "https://" : "http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1276375036'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s5.cnzz.com/z_stat.php%3Fid%3D1276375036%26online%3D1%26show%3Dline' type='text/javascript'%3E%3C/script%3E"));</script>
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/three/three.min.js"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/three/canvas_sphere.min.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+  
+  <script type="text/javascript">
+    var GUEST = ['nick','mail','link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item=>{
+      return GUEST.indexOf(item)>-1;
+    });
+    new Valine({
+        el: '#comments' ,
+        verify: true,
+        notify: true,
+        appId: 'qlLpITiuRGP5wGRRqD1TTe7y-gzGzoHsz',
+        appKey: 'Xu6NC8eq2DCotEgOrHgbA2St',
+        placeholder: 'ヾﾉ≧∀≦)o来啊，快活啊!',
+        avatar:'mm',
+        guest_info:guest,
+        pageSize:'10' || 10,
+    });
+  </script>
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,1434 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+<meta name="google-site-verification" content="6pSprQE3BiN_wM4uIQnTSoO5EAKab52jQ86zdl_VH84">
+<meta name="google-site-verification" content="pa5VzMThwxpvSOgHS15kDjiLdeww7kHG5LcJjH6EQko">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/science-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/science-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="mysql,索引,">
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="ZCH NOTES" type="application/atom+xml">
+
+
+
+
+
+
+<meta name="description" content="小史是一个应届生，虽然学的是电子专业，但是自己业余时间看了很多互联网与编程方面的书，一心想进 BAT 互联网公司。  &quot;  话说两个多月前，小史通过了 A 厂的一面，两个多月后的今天，小史终于等到了 A 厂的二面。  &quot;  在简单的自我介绍后，面试官看了看小史的简历，开始发问了。  面试现场&quot; &quot; 小史：没问题，这个项目前端用的 React+Webpack，后端用的 Nginx+Spring B">
+<meta name="keywords" content="mysql,索引">
+<meta property="og:type" content="article">
+<meta property="og:title" content="mysql--大话为什么MySQL数据库要用B+树存储索引">
+<meta property="og:url" content="http://yoursite.com/2020/07/25/mysql/mysql--大话为什么MySQL数据库要用B+树存储索引/index.html">
+<meta property="og:site_name" content="ZCH NOTES">
+<meta property="og:description" content="小史是一个应届生，虽然学的是电子专业，但是自己业余时间看了很多互联网与编程方面的书，一心想进 BAT 互联网公司。  &quot;  话说两个多月前，小史通过了 A 厂的一面，两个多月后的今天，小史终于等到了 A 厂的二面。  &quot;  在简单的自我介绍后，面试官看了看小史的简历，开始发问了。  面试现场&quot; &quot; 小史：没问题，这个项目前端用的 React+Webpack，后端用的 Nginx+Spring B">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/images/1554287107325.jpg">
+<meta property="og:image" content="http://yoursite.com/images/1554287160522.jpg">
+<meta property="og:image" content="http://yoursite.com/images/1554287377607.jpg">
+<meta property="og:image" content="http://yoursite.com/images/1554287389500.jpg">
+<meta property="og:image" content="http://yoursite.com/images/1554287449069.jpg">
+<meta property="og:image" content="http://yoursite.com/images/1554287455633.jpg">
+<meta property="og:image" content="http://yoursite.com/images/1554287462210.jpg">
+<meta property="og:image" content="http://yoursite.com/images/1555371643068.jpg">
+<meta property="og:image" content="http://yoursite.com/images/1555371658922.jpg">
+<meta property="og:image" content="http://yoursite.com/images/1555371682741.jpg">
+<meta property="og:image" content="http://yoursite.com/images/1555371692549.jpg">
+<meta property="og:image" content="http://yoursite.com/images/1555371717343.jpg">
+<meta property="og:image" content="http://yoursite.com/images/1555371727031.jpg">
+<meta property="og:image" content="http://yoursite.com/images/1555371735717.jpg">
+<meta property="og:image" content="http://yoursite.com/images/1555371744996.jpg">
+<meta property="og:image" content="http://yoursite.com/images/1555371757763.jpg">
+<meta property="og:image" content="http://yoursite.com/images/1555371765056.jpg">
+<meta property="og:image" content="http://yoursite.com/images/1555371774330.jpg">
+<meta property="og:image" content="http://yoursite.com/images/1555371790819.jpg">
+<meta property="og:image" content="http://yoursite.com/images/1555371798486.jpg">
+<meta property="og:image" content="http://yoursite.com/images/1555371814289.jpg">
+<meta property="og:image" content="http://yoursite.com/images/1555371843949.jpg">
+<meta property="og:image" content="http://yoursite.com/images/1555371883091.jpg">
+<meta property="og:image" content="http://yoursite.com/images/1555371895622.jpg">
+<meta property="og:image" content="http://yoursite.com/images/1555371932710.jpg">
+<meta property="og:image" content="http://yoursite.com/images/1555371945256.jpg">
+<meta property="og:image" content="http://yoursite.com/images/1555371963992.jpg">
+<meta property="og:image" content="http://yoursite.com/images/1555372008361.jpg">
+<meta property="og:image" content="http://yoursite.com/images/1555372813157.jpg">
+<meta property="og:image" content="http://yoursite.com/images/1555372844684.jpg">
+<meta property="og:image" content="http://yoursite.com/images/1555372862275.jpg">
+<meta property="og:image" content="http://yoursite.com/images/1555372878719.jpg">
+<meta property="og:image" content="http://yoursite.com/images/1555372908109.jpg">
+<meta property="og:image" content="http://yoursite.com/images/1555372915512.jpg">
+<meta property="og:image" content="http://yoursite.com/images/1555372924005.jpg">
+<meta property="og:image" content="http://yoursite.com/images/1555372931578.jpg">
+<meta property="og:image" content="http://yoursite.com/images/1555372939824.jpg">
+<meta property="og:image" content="http://yoursite.com/images/1555372948390.jpg">
+<meta property="og:image" content="http://yoursite.com/images/1555372964156.jpg">
+<meta property="og:image" content="http://yoursite.com/images/1555372973110.jpg">
+<meta property="og:image" content="http://yoursite.com/images/1555372980779.jpg">
+<meta property="og:image" content="http://yoursite.com/images/1555372989879.jpg">
+<meta property="og:image" content="http://yoursite.com/images/1555373003863.jpg">
+<meta property="og:image" content="http://yoursite.com/images/1555373012934.jpg">
+<meta property="og:image" content="http://yoursite.com/images/1555373020749.jpg">
+<meta property="og:image" content="http://yoursite.com/images/1555373031829.jpg">
+<meta property="og:image" content="http://yoursite.com/images/1555373040444.jpg">
+<meta property="og:image" content="http://yoursite.com/images/1555373052788.jpg">
+<meta property="og:image" content="http://yoursite.com/images/1555373064397.jpg">
+<meta property="og:image" content="http://yoursite.com/images/1555373086302.jpg">
+<meta property="og:image" content="http://yoursite.com/images/1555373095221.jpg">
+<meta property="og:image" content="http://yoursite.com/images/1555373104257.jpg">
+<meta property="og:image" content="http://yoursite.com/images/1555373112068.jpg">
+<meta property="og:image" content="http://yoursite.com/images/1555373120461.jpg">
+<meta property="og:image" content="http://yoursite.com/images/1555373127954.jpg">
+<meta property="og:image" content="http://yoursite.com/images/1555373137200.jpg">
+<meta property="og:image" content="http://yoursite.com/images/1555373145168.jpg">
+<meta property="og:image" content="http://yoursite.com/images/1555373153890.jpg">
+<meta property="og:image" content="http://yoursite.com/images/1555373164790.jpg">
+<meta property="og:image" content="http://yoursite.com/images/1555373186810.jpg">
+<meta property="og:image" content="http://yoursite.com/images/1555373194296.jpg">
+<meta property="og:image" content="http://yoursite.com/images/1555373202894.jpg">
+<meta property="og:image" content="http://yoursite.com/images/1555373211914.jpg">
+<meta property="og:image" content="http://yoursite.com/images/1555373219688.jpg">
+<meta property="og:image" content="http://yoursite.com/images/1555373228236.jpg">
+<meta property="og:image" content="http://yoursite.com/images/1555373240677.jpg">
+<meta property="og:image" content="http://yoursite.com/images/1555373249882.jpg">
+<meta property="og:image" content="http://yoursite.com/images/1555373275689.jpg">
+<meta property="og:image" content="http://yoursite.com/images/1555373292079.jpg">
+<meta property="og:image" content="http://yoursite.com/images/1555373307415.jpg">
+<meta property="og:image" content="http://yoursite.com/images/1555373318238.jpg">
+<meta property="og:image" content="http://yoursite.com/images/1555373354524.jpg">
+<meta property="og:image" content="http://yoursite.com/images/1555373385035.jpg">
+<meta property="og:image" content="http://yoursite.com/images/1555373394565.jpg">
+<meta property="og:image" content="http://yoursite.com/images/1555373418015.jpg">
+<meta property="og:image" content="http://yoursite.com/images/1555373426639.jpg">
+<meta property="og:image" content="http://yoursite.com/images/1555373434915.jpg">
+<meta property="og:image" content="http://yoursite.com/images/1555373443540.jpg">
+<meta property="og:image" content="http://yoursite.com/images/1555373458363.jpg">
+<meta property="og:image" content="http://yoursite.com/images/1555373470022.jpg">
+<meta property="og:image" content="http://yoursite.com/images/1555373488498.jpg">
+<meta property="og:image" content="http://yoursite.com/images/1555373507470.jpg">
+<meta property="og:image" content="http://yoursite.com/images/1555373564928.jpg">
+<meta property="og:image" content="http://yoursite.com/images/1555373574074.jpg">
+<meta property="og:image" content="http://yoursite.com/images/1555373593755.jpg">
+<meta property="og:image" content="http://yoursite.com/images/1555373603329.jpg">
+<meta property="og:image" content="http://yoursite.com/images/1555373624939.jpg">
+<meta property="og:image" content="http://yoursite.com/images/1555373679087.jpg">
+<meta property="og:image" content="http://yoursite.com/images/1555373701251.jpg">
+<meta property="og:image" content="http://yoursite.com/images/1555373715626.jpg">
+<meta property="og:image" content="http://yoursite.com/images/1555373722361.jpg">
+<meta property="og:updated_time" content="2020-07-25T08:52:41.528Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="mysql--大话为什么MySQL数据库要用B+树存储索引">
+<meta name="twitter:description" content="小史是一个应届生，虽然学的是电子专业，但是自己业余时间看了很多互联网与编程方面的书，一心想进 BAT 互联网公司。  &quot;  话说两个多月前，小史通过了 A 厂的一面，两个多月后的今天，小史终于等到了 A 厂的二面。  &quot;  在简单的自我介绍后，面试官看了看小史的简历，开始发问了。  面试现场&quot; &quot; 小史：没问题，这个项目前端用的 React+Webpack，后端用的 Nginx+Spring B">
+<meta name="twitter:image" content="http://yoursite.com/images/1554287107325.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"right","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2020/07/25/mysql/mysql--大话为什么MySQL数据库要用B+树存储索引/">
+
+
+
+
+
+  <title>mysql--大话为什么MySQL数据库要用B+树存储索引 | ZCH NOTES</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-right page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">ZCH NOTES</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <h1 class="site-subtitle" itemprop="description">博学笃志 切问近思</h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404.html" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br>
+            
+            公益404
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/07/25/mysql/mysql--大话为什么MySQL数据库要用B+树存储索引/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="zch">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ZCH NOTES">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">mysql--大话为什么MySQL数据库要用B+树存储索引</h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-07-25T16:52:41+08:00">
+                2020-07-25
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/mysql/" itemprop="url" rel="index">
+                    <span itemprop="name">mysql</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2020/07/25/mysql/mysql--大话为什么MySQL数据库要用B+树存储索引/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2020/07/25/mysql/mysql--大话为什么MySQL数据库要用B+树存储索引/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <blockquote>
+<p>小史是一个应届生，虽然学的是电子专业，但是自己业余时间看了很多互联网与编程方面的书，一心想进 BAT 互联网公司。</p>
+</blockquote>
+<p><img src="/images/1554287107325.jpg" alt="enter description here" title="1554287107325.jpg"></p>"
+<blockquote>
+<p>话说两个多月前，小史通过了 A 厂的一面，两个多月后的今天，小史终于等到了 A 厂的二面。</p>
+</blockquote>
+<p><img src="/images/1554287160522.jpg" alt="enter description here" title="1554287160522.jpg"></p>"
+<blockquote>
+<p>在简单的自我介绍后，面试官看了看小史的简历，开始发问了。</p>
+</blockquote>
+<h2 id="面试现场"><a href="#面试现场" class="headerlink" title="面试现场"></a>面试现场</h2><p><img src="/images/1554287377607.jpg" alt="enter description here" title="1554287377607.jpg"></p>"
+<p><img src="/images/1554287389500.jpg" alt="enter description here" title="1554287389500.jpg"></p>"
+<p>小史：没问题，这个项目前端用的 React+Webpack，后端用的 Nginx+Spring Boot+Redis+MySQL，前后端是分离的，最后用 Docker 进行容器化部署。主要模块有师生系统、课程系统、成绩系统、选课系统等。</p>
+<p><img src="/images/1554287449069.jpg" alt="enter description here" title="1554287449069.jpg"></p>"
+<p><img src="/images/1554287455633.jpg" alt="enter description here" title="1554287455633.jpg"></p>"
+<p><img src="/images/1554287462210.jpg" alt="enter description here" title="1554287462210.jpg"></p>"
+<p>小史：底层 MySQL 是存储，Redis 是缓存，Dao 层操作 MySQL，Cache层操作 Redis，Service 层处理业务逻辑，Rest API 层为前端提供 Rest 接口。<br>前端这边用 React 进行模块化，Webpack 打包部署。网关 Nginx 进行负载均衡。MySQL、Redis、Nginx 和 Spring Boot 应用都放在 Docker 里部署。</p>
+<p><img src="/images/1555371643068.jpg" alt="enter description here" title="1555371643068.jpg"></p>"
+<p><img src="/images/1555371658922.jpg" alt="enter description here" title="1555371658922.jpg"></p>"
+<p><img src="/images/1555371682741.jpg" alt="enter description here" title="1555371682741.jpg"></p>"
+<p><img src="/images/1555371692549.jpg" alt="enter description here" title="1555371692549.jpg"></p>"
+<p><img src="/images/1555371717343.jpg" alt="enter description here" title="1555371717343.jpg"></p>"
+<p><img src="/images/1555371727031.jpg" alt="enter description here" title="1555371727031.jpg"></p>"
+<p><img src="/images/1555371735717.jpg" alt="enter description here" title="1555371735717.jpg"></p>"
+<p><img src="/images/1555371744996.jpg" alt="enter description here" title="1555371744996.jpg"></p>"
+<p><img src="/images/1555371757763.jpg" alt="enter description here" title="1555371757763.jpg"></p>"
+<p><img src="/images/1555371765056.jpg" alt="enter description here" title="1555371765056.jpg"></p>"
+<p><img src="/images/1555371774330.jpg" alt="enter description here" title="1555371774330.jpg"></p>"
+<p><img src="/images/1555371790819.jpg" alt="enter description here" title="1555371790819.jpg"></p>"
+<p><img src="/images/1555371798486.jpg" alt="enter description here" title="1555371798486.jpg"></p>"
+<p><img src="/images/1555371814289.jpg" alt="enter description here" title="1555371814289.jpg"></p>"
+<p><strong>题目：为什么 MySQL 数据库要用 B+ 树存储索引？小史听到这个题目，陷入了回忆。</strong></p>
+<p><img src="/images/1555371843949.jpg" alt="enter description here" title="1555371843949.jpg"></p>"
+<h2 id="前段时间的饭局"><a href="#前段时间的饭局" class="headerlink" title="前段时间的饭局"></a>前段时间的饭局</h2><p>话说吕老师给小史讲完人工智能的一些知识后，他们一起回家吃小史姐姐做的饭去了。</p>
+<p><img src="/images/1555371883091.jpg" alt="enter description here" title="1555371883091.jpg"></p>"
+<p><img src="/images/1555371895622.jpg" alt="enter description here" title="1555371895622.jpg"></p>"
+<p><img src="/images/1555371932710.jpg" alt="enter description here" title="1555371932710.jpg"></p>"
+<p><img src="/images/1555371945256.jpg" alt="enter description here" title="1555371945256.jpg"></p>"
+<p>吕老师：面试的时候一定是往深了问，不精通的话容易吃亏。不过面试时一般都是根据项目来问，项目中用到的技术，一定要多看看原理，特别是能和数据结构和算法挂钩的那部分。</p>
+<p><img src="/images/1555371963992.jpg" alt="enter description here" title="1555371963992.jpg"></p>"
+<p><img src="/images/1555372008361.jpg" alt="enter description here" title="1555372008361.jpg"></p>"
+<p><img src="/images/1555372813157.jpg" alt="enter description here" title="1555372813157.jpg"></p>"
+<p>小史：树的话，无非就是前中后序遍历、二叉树、二叉搜索树、平衡二叉树，更高级一点的有红黑树、B 树、B+ 树，还有之前你教我的字典树。</p>
+<h3 id="红黑树"><a href="#红黑树" class="headerlink" title="红黑树"></a>红黑树</h3><p><img src="/images/1555372844684.jpg" alt="enter description here" title="1555372844684.jpg"></p>"
+<p>一听到红黑树，小史头都大了，开始抱怨了起来。</p>
+<p><img src="/images/1555372862275.jpg" alt="enter description here" title="1555372862275.jpg"></p>"
+<p>小史：红黑树看过很多遍了，但是每次都记不住，它的规则实在是太多了，光定义就有四五条规则，还有插入删除的时候，需要调整树，复杂得很。</p>
+<p><img src="/images/1555372878719.jpg" alt="enter description here" title="1555372878719.jpg"></p>"
+<p>吕老师：小史，问你红黑树，并不是让你背诵它的定义，或者让你手写一个红黑树，而是想问问你它为什么这样设计，它的使用场景有哪些。</p>
+<p><img src="/images/1555372908109.jpg" alt="enter description here" title="1555372908109.jpg"></p>"
+<p><img src="/images/1555372915512.jpg" alt="enter description here" title="1555372915512.jpg"></p>"
+<p><img src="/images/1555372924005.jpg" alt="enter description here" title="1555372924005.jpg"></p>"
+<p><img src="/images/1555372931578.jpg" alt="enter description here" title="1555372931578.jpg"></p>"
+<p><img src="/images/1555372939824.jpg" alt="enter description here" title="1555372939824.jpg"></p>"
+<p><img src="/images/1555372948390.jpg" alt="enter description here" title="1555372948390.jpg"></p>"
+<p><img src="/images/1555372964156.jpg" alt="enter description here" title="1555372964156.jpg"></p>"
+<p><img src="/images/1555372973110.jpg" alt="enter description here" title="1555372973110.jpg"></p>"
+<p><img src="/images/1555372980779.jpg" alt="enter description here" title="1555372980779.jpg"></p>"
+<p><img src="/images/1555372989879.jpg" alt="enter description here" title="1555372989879.jpg"></p>"
+<p><img src="/images/1555373003863.jpg" alt="enter description here" title="1555373003863.jpg"></p>"
+<p><img src="/images/1555373012934.jpg" alt="enter description here" title="1555373012934.jpg"></p>"
+<p><img src="/images/1555373020749.jpg" alt="enter description here" title="1555373020749.jpg"></p>"
+<p><img src="/images/1555373031829.jpg" alt="enter description here" title="1555373031829.jpg"></p>"
+<p><img src="/images/1555373040444.jpg" alt="enter description here" title="1555373040444.jpg"></p>"
+<p><img src="/images/1555373052788.jpg" alt="enter description here" title="1555373052788.jpg"></p>"
+<p><img src="/images/1555373064397.jpg" alt="enter description here" title="1555373064397.jpg"></p>"
+<h3 id="B-树"><a href="#B-树" class="headerlink" title="B 树"></a>B 树</h3><p><img src="/images/1555373086302.jpg" alt="enter description here" title="1555373086302.jpg"></p>"
+<p><img src="/images/1555373095221.jpg" alt="enter description here" title="1555373095221.jpg"></p>"
+<p><img src="/images/1555373104257.jpg" alt="enter description here" title="1555373104257.jpg"></p>"
+<p><img src="/images/1555373112068.jpg" alt="enter description here" title="1555373112068.jpg"></p>"
+<p><img src="/images/1555373120461.jpg" alt="enter description here" title="1555373120461.jpg"></p>"
+<p><img src="/images/1555373127954.jpg" alt="enter description here" title="1555373127954.jpg"></p>"
+<p><img src="/images/1555373137200.jpg" alt="enter description here" title="1555373137200.jpg"></p>"
+<p><img src="/images/1555373145168.jpg" alt="enter description here" title="1555373145168.jpg"></p>"
+<p><img src="/images/1555373153890.jpg" alt="enter description here" title="1555373153890.jpg"></p>"
+<p><img src="/images/1555373164790.jpg" alt="enter description here" title="1555373164790.jpg"></p>"
+<p><img src="/images/1555373186810.jpg" alt="enter description here" title="1555373186810.jpg"></p>"
+<p><img src="/images/1555373194296.jpg" alt="enter description here" title="1555373194296.jpg"></p>"
+<p><img src="/images/1555373202894.jpg" alt="enter description here" title="1555373202894.jpg"></p>"
+<p><img src="/images/1555373211914.jpg" alt="enter description here" title="1555373211914.jpg"></p>"
+<p><img src="/images/1555373219688.jpg" alt="enter description here" title="1555373219688.jpg"></p>"
+<p><img src="/images/1555373228236.jpg" alt="enter description here" title="1555373228236.jpg"></p>"
+<p><img src="/images/1555373240677.jpg" alt="enter description here" title="1555373240677.jpg"></p>"
+<p><img src="/images/1555373249882.jpg" alt="enter description here" title="1555373249882.jpg"></p>"
+<p>吕老师：小史，你要知道，文件系统和数据库的索引都是存在硬盘上的，并且如果数据量大的话，不一定能一次性加载到内存中。</p>
+<p><img src="/images/1555373275689.jpg" alt="enter description here" title="1555373275689.jpg"></p>"
+<p>两个月前，小史面试没考虑内存情况差点挂了。</p>
+<p><img src="/images/1555373292079.jpg" alt="enter description here" title="1555373292079.jpg"></p>"
+<p><img src="/images/1555373307415.jpg" alt="enter description here" title="1555373307415.jpg"></p>"
+<p><img src="/images/1555373318238.jpg" alt="enter description here" title="1555373318238.jpg"></p>"
+<p><img src="/images/1555373354524.jpg" alt="enter description here" title="1555373354524.jpg"></p>"
+<p><img src="/images/1555373385035.jpg" alt="enter description here" title="1555373385035.jpg"></p>"
+<p><img src="/images/1555373394565.jpg" alt="enter description here" title="1555373394565.jpg"></p>"
+<h3 id="B-树-1"><a href="#B-树-1" class="headerlink" title="B+ 树"></a>B+ 树</h3><p><img src="/images/1555373418015.jpg" alt="enter description here" title="1555373418015.jpg"></p>"
+<p><img src="/images/1555373426639.jpg" alt="enter description here" title="1555373426639.jpg"></p>"
+<p><img src="/images/1555373434915.jpg" alt="enter description here" title="1555373434915.jpg"></p>"
+<p><img src="/images/1555373443540.jpg" alt="enter description here" title="1555373443540.jpg"></p>"
+<p><img src="/images/1555373458363.jpg" alt="enter description here" title="1555373458363.jpg"></p>"
+<p><img src="/images/1555373470022.jpg" alt="enter description here" title="1555373470022.jpg"></p>"
+<p><img src="/images/1555373488498.jpg" alt="enter description here" title="1555373488498.jpg"></p>"
+<p>吕老师：这也是和业务场景相关的，你想想，数据库中 Select 数据，不一定只选一条，很多时候会选多条，比如按照 ID 排序后选 10 条。</p>
+<p><img src="/images/1555373507470.jpg" alt="enter description here" title="1555373507470.jpg"></p>"
+<p>小史：我明白了，如果是多条的话，B 树需要做局部的中序遍历，可能要跨层访问。</p>
+<p>而 B+ 树由于所有数据都在叶子结点，不用跨层，同时由于有链表结构，只需要找到首尾，通过链表就能把所有数据取出来了。</p>
+<p><img src="/images/1555373564928.jpg" alt="enter description here" title="1555373564928.jpg"></p>"
+<p><img src="/images/1555373574074.jpg" alt="enter description here" title="1555373574074.jpg"></p>"
+<h2 id="回到现场"><a href="#回到现场" class="headerlink" title="回到现场"></a>回到现场</h2><p><img src="/images/1555373593755.jpg" alt="enter description here" title="1555373593755.jpg"></p>"
+<p><img src="/images/1555373603329.jpg" alt="enter description here" title="1555373603329.jpg"></p>"
+<p>小史：这和业务场景有关。如果只选一个数据，那确实是 Hash 更快。但是数据库中经常会选择多条，这时候由于 B+ 树索引有序，并且又有链表相连，它的查询效率比 Hash 就快很多了。</p>
+<p><img src="/images/1555373624939.jpg" alt="enter description here" title="1555373624939.jpg"></p>"
+<p>小史：而且数据库中的索引一般是在磁盘上，数据量大的情况可能无法一次装入内存，B+ 树的设计可以允许数据分批加载，同时树的高度较低，提高查找效率。</p>
+<p><img src="/images/1555373679087.jpg" alt="enter description here" title="1555373679087.jpg"></p>"
+<p>HR 和小史简单地聊了聊基本情况，这次面试就结束了。小史走后，面试官在系统中写下了面试评语：</p>
+<p><img src="/images/1555373701251.jpg" alt="enter description here" title="1555373701251.jpg"></p>"
+<p>几天后，小史收到了 A 厂的 Offer。</p>
+<p><img src="/images/1555373715626.jpg" alt="enter description here" title="1555373715626.jpg"></p>"
+<p><img src="/images/1555373722361.jpg" alt="enter description here" title="1555373722361.jpg"></p>"
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li>转自：<a href="https://mp.weixin.qq.com/s/yd49Xc4pzvGnVqeptR49vA" target="_blank" rel="noopener">为什么MySQL数据库要用B+树存储索引？</a></li>
+<li><a href="https://www.cnblogs.com/yangecnu/p/Introduce-B-Tree-and-B-Plus-Tree.html" target="_blank" rel="noopener">浅谈算法和数据结构: 十 平衡查找树之B树</a></li>
+<li><a href="https://blog.csdn.net/zhuanzhe117/article/details/78039692" target="_blank" rel="noopener">B树与B+树简明扼要的区别</a></li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div></div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.jpg" alt="zch 微信支付">
+        <p>微信支付</p>
+      </div>
+    
+
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/mysql/" rel="tag"># mysql</a>
+          
+            <a href="/tags/索引/" rel="tag"># 索引</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/07/25/mysql/mysql--意向锁/" rel="next" title="mysql--意向锁">
+                <i class="fa fa-chevron-left"></i> mysql--意向锁
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/07/25/mysql/mysql--加锁分析/" rel="prev" title="mysql--加锁分析">
+                mysql--加锁分析 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        
+  <div class="bdsharebuttonbox">
+    <a href="#" class="bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+    <a href="#" class="bds_douban" data-cmd="douban" title="分享到豆瓣网"></a>
+    <a href="#" class="bds_sqq" data-cmd="sqq" title="分享到QQ好友"></a>
+    <a href="#" class="bds_qzone" data-cmd="qzone" title="分享到QQ空间"></a>
+    <a href="#" class="bds_weixin" data-cmd="weixin" title="分享到微信"></a>
+    <a href="#" class="bds_tieba" data-cmd="tieba" title="分享到百度贴吧"></a>
+    <a href="#" class="bds_twi" data-cmd="twi" title="分享到Twitter"></a>
+    <a href="#" class="bds_fbook" data-cmd="fbook" title="分享到Facebook"></a>
+    <a href="#" class="bds_more" data-cmd="more"></a>
+    <a class="bds_count" data-cmd="count"></a>
+  </div>
+  <script>
+    window._bd_share_config = {
+      "common": {
+        "bdText": "",
+        "bdMini": "2",
+        "bdMiniList": false,
+        "bdPic": ""
+      },
+      "share": {
+        "bdSize": "16",
+        "bdStyle": "0"
+      },
+      "image": {
+        "viewList": ["tsina", "douban", "sqq", "qzone", "weixin", "twi", "fbook"],
+        "viewText": "分享到：",
+        "viewSize": "16"
+      }
+    }
+  </script>
+
+<script>
+  with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='//bdimg.share.baidu.com/static/api/js/share.js?cdnversion='+~(-new Date()/36e5)];
+</script>
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar.png" alt="zch">
+            
+              <p class="site-author-name" itemprop="name">zch</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">160</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">29</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">117</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#面试现场"><span class="nav-number">1.</span> <span class="nav-text">面试现场</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#前段时间的饭局"><span class="nav-number">2.</span> <span class="nav-text">前段时间的饭局</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#红黑树"><span class="nav-number">2.1.</span> <span class="nav-text">红黑树</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#B-树"><span class="nav-number">2.2.</span> <span class="nav-text">B 树</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#B-树-1"><span class="nav-number">2.3.</span> <span class="nav-text">B+ 树</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#回到现场"><span class="nav-number">3.</span> <span class="nav-text">回到现场</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考"><span class="nav-number">4.</span> <span class="nav-text">参考</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<div class="copyright">&copy; <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">zch</span>
+
+  
+</div>
+
+
+  <div class="powered-by">个人学习和工作中总结的笔记</div>
+  <i class="fa fa-user-md"></i>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+<script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? "https://" : "http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1276375036'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s5.cnzz.com/z_stat.php%3Fid%3D1276375036%26online%3D1%26show%3Dline' type='text/javascript'%3E%3C/script%3E"));</script>
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/three/three.min.js"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/three/canvas_sphere.min.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+  
+  <script type="text/javascript">
+    var GUEST = ['nick','mail','link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item=>{
+      return GUEST.indexOf(item)>-1;
+    });
+    new Valine({
+        el: '#comments' ,
+        verify: true,
+        notify: true,
+        appId: 'qlLpITiuRGP5wGRRqD1TTe7y-gzGzoHsz',
+        appKey: 'Xu6NC8eq2DCotEgOrHgbA2St',
+        placeholder: 'ヾﾉ≧∀≦)o来啊，快活啊!',
+        avatar:'mm',
+        guest_info:guest,
+        pageSize:'10' || 10,
+    });
+  </script>
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

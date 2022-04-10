@@ -1,0 +1,1315 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+<meta name="google-site-verification" content="6pSprQE3BiN_wM4uIQnTSoO5EAKab52jQ86zdl_VH84">
+<meta name="google-site-verification" content="pa5VzMThwxpvSOgHS15kDjiLdeww7kHG5LcJjH6EQko">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/science-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/science-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="apollo,">
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="ZCH NOTES" type="application/atom+xml">
+
+
+
+
+
+
+<meta name="description" content="启动过程&quot; UML&quot; XML配置NamespaceHandlercom.ctrip.framework.apollo.spring.config.NamespaceHandler ，实现 org.springframework.beans.factory.xml.NamespaceHandlerSupport 抽象类，Apollo 的 XML Namespace 的处理器。 如下是apollo n">
+<meta name="keywords" content="apollo">
+<meta property="og:type" content="article">
+<meta property="og:title" content="apollo--集成spring">
+<meta property="og:url" content="http://yoursite.com/2021/01/03/apollo/apollo--集成spring/index.html">
+<meta property="og:site_name" content="ZCH NOTES">
+<meta property="og:description" content="启动过程&quot; UML&quot; XML配置NamespaceHandlercom.ctrip.framework.apollo.spring.config.NamespaceHandler ，实现 org.springframework.beans.factory.xml.NamespaceHandlerSupport 抽象类，Apollo 的 XML Namespace 的处理器。 如下是apollo n">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/images/启动过程-5822255.png">
+<meta property="og:image" content="http://yoursite.com/images/Spring-5822255.png">
+<meta property="og:updated_time" content="2022-04-07T09:49:38.240Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="apollo--集成spring">
+<meta name="twitter:description" content="启动过程&quot; UML&quot; XML配置NamespaceHandlercom.ctrip.framework.apollo.spring.config.NamespaceHandler ，实现 org.springframework.beans.factory.xml.NamespaceHandlerSupport 抽象类，Apollo 的 XML Namespace 的处理器。 如下是apollo n">
+<meta name="twitter:image" content="http://yoursite.com/images/启动过程-5822255.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"right","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2021/01/03/apollo/apollo--集成spring/">
+
+
+
+
+
+  <title>apollo--集成spring | ZCH NOTES</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-right page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">ZCH NOTES</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <h1 class="site-subtitle" itemprop="description">博学笃志 切问近思</h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404.html" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br>
+            
+            公益404
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2021/01/03/apollo/apollo--集成spring/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="zch">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ZCH NOTES">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">apollo--集成spring</h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-01-03T22:39:18+08:00">
+                2021-01-03
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/apollo/" itemprop="url" rel="index">
+                    <span itemprop="name">apollo</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2021/01/03/apollo/apollo--集成spring/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2021/01/03/apollo/apollo--集成spring/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="启动过程"><a href="#启动过程" class="headerlink" title="启动过程"></a>启动过程</h1><p><img src="/images/启动过程-5822255.png" alt="启动过程"></p>"
+<h1 id="UML"><a href="#UML" class="headerlink" title="UML"></a>UML</h1><p><img src="/images/Spring-5822255.png" alt="Spring"></p>"
+<h1 id="XML配置"><a href="#XML配置" class="headerlink" title="XML配置"></a>XML配置</h1><h2 id="NamespaceHandler"><a href="#NamespaceHandler" class="headerlink" title="NamespaceHandler"></a>NamespaceHandler</h2><p><code>com.ctrip.framework.apollo.spring.config.NamespaceHandler</code> ，实现 <code>org.springframework.beans.factory.xml.NamespaceHandlerSupport</code> <strong>抽象类</strong>，Apollo 的 XML Namespace 的处理器。</p>
+<p>如下是apollo namespace的xml配置：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- 这个是最简单的配置形式，一般应用用这种形式就可以了，用来指示Apollo注入application namespace的配置到Spring环境中 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">apollo:config</span>/&gt;</span></span><br><span class="line"><span class="comment">&lt;!-- 这个是稍微复杂一些的配置形式，指示Apollo注入FX.apollo和FX.soa namespace的配置到Spring环境中 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">apollo:config</span> <span class="attr">namespaces</span>=<span class="string">"FX.apollo,FX.soa"</span>/&gt;</span></span><br></pre></td></tr></table></figure>
+<p><code>NamespaceHandler</code>把每一个带有config标签的元素解析成<strong><code>ConfigPropertySourcesProcessor</code></strong>类型的bean，由spring管理,实现如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">NamespaceHandler</span> <span class="keyword">extends</span> <span class="title">NamespaceHandlerSupport</span> </span>&#123;</span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Splitter NAMESPACE_SPLITTER = Splitter.on(<span class="string">","</span>).omitEmptyStrings().trimResults();</span><br><span class="line"></span><br><span class="line">  <span class="meta">@Override</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">init</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    registerBeanDefinitionParser(<span class="string">"config"</span>, <span class="keyword">new</span> BeanParser());</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">BeanParser</span> <span class="keyword">extends</span> <span class="title">AbstractSingleBeanDefinitionParser</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">protected</span> Class&lt;?&gt; getBeanClass(Element element) &#123;</span><br><span class="line">      <span class="comment">// config 标签被解析成 ConfigPropertySourcesProcessor对象</span></span><br><span class="line">      <span class="keyword">return</span> ConfigPropertySourcesProcessor<span class="class">.<span class="keyword">class</span></span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">boolean</span> <span class="title">shouldGenerateId</span><span class="params">()</span> </span>&#123;</span><br><span class="line">      <span class="comment">// 为每个bean自动生成一个id</span></span><br><span class="line">      <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">doParse</span><span class="params">(Element element, BeanDefinitionBuilder builder)</span> </span>&#123;</span><br><span class="line">      <span class="comment">// 解析 `namespaces` 属性，默认为 `"application"`</span></span><br><span class="line">      String namespaces = element.getAttribute(<span class="string">"namespaces"</span>);</span><br><span class="line">      <span class="keyword">if</span> (Strings.isNullOrEmpty(namespaces)) &#123;</span><br><span class="line">        namespaces = ConfigConsts.NAMESPACE_APPLICATION;</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">      <span class="comment">// 解析 `order` 属性，默认为 Ordered.LOWEST_PRECEDENCE;</span></span><br><span class="line">      <span class="keyword">int</span> order = Ordered.LOWEST_PRECEDENCE;</span><br><span class="line">      String orderAttribute = element.getAttribute(<span class="string">"order"</span>);</span><br><span class="line"></span><br><span class="line">      <span class="keyword">if</span> (!Strings.isNullOrEmpty(orderAttribute)) &#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">          order = Integer.parseInt(orderAttribute);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (Throwable ex) &#123;</span><br><span class="line">          <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException(</span><br><span class="line">              String.format(<span class="string">"Invalid order: %s for namespaces: %s"</span>, orderAttribute, namespaces));</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">      <span class="comment">// 添加到 PropertySourcesProcessor</span></span><br><span class="line">      PropertySourcesProcessor.addNamespaces(NAMESPACE_SPLITTER.splitToList(namespaces), order);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// PropertySourcesProcessor的静态方法addNamespaces</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Multimap&lt;Integer, String&gt; NAMESPACE_NAMES = LinkedHashMultimap.create();</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">boolean</span> <span class="title">addNamespaces</span><span class="params">(Collection&lt;String&gt; namespaces, <span class="keyword">int</span> order)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> NAMESPACE_NAMES.putAll(order, namespaces);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="ConfigPropertySourcesProcessor"><a href="#ConfigPropertySourcesProcessor" class="headerlink" title="ConfigPropertySourcesProcessor"></a>ConfigPropertySourcesProcessor</h2><p><code>com.ctrip.framework.apollo.spring.config.ConfigPropertySourcesProcessor</code> ，实现<code>BeanDefinitionRegistryPostProcessor</code> 接口，继承 <code>PropertySourcesProcessor</code> 类，Apollo PropertySource 处理器。</p>
+<blockquote>
+<p>Apollo Property Sources processor for Spring XML Based Application</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ConfigPropertySourcesProcessor</span> <span class="keyword">extends</span> <span class="title">PropertySourcesProcessor</span></span></span><br><span class="line"><span class="class">    <span class="keyword">implements</span> <span class="title">BeanDefinitionRegistryPostProcessor</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">private</span> ConfigPropertySourcesProcessorHelper helper = ServiceBootstrap.loadPrimary(ConfigPropertySourcesProcessorHelper<span class="class">.<span class="keyword">class</span>)</span>;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@Override</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">postProcessBeanDefinitionRegistry</span><span class="params">(BeanDefinitionRegistry registry)</span> <span class="keyword">throws</span> BeansException </span>&#123;</span><br><span class="line">    helper.postProcessBeanDefinitionRegistry(registry);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="postProcessBeanDefinitionRegistry"><a href="#postProcessBeanDefinitionRegistry" class="headerlink" title="postProcessBeanDefinitionRegistry"></a>postProcessBeanDefinitionRegistry</h3><p>在<code>postProcessBeanDefinitionRegistry</code>阶段，<code>DefaultConfigPropertySourcesProcessorHelper</code>注册一些<code>BeanDefinition</code>到<code>BeanDefinitionRegistry</code>中</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">postProcessBeanDefinitionRegistry</span><span class="params">(BeanDefinitionRegistry registry)</span> <span class="keyword">throws</span> BeansException </span>&#123;</span><br><span class="line">  Map&lt;String, Object&gt; propertySourcesPlaceholderPropertyValues = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">  <span class="comment">// to make sure the default PropertySourcesPlaceholderConfigurer's priority is higher than PropertyPlaceholderConfigurer</span></span><br><span class="line">  propertySourcesPlaceholderPropertyValues.put(<span class="string">"order"</span>, <span class="number">0</span>);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 注册 PropertySourcesPlaceholderConfigurer 到 BeanDefinitionRegistry 中，替换 PlaceHolder 为对应的属性值</span></span><br><span class="line">  BeanRegistrationUtil.registerBeanDefinitionIfNotExists(registry, PropertySourcesPlaceholderConfigurer<span class="class">.<span class="keyword">class</span>.<span class="title">getName</span>(),</span></span><br><span class="line"><span class="class">      <span class="title">PropertySourcesPlaceholderConfigurer</span>.<span class="title">class</span>, <span class="title">propertySourcesPlaceholderPropertyValues</span>)</span>;</span><br><span class="line">  <span class="comment">// 注册 ApolloAnnotationProcessor 到 BeanDefinitionRegistry 中，因为 XML 配置的 Bean 对象，也可能存在 @ApolloConfig 和 @ApolloConfigChangeListener 注解。</span></span><br><span class="line">  BeanRegistrationUtil.registerBeanDefinitionIfNotExists(registry, ApolloAnnotationProcessor<span class="class">.<span class="keyword">class</span>.<span class="title">getName</span>(),</span></span><br><span class="line"><span class="class">      <span class="title">ApolloAnnotationProcessor</span>.<span class="title">class</span>)</span>;</span><br><span class="line">  <span class="comment">// 注册 SpringValueProcessor 到 BeanDefinitionRegistry 中，用于 PlaceHolder 自动更新机制</span></span><br><span class="line">  BeanRegistrationUtil.registerBeanDefinitionIfNotExists(registry, SpringValueProcessor<span class="class">.<span class="keyword">class</span>.<span class="title">getName</span>(),</span></span><br><span class="line"><span class="class">      <span class="title">SpringValueProcessor</span>.<span class="title">class</span>)</span>;</span><br><span class="line">  <span class="comment">// 注册 ApolloJsonValueProcessor 到 BeanDefinitionRegistry 中，因为 XML 配置的 Bean 对象，也可能存在 @ApolloJsonValue 注解。</span></span><br><span class="line">  BeanRegistrationUtil.registerBeanDefinitionIfNotExists(registry, ApolloJsonValueProcessor<span class="class">.<span class="keyword">class</span>.<span class="title">getName</span>(),</span></span><br><span class="line"><span class="class">      <span class="title">ApolloJsonValueProcessor</span>.<span class="title">class</span>)</span>;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 处理 XML 配置的 Spring PlaceHolder</span></span><br><span class="line">  processSpringValueDefinition(registry);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * For Spring 3.x versions, the BeanDefinitionRegistryPostProcessor would not be instantiated if</span></span><br><span class="line"><span class="comment"> * it is added in postProcessBeanDefinitionRegistry phase, so we have to manually call the</span></span><br><span class="line"><span class="comment"> * postProcessBeanDefinitionRegistry method of SpringValueDefinitionProcessor here...</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> 即：</span></span><br><span class="line"><span class="comment">在 Spring 3.x 版本中，BeanDefinitionRegistryPostProcessor ( SpringValueDefinitionProcessor 实现了该接口 )无法	      在 postProcessBeanDefinitionRegistry 阶段被实例化，因此，我们不得不手动创建 SpringValueDefinitionProcessor 对		象，并调用其 #postProcessBeanDefinitionRegistry(BeanDefinitionRegistry) 方法。</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">processSpringValueDefinition</span><span class="params">(BeanDefinitionRegistry registry)</span> </span>&#123;</span><br><span class="line">  SpringValueDefinitionProcessor springValueDefinitionProcessor = <span class="keyword">new</span> SpringValueDefinitionProcessor();</span><br><span class="line"></span><br><span class="line">  springValueDefinitionProcessor.postProcessBeanDefinitionRegistry(registry);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Apollo 为了实现自动更新机制，做了很多处理，重点在于找到 XML 和注解配置的 PlaceHolder，全部以 <code>StringValue</code>的形式，注册到 <code>SpringValueRegistry</code>中，从而让 <code>AutoUpdateConfigChangeListener</code> 监听到 Apollo 配置变更后，能够从 <code>SpringValueRegistry</code>中找到发生属性值变更的属性对应的 <code>StringValue</code> ，进行修改。</p>
+<h2 id="SpringValueDefinitionProcessor"><a href="#SpringValueDefinitionProcessor" class="headerlink" title="SpringValueDefinitionProcessor"></a>SpringValueDefinitionProcessor</h2><p><code>com.ctrip.framework.apollo.spring.property.SpringValueDefinitionProcessor</code> ，实现 BeanDefinitionRegistryPostProcessor 接口，处理 Spring XML <strong>PlaceHolder</strong> ，解析成 StringValueDefinition <strong>集合</strong>。</p>
+<h3 id="SpringValueDefinition"><a href="#SpringValueDefinition" class="headerlink" title="SpringValueDefinition"></a>SpringValueDefinition</h3><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">class</span>=<span class="string">"com.ctrip.framework.apollo.demo.spring.xmlConfigDemo.bean.XmlBean"</span>&gt;</span>    </span><br><span class="line">  <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"timeout"</span> <span class="attr">value</span>=<span class="string">"$&#123;timeout:200&#125;"</span>/&gt;</span>    </span><br><span class="line">  <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"batch"</span> <span class="attr">value</span>=<span class="string">"$&#123;batch:100&#125;"</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>每个 <code>&lt;property /&gt;</code> 都会被解析成<strong>一个</strong> StringValueDefinition 对象。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SpringValueDefinition</span> </span>&#123;</span><br><span class="line">  <span class="comment">// Key，即在Config中配置的key</span></span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">final</span> String key;</span><br><span class="line">  <span class="comment">// 占位符</span></span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">final</span> String placeholder;</span><br><span class="line">  <span class="comment">// 属性名</span></span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">final</span> String propertyName;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>eg: name值： <code>timeout</code>映射成<code>propertyName</code>，value值：<code>${timeout:200}</code>映射成<code>placeholder</code>,<code>timeout</code>映射成<code>key</code></p>
+<h3 id="postProcessBeanDefinitionRegistry-1"><a href="#postProcessBeanDefinitionRegistry-1" class="headerlink" title="postProcessBeanDefinitionRegistry"></a>postProcessBeanDefinitionRegistry</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Map&lt;BeanDefinitionRegistry, Multimap&lt;String, SpringValueDefinition&gt;&gt; beanName2SpringValueDefinitions =</span><br><span class="line">      Maps.newConcurrentMap();</span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Set&lt;BeanDefinitionRegistry&gt; PROPERTY_VALUES_PROCESSED_BEAN_FACTORIES = Sets.newConcurrentHashSet();</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">postProcessBeanDefinitionRegistry</span><span class="params">(BeanDefinitionRegistry registry)</span> <span class="keyword">throws</span> BeansException </span>&#123;</span><br><span class="line">  <span class="comment">// 是否开启自动更新功能，因为 SpringValueDefinitionProcessor 就是为了这个功能编写的。默认true</span></span><br><span class="line">  <span class="keyword">if</span> (configUtil.isAutoUpdateInjectedSpringPropertiesEnabled()) &#123;</span><br><span class="line">    processPropertyValues(registry);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">processPropertyValues</span><span class="params">(BeanDefinitionRegistry beanRegistry)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (!PROPERTY_VALUES_PROCESSED_BEAN_FACTORIES.add(beanRegistry)) &#123;</span><br><span class="line">    <span class="comment">// already initialized</span></span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (!beanName2SpringValueDefinitions.containsKey(beanRegistry)) &#123;</span><br><span class="line">    beanName2SpringValueDefinitions.put(beanRegistry, LinkedListMultimap.&lt;String, SpringValueDefinition&gt;create());</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  Multimap&lt;String, SpringValueDefinition&gt; springValueDefinitions = beanName2SpringValueDefinitions.get(beanRegistry);</span><br><span class="line"></span><br><span class="line">  String[] beanNames = beanRegistry.getBeanDefinitionNames();</span><br><span class="line">  <span class="keyword">for</span> (String beanName : beanNames) &#123;</span><br><span class="line">    BeanDefinition beanDefinition = beanRegistry.getBeanDefinition(beanName);</span><br><span class="line">    <span class="comment">// 获取beanDefinition的属性</span></span><br><span class="line">    MutablePropertyValues mutablePropertyValues = beanDefinition.getPropertyValues();</span><br><span class="line">    List&lt;PropertyValue&gt; propertyValues = mutablePropertyValues.getPropertyValueList();</span><br><span class="line">    <span class="comment">// 循环 BeanDefinition 的 PropertyValue 数组</span></span><br><span class="line">    <span class="keyword">for</span> (PropertyValue propertyValue : propertyValues) &#123;</span><br><span class="line">      Object value = propertyValue.getValue();</span><br><span class="line">      <span class="comment">// 忽略非 字符串类型的 属性。</span></span><br><span class="line">      <span class="keyword">if</span> (!(value <span class="keyword">instanceof</span> TypedStringValue)) &#123;</span><br><span class="line">        <span class="keyword">continue</span>;</span><br><span class="line">      &#125;</span><br><span class="line">      String placeholder = ((TypedStringValue) value).getValue();</span><br><span class="line">      <span class="comment">// 提取 `keys` 属性们。</span></span><br><span class="line">      Set&lt;String&gt; keys = placeholderHelper.extractPlaceholderKeys(placeholder);</span><br><span class="line">			<span class="comment">// 如果提取出来的keys为空，说明当前值没有使用占位符</span></span><br><span class="line">      <span class="keyword">if</span> (keys.isEmpty()) &#123;</span><br><span class="line">        <span class="keyword">continue</span>;</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">      <span class="keyword">for</span> (String key : keys) &#123;</span><br><span class="line">        <span class="comment">// 占位符中的每个key，都封装成一个SpringValueDefinition对象，并添加到 `beanName2SpringValueDefinitions` 中</span></span><br><span class="line">        springValueDefinitions.put(beanName, <span class="keyword">new</span> SpringValueDefinition(key, placeholder, propertyValue.getName()));</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><code>PlaceholderHelper#extractPlaceholderKeys(placeholder)</code> 方法，为什么会提取到多个 <code>key</code> 属性呢？</p>
+<blockquote>
+<p>Extract keys from placeholder, e.g.</p>
+<ul>
+<li><code>${some.key}</code> =&gt; “some.key”</li>
+<li><code>${some.key:${some.other.key:100}}</code> =&gt; “some.key”, “some.other.key”</li>
+<li><code>${${some.key}}</code> =&gt; “some.key”</li>
+<li><code>${${some.key:other.key}}</code> =&gt; “some.key”</li>
+<li><code>${${some.key}:${another.key}}</code> =&gt; “some.key”, “another.key”</li>
+<li><code>#{new java.text.SimpleDateFormat(&#39;${some.key}&#39;).parse(&#39;${another.key}&#39;)}</code> =&gt; “some.key”, “another.key”</li>
+</ul>
+</blockquote>
+<h2 id="PropertySourcesProcessor"><a href="#PropertySourcesProcessor" class="headerlink" title="PropertySourcesProcessor"></a>PropertySourcesProcessor</h2><p><code>com.ctrip.framework.apollo.spring.config.PropertySourcesProcessor</code> ， 实现 BeanFactoryPostProcessor、EnvironmentAware、PriorityOrdered 接口，PropertySource 处理器。同时也是ConfigPropertySourcesProcessor的父类。</p>
+<h4 id="postProcessBeanFactory"><a href="#postProcessBeanFactory" class="headerlink" title="postProcessBeanFactory"></a>postProcessBeanFactory</h4><blockquote>
+<p>实现 BeanFactoryPostProcessor 接口，可以在 spring 的 <strong>bean 创建之前</strong>，修改 bean 的定义属性。也就是说，Spring 允许 BeanFactoryPostProcessor 在容器实例化任何其它bean 之前读取配置元数据，并可以根据需要进行修改，例如可以把 bean 的 <code>scope</code> 从 singleton 改为 prototype ，也可以把 <code>property</code> 的值给修改掉。可以同时配置多个BeanFactoryPostProcessor ，并通过设置 <code>order</code> 属性来控制各个BeanFactoryPostProcessor 的<strong>执行次序</strong>。</p>
+<p><strong>注意：BeanFactoryPostProcessor 是在 spring 容器加载了 bean 的定义文件之后，在 bean 实例化之前执行的</strong>。</p>
+</blockquote>
+<p><code>#postProcessBeanFactory(ConfigurableListableBeanFactory)</code> 方法，代码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">postProcessBeanFactory</span><span class="params">(ConfigurableListableBeanFactory beanFactory)</span> <span class="keyword">throws</span> BeansException </span>&#123;</span><br><span class="line">  <span class="comment">// 初始化PropertySource,并设置到environment中，使bean可以读取到apollo的配置</span></span><br><span class="line">  initializePropertySources();</span><br><span class="line">  <span class="comment">// 初始化 AutoUpdateConfigChangeListener 对象，实现属性的自动更新</span></span><br><span class="line">  initializeAutoUpdatePropertiesFeature(beanFactory);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h5 id="初始化PropertySource"><a href="#初始化PropertySource" class="headerlink" title="初始化PropertySource"></a>初始化PropertySource</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">initializePropertySources</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="comment">// 若 `environment` 已经有 APOLLO_PROPERTY_SOURCE_NAME 属性源，说明已经初始化，直接返回。</span></span><br><span class="line">  <span class="keyword">if</span> (environment.getPropertySources().contains(PropertySourcesConstants.APOLLO_PROPERTY_SOURCE_NAME)) &#123;</span><br><span class="line">    <span class="comment">//already initialized</span></span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">// 创建 CompositePropertySource 对象，组合多个 Namespace 的 ConfigPropertySource 。</span></span><br><span class="line">  CompositePropertySource composite = <span class="keyword">new</span> CompositePropertySource(PropertySourcesConstants.APOLLO_PROPERTY_SOURCE_NAME);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 按照优先级，顺序遍历 Namespace</span></span><br><span class="line">  ImmutableSortedSet&lt;Integer&gt; orders = ImmutableSortedSet.copyOf(NAMESPACE_NAMES.keySet());</span><br><span class="line">  Iterator&lt;Integer&gt; iterator = orders.iterator();</span><br><span class="line"></span><br><span class="line">  <span class="keyword">while</span> (iterator.hasNext()) &#123;</span><br><span class="line">    <span class="keyword">int</span> order = iterator.next();</span><br><span class="line">    <span class="keyword">for</span> (String namespace : NAMESPACE_NAMES.get(order)) &#123;</span><br><span class="line">      Config config = ConfigService.getConfig(namespace);</span><br><span class="line">			<span class="comment">// 创建 Namespace 对应的 ConfigPropertySource 对象,添加到 `composite` 中。</span></span><br><span class="line">      composite.addPropertySource(configPropertySourceFactory.getConfigPropertySource(namespace, config));</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// clean up</span></span><br><span class="line">  NAMESPACE_NAMES.clear();</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 添加到environment的PropertySources属性中</span></span><br><span class="line">  <span class="comment">// add after the bootstrap property source or to the first</span></span><br><span class="line">  <span class="keyword">if</span> (environment.getPropertySources()</span><br><span class="line">      .contains(PropertySourcesConstants.APOLLO_BOOTSTRAP_PROPERTY_SOURCE_NAME)) &#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// ensure ApolloBootstrapPropertySources is still the first</span></span><br><span class="line">    ensureBootstrapPropertyPrecedence(environment);</span><br><span class="line"></span><br><span class="line">    environment.getPropertySources()</span><br><span class="line">        .addAfter(PropertySourcesConstants.APOLLO_BOOTSTRAP_PROPERTY_SOURCE_NAME, composite);</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    environment.getPropertySources().addFirst(composite);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// ConfigPropertySource 工厂</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ConfigPropertySourceFactory</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * ConfigPropertySource 数组</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> List&lt;ConfigPropertySource&gt; configPropertySources = Lists.newLinkedList();</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 创建 ConfigPropertySource 对象</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> ConfigPropertySource <span class="title">getConfigPropertySource</span><span class="params">(String name, Config source)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// 创建 ConfigPropertySource 对象</span></span><br><span class="line">        ConfigPropertySource configPropertySource = <span class="keyword">new</span> ConfigPropertySource(name, source);</span><br><span class="line">        <span class="comment">// 添加到数组中</span></span><br><span class="line">        configPropertySources.add(configPropertySource);</span><br><span class="line">        <span class="keyword">return</span> configPropertySource;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> List&lt;ConfigPropertySource&gt; <span class="title">getAllConfigPropertySources</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> Lists.newLinkedList(configPropertySources);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 实现 org.springframework.core.env.ConfigPropertySource 抽象类，基于 Apollo Config 的 PropertySource 实现类</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ConfigPropertySource</span> <span class="keyword">extends</span> <span class="title">EnumerablePropertySource</span>&lt;<span class="title">Config</span>&gt; </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String[] EMPTY_ARRAY = <span class="keyword">new</span> String[<span class="number">0</span>];</span><br><span class="line">    ConfigPropertySource(String name, Config source) &#123;</span><br><span class="line">        <span class="comment">// 此处的 Apollo Config 作为 `source`</span></span><br><span class="line">        <span class="keyword">super</span>(name, source);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> String[] getPropertyNames() &#123;</span><br><span class="line">        <span class="comment">// 从 Config 中，获得属性名集合</span></span><br><span class="line">        Set&lt;String&gt; propertyNames = <span class="keyword">this</span>.source.getPropertyNames();</span><br><span class="line">        <span class="comment">// 转换成 String 数组，返回</span></span><br><span class="line">        <span class="keyword">if</span> (propertyNames.isEmpty()) &#123;</span><br><span class="line">            <span class="keyword">return</span> EMPTY_ARRAY;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> propertyNames.toArray(<span class="keyword">new</span> String[<span class="number">0</span>]);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Object <span class="title">getProperty</span><span class="params">(String name)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">this</span>.source.getProperty(name, <span class="keyword">null</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 添加 ConfigChangeListener 到 Config 中</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> listener 监听器</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">addChangeListener</span><span class="params">(ConfigChangeListener listener)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.source.addChangeListener(listener);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h5 id="初始化AutoUpdateConfigChangeListener"><a href="#初始化AutoUpdateConfigChangeListener" class="headerlink" title="初始化AutoUpdateConfigChangeListener"></a>初始化AutoUpdateConfigChangeListener</h5><p>调用 <code>#initializeAutoUpdatePropertiesFeature(ConfigurableListableBeanFactory)</code> 方法，初始化 <code>AutoUpdateConfigChangeListener</code> 对象，实现 Spring Placeholder 的<strong>自动更新</strong>功能。代码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">initializeAutoUpdatePropertiesFeature</span><span class="params">(ConfigurableListableBeanFactory beanFactory)</span> </span>&#123;</span><br><span class="line">  <span class="comment">// 若未开启属性的自动更新功能，直接返回;默认开启</span></span><br><span class="line">  <span class="keyword">if</span> (!configUtil.isAutoUpdateInjectedSpringPropertiesEnabled() ||</span><br><span class="line">      !AUTO_UPDATE_INITIALIZED_BEAN_FACTORIES.add(beanFactory)) &#123;</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 创建 AutoUpdateConfigChangeListener 对象</span></span><br><span class="line">  AutoUpdateConfigChangeListener autoUpdateConfigChangeListener = <span class="keyword">new</span> AutoUpdateConfigChangeListener(</span><br><span class="line">      environment, beanFactory);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 向 每个ConfigPropertySource 注册监听事件</span></span><br><span class="line">  List&lt;ConfigPropertySource&gt; configPropertySources = configPropertySourceFactory.getAllConfigPropertySources();</span><br><span class="line">  <span class="keyword">for</span> (ConfigPropertySource configPropertySource : configPropertySources) &#123;</span><br><span class="line">    configPropertySource.addChangeListener(autoUpdateConfigChangeListener);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="ApolloProcessor"><a href="#ApolloProcessor" class="headerlink" title="ApolloProcessor"></a>ApolloProcessor</h2><p><code>com.ctrip.framework.apollo.spring.annotation.ApolloProcessor</code> ，实现 BeanPostProcessor、PriorityOrdered 接口，Apollo 处理器抽象类，封装了在 <strong>Spring Bean 初始化</strong>之前，处理属性和方法。但是具体的处理，是两个抽象方法：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">ApolloProcessor</span> <span class="keyword">implements</span> <span class="title">BeanPostProcessor</span>, <span class="title">PriorityOrdered</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 在bean初始化前处理bean的属性和方法</span></span><br><span class="line">  <span class="meta">@Override</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> Object <span class="title">postProcessBeforeInitialization</span><span class="params">(Object bean, String beanName)</span></span></span><br><span class="line"><span class="function">      <span class="keyword">throws</span> BeansException </span>&#123;</span><br><span class="line">    Class clazz = bean.getClass();</span><br><span class="line">    <span class="keyword">for</span> (Field field : findAllField(clazz)) &#123;</span><br><span class="line">      processField(bean, beanName, field);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">for</span> (Method method : findAllMethod(clazz)) &#123;</span><br><span class="line">      processMethod(bean, beanName, method);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> bean;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@Override</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> Object <span class="title">postProcessAfterInitialization</span><span class="params">(Object bean, String beanName)</span> <span class="keyword">throws</span> BeansException </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> bean;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">/**</span></span><br><span class="line"><span class="comment">   * subclass should implement this method to process field</span></span><br><span class="line"><span class="comment">   */</span></span><br><span class="line">  <span class="function"><span class="keyword">protected</span> <span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title">processField</span><span class="params">(Object bean, String beanName, Field field)</span></span>;</span><br><span class="line"></span><br><span class="line">  <span class="comment">/**</span></span><br><span class="line"><span class="comment">   * subclass should implement this method to process method</span></span><br><span class="line"><span class="comment">   */</span></span><br><span class="line">  <span class="function"><span class="keyword">protected</span> <span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title">processMethod</span><span class="params">(Object bean, String beanName, Method method)</span></span>;</span><br><span class="line">	......省略部分代码........</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>ApolloProcessor 有三个子类实现：</p>
+<ul>
+<li>SpringValueProcessor</li>
+<li>ApolloAnnotationProcessor</li>
+<li>ApolloJsonValueProcessor</li>
+</ul>
+<h3 id="SpringValueProcessor"><a href="#SpringValueProcessor" class="headerlink" title="SpringValueProcessor"></a>SpringValueProcessor</h3><p><code>com.ctrip.framework.apollo.spring.annotation.SpringValueProcessor</code> ，实现 BeanFactoryPostProcessor 接口，继承 ApolloProcessor 抽象类，Spring Value 处理器，处理：</p>
+<ol>
+<li>带有 <code>@Value</code> 注解的 Field 和 Method</li>
+<li>XML 配置的 Bean 的 PlaceHolder 们</li>
+</ol>
+<p>每个 Field、Method、XML PlaceHolder 被处理成一个 SpringValue 对象，添加到 SpringValueRegistry 中。<br>目的还是，为了 PlaceHolder 的<strong>自动更新</strong>机制。</p>
+<h4 id="SpringValue"><a href="#SpringValue" class="headerlink" title="SpringValue"></a>SpringValue</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SpringValue</span> </span>&#123;</span><br><span class="line">  <span class="comment">// Spring 方法参数封装</span></span><br><span class="line">  <span class="keyword">private</span> MethodParameter methodParameter;</span><br><span class="line">  <span class="comment">// Field</span></span><br><span class="line">  <span class="keyword">private</span> Field field;</span><br><span class="line">  <span class="comment">// Bean 对象</span></span><br><span class="line">  <span class="keyword">private</span> WeakReference&lt;Object&gt; beanRef;</span><br><span class="line">  <span class="comment">// Bean 名字</span></span><br><span class="line">  <span class="keyword">private</span> String beanName;</span><br><span class="line">  <span class="comment">// KEY:即在 Config 中的属性 KEY 。</span></span><br><span class="line">  <span class="keyword">private</span> String key;</span><br><span class="line">  <span class="comment">// 占位符</span></span><br><span class="line">  <span class="keyword">private</span> String placeholder;</span><br><span class="line">  <span class="comment">// 值类型</span></span><br><span class="line">  <span class="keyword">private</span> Class&lt;?&gt; targetType;</span><br><span class="line">  <span class="comment">// 泛型。当是 JSON 类型时，使用</span></span><br><span class="line">  <span class="keyword">private</span> Type genericType;</span><br><span class="line">  <span class="comment">// 是否 JSON</span></span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">boolean</span> isJson;</span><br><span class="line">  </span><br><span class="line">  <span class="comment">// 通过反射，update value</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">update</span><span class="params">(Object newVal)</span> <span class="keyword">throws</span> IllegalAccessException, InvocationTargetException </span>&#123;</span><br><span class="line">    <span class="comment">// Field</span></span><br><span class="line">    <span class="keyword">if</span> (isField()) &#123;</span><br><span class="line">        injectField(newVal);</span><br><span class="line">    <span class="comment">// Method</span></span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        injectMethod(newVal);</span><br><span class="line">    &#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">injectField</span><span class="params">(Object newVal)</span> <span class="keyword">throws</span> IllegalAccessException </span>&#123;</span><br><span class="line">      <span class="keyword">boolean</span> accessible = field.isAccessible();</span><br><span class="line">      field.setAccessible(<span class="keyword">true</span>);</span><br><span class="line">      field.set(bean, newVal);</span><br><span class="line">      field.setAccessible(accessible);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">injectMethod</span><span class="params">(Object newVal)</span> <span class="keyword">throws</span> InvocationTargetException, IllegalAccessException </span>&#123;</span><br><span class="line">      methodParameter.getMethod().invoke(bean, newVal);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="SpringValueRegistry"><a href="#SpringValueRegistry" class="headerlink" title="SpringValueRegistry"></a>SpringValueRegistry</h4><p>SpringValue <strong>注册表</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SpringValueRegistry</span> </span>&#123;</span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">long</span> CLEAN_INTERVAL_IN_SECONDS = <span class="number">5</span>;</span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">final</span> Map&lt;BeanFactory, Multimap&lt;String, SpringValue&gt;&gt; registry = Maps.newConcurrentMap();</span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">final</span> AtomicBoolean initialized = <span class="keyword">new</span> AtomicBoolean(<span class="keyword">false</span>);</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">register</span><span class="params">(BeanFactory beanFactory, String key, SpringValue springValue)</span> </span>&#123;</span><br><span class="line">		....省略...</span><br><span class="line">    registry.get(beanFactory).put(key, springValue);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// lazy initialize</span></span><br><span class="line">    <span class="keyword">if</span> (initialized.compareAndSet(<span class="keyword">false</span>, <span class="keyword">true</span>)) &#123;</span><br><span class="line">      initialize();</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">initialize</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 初始化清理回收bean的定时器</span></span><br><span class="line">    Executors.newSingleThreadScheduledExecutor(ApolloThreadFactory.create(<span class="string">"SpringValueRegistry"</span>, <span class="keyword">true</span>)).scheduleAtFixedRate(</span><br><span class="line">        <span class="keyword">new</span> Runnable() &#123;</span><br><span class="line">          <span class="meta">@Override</span></span><br><span class="line">          <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">              scanAndClean();</span><br><span class="line">            &#125; <span class="keyword">catch</span> (Throwable ex) &#123;</span><br><span class="line">              ex.printStackTrace();</span><br><span class="line">            &#125;</span><br><span class="line">          &#125;</span><br><span class="line">        &#125;, CLEAN_INTERVAL_IN_SECONDS, CLEAN_INTERVAL_IN_SECONDS, TimeUnit.SECONDS);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">scanAndClean</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    Iterator&lt;Multimap&lt;String, SpringValue&gt;&gt; iterator = registry.values().iterator();</span><br><span class="line">    <span class="keyword">while</span> (!Thread.currentThread().isInterrupted() &amp;&amp; iterator.hasNext()) &#123;</span><br><span class="line">      Multimap&lt;String, SpringValue&gt; springValues = iterator.next();</span><br><span class="line">      Iterator&lt;Entry&lt;String, SpringValue&gt;&gt; springValueIterator = springValues.entries().iterator();</span><br><span class="line">      <span class="keyword">while</span> (springValueIterator.hasNext()) &#123;</span><br><span class="line">        Entry&lt;String, SpringValue&gt; springValue = springValueIterator.next();</span><br><span class="line">        <span class="comment">// 如果bean被垃圾回收，从注册表中删除</span></span><br><span class="line">        <span class="keyword">if</span> (!springValue.getValue().isTargetBeanValid()) &#123;</span><br><span class="line">          <span class="comment">// clear unused spring values</span></span><br><span class="line">          springValueIterator.remove();</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="postProcessBeanFactory-1"><a href="#postProcessBeanFactory-1" class="headerlink" title="postProcessBeanFactory"></a>postProcessBeanFactory</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> Multimap&lt;String, SpringValueDefinition&gt; beanName2SpringValueDefinitions;</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">postProcessBeanFactory</span><span class="params">(ConfigurableListableBeanFactory beanFactory)</span></span></span><br><span class="line"><span class="function">    <span class="keyword">throws</span> BeansException </span>&#123;</span><br><span class="line">  <span class="comment">// 是否开启自动更新机制</span></span><br><span class="line">  <span class="keyword">if</span> (configUtil.isAutoUpdateInjectedSpringPropertiesEnabled() &amp;&amp; beanFactory <span class="keyword">instanceof</span> BeanDefinitionRegistry) &#123;</span><br><span class="line">    <span class="comment">// 获取xml中的PlaceHolder：获取SpringValueDefinitionProcessor解析过的SpringValueDefinition</span></span><br><span class="line">    beanName2SpringValueDefinitions = SpringValueDefinitionProcessor</span><br><span class="line">        .getBeanName2SpringValueDefinitions((BeanDefinitionRegistry) beanFactory);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>SpringValueDefinitionProcessor的执行在postProcessBeanDefinitionRegistry阶段；SpringValueProcessor执行在postProcessBeanFactory阶段。SpringValueDefinitionProcessor执行在SpringValueProcessor前面。</p>
+<h4 id="postProcessBeforeInitialization"><a href="#postProcessBeforeInitialization" class="headerlink" title="postProcessBeforeInitialization"></a>postProcessBeforeInitialization</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> Object <span class="title">postProcessBeforeInitialization</span><span class="params">(Object bean, String beanName)</span></span></span><br><span class="line"><span class="function">    <span class="keyword">throws</span> BeansException </span>&#123;</span><br><span class="line">  <span class="comment">// 是否开启自动更新</span></span><br><span class="line">  <span class="keyword">if</span> (configUtil.isAutoUpdateInjectedSpringPropertiesEnabled()) &#123;</span><br><span class="line">    <span class="comment">// 处理 java annotation配置的PlaceHolder：Field 和 Method 上的@value注解</span></span><br><span class="line">    <span class="keyword">super</span>.postProcessBeforeInitialization(bean, beanName);</span><br><span class="line">    <span class="comment">// 处理 XML 配置的 Bean 的 PlaceHolder</span></span><br><span class="line">    processBeanPropertyValues(bean, beanName);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> bean;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 处理 XML 配置的 Bean 的 PlaceHolder</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">processBeanPropertyValues</span><span class="params">(Object bean, String beanName)</span> </span>&#123;</span><br><span class="line">  <span class="comment">// 获得 SpringValueDefinition 数组</span></span><br><span class="line">  Collection&lt;SpringValueDefinition&gt; propertySpringValues = beanName2SpringValueDefinitions</span><br><span class="line">    .get(beanName);</span><br><span class="line">  <span class="keyword">if</span> (propertySpringValues == <span class="keyword">null</span> || propertySpringValues.isEmpty()) &#123;</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 循环 SpringValueDefinition 数组，创建对应的 SpringValue 对象，并添加到 `springValueRegistry` 中。</span></span><br><span class="line">  <span class="keyword">for</span> (SpringValueDefinition definition : propertySpringValues) &#123;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">      PropertyDescriptor pd = BeanUtils</span><br><span class="line">        .getPropertyDescriptor(bean.getClass(), definition.getPropertyName());</span><br><span class="line">      Method method = pd.getWriteMethod();</span><br><span class="line">      <span class="keyword">if</span> (method == <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">continue</span>;</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="comment">// 创建对应的 SpringValue 对象</span></span><br><span class="line">      SpringValue springValue = <span class="keyword">new</span> SpringValue(definition.getKey(), definition.getPlaceholder(),</span><br><span class="line">                                                bean, beanName, method, <span class="keyword">false</span>);</span><br><span class="line">      <span class="comment">// 添加到 `springValueRegistry` 中</span></span><br><span class="line">      springValueRegistry.register(beanFactory, definition.getKey(), springValue);</span><br><span class="line">      logger.debug(<span class="string">"Monitoring &#123;&#125;"</span>, springValue);</span><br><span class="line">    &#125; <span class="keyword">catch</span> (Throwable ex) &#123;</span><br><span class="line">      logger.error(<span class="string">"Failed to enable auto update feature for &#123;&#125;.&#123;&#125;"</span>, bean.getClass(),</span><br><span class="line">                   definition.getPropertyName());</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// clear</span></span><br><span class="line">  beanName2SpringValueDefinitions.removeAll(beanName);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="processField"><a href="#processField" class="headerlink" title="processField"></a>processField</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">processField</span><span class="params">(Object bean, String beanName, Field field)</span> </span>&#123;</span><br><span class="line">  <span class="comment">// register @Value on field</span></span><br><span class="line">  Value value = field.getAnnotation(Value<span class="class">.<span class="keyword">class</span>)</span>;</span><br><span class="line">  <span class="keyword">if</span> (value == <span class="keyword">null</span>) &#123;</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  Set&lt;String&gt; keys = placeholderHelper.extractPlaceholderKeys(value.value());</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (keys.isEmpty()) &#123;</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 循环 `keys` ，创建对应的 SpringValue 对象，并添加到 `springValueRegistry` 中。</span></span><br><span class="line">  <span class="keyword">for</span> (String key : keys) &#123;</span><br><span class="line">    SpringValue springValue = <span class="keyword">new</span> SpringValue(key, value.value(), bean, beanName, field, <span class="keyword">false</span>);</span><br><span class="line">    springValueRegistry.register(beanFactory, key, springValue);</span><br><span class="line">    logger.debug(<span class="string">"Monitoring &#123;&#125;"</span>, springValue);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="processMethod"><a href="#processMethod" class="headerlink" title="processMethod"></a>processMethod</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">processMethod</span><span class="params">(Object bean, String beanName, Method method)</span> </span>&#123;</span><br><span class="line">  <span class="comment">//register @Value on method</span></span><br><span class="line">  Value value = method.getAnnotation(Value<span class="class">.<span class="keyword">class</span>)</span>;</span><br><span class="line">  <span class="keyword">if</span> (value == <span class="keyword">null</span>) &#123;</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">// 忽略 @Bean 注解的方法</span></span><br><span class="line">  <span class="keyword">if</span> (method.getAnnotation(Bean<span class="class">.<span class="keyword">class</span>) !</span>= <span class="keyword">null</span>) &#123;</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  <span class="keyword">if</span> (method.getParameterTypes().length != <span class="number">1</span>) &#123;</span><br><span class="line">    logger.error(<span class="string">"Ignore @Value setter &#123;&#125;.&#123;&#125;, expecting 1 parameter, actual &#123;&#125; parameters"</span>,</span><br><span class="line">        bean.getClass().getName(), method.getName(), method.getParameterTypes().length);</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  Set&lt;String&gt; keys = placeholderHelper.extractPlaceholderKeys(value.value());</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (keys.isEmpty()) &#123;</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 循环 `keys` ，创建对应的 SpringValue 对象，并添加到 `springValueRegistry` 中。</span></span><br><span class="line">  <span class="keyword">for</span> (String key : keys) &#123;</span><br><span class="line">    SpringValue springValue = <span class="keyword">new</span> SpringValue(key, value.value(), bean, beanName, method, <span class="keyword">false</span>);</span><br><span class="line">    springValueRegistry.register(beanFactory, key, springValue);</span><br><span class="line">    logger.info(<span class="string">"Monitoring &#123;&#125;"</span>, springValue);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="AutoUpdateConfigChangeListener"><a href="#AutoUpdateConfigChangeListener" class="headerlink" title="AutoUpdateConfigChangeListener"></a>AutoUpdateConfigChangeListener</h2><p><code>com.ctrip.framework.apollo.spring.property.AutoUpdateConfigChangeListener</code> ，实现 ConfigChangeListener 接口，自动更新配置<strong>监听器</strong>。</p>
+<h3 id="onChange"><a href="#onChange" class="headerlink" title="onChange"></a>onChange</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onChange</span><span class="params">(ConfigChangeEvent changeEvent)</span> </span>&#123;</span><br><span class="line">  Set&lt;String&gt; keys = changeEvent.changedKeys();</span><br><span class="line">  <span class="keyword">if</span> (CollectionUtils.isEmpty(keys)) &#123;</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">for</span> (String key : keys) &#123;</span><br><span class="line">    <span class="comment">// 1. check whether the changed key is relevant</span></span><br><span class="line">    Collection&lt;SpringValue&gt; targetValues = springValueRegistry.get(beanFactory, key);</span><br><span class="line">    <span class="keyword">if</span> (targetValues == <span class="keyword">null</span> || targetValues.isEmpty()) &#123;</span><br><span class="line">      <span class="keyword">continue</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 2. update the value</span></span><br><span class="line">    <span class="keyword">for</span> (SpringValue val : targetValues) &#123;</span><br><span class="line">      updateSpringValue(val);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="updateSpringValue"><a href="#updateSpringValue" class="headerlink" title="updateSpringValue"></a>updateSpringValue</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">updateSpringValue</span><span class="params">(SpringValue springValue)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">try</span> &#123;</span><br><span class="line">    <span class="comment">// 获取最新值，并把值转换成需要的类型</span></span><br><span class="line">    Object value = resolvePropertyValue(springValue);</span><br><span class="line">    <span class="comment">// 更新值</span></span><br><span class="line">    springValue.update(value);</span><br><span class="line"></span><br><span class="line">    logger.info(<span class="string">"Auto update apollo changed value successfully, new value: &#123;&#125;, &#123;&#125;"</span>, value,</span><br><span class="line">        springValue);</span><br><span class="line">  &#125; <span class="keyword">catch</span> (Throwable ex) &#123;</span><br><span class="line">    logger.error(<span class="string">"Auto update apollo changed value failed, &#123;&#125;"</span>, springValue.toString(), ex);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> Object <span class="title">resolvePropertyValue</span><span class="params">(SpringValue springValue)</span> </span>&#123;</span><br><span class="line">  <span class="comment">// 解析PlaceHolder对应的最新值</span></span><br><span class="line">  Object value = placeholderHelper</span><br><span class="line">    .resolvePropertyValue(beanFactory, springValue.getBeanName(), springValue.getPlaceholder());</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (springValue.isJson()) &#123;</span><br><span class="line">    <span class="comment">// 如果值数据结构是 JSON 类型，则使用 Gson 解析成对应值的类型</span></span><br><span class="line">    value = parseJsonValue((String)value, springValue.getGenericType());</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="comment">// 转换成需要的类型</span></span><br><span class="line">    <span class="comment">// 1. 如果类型为 Field</span></span><br><span class="line">    <span class="keyword">if</span> (springValue.isField()) &#123;</span><br><span class="line">      <span class="comment">// org.springframework.beans.TypeConverter#convertIfNecessary(java.lang.Object, java.lang.Class, java.lang.reflect.Field) is available from Spring 3.2.0+</span></span><br><span class="line">      <span class="keyword">if</span> (typeConverterHasConvertIfNecessaryWithFieldParameter) &#123;</span><br><span class="line">        value = <span class="keyword">this</span>.typeConverter</span><br><span class="line">          .convertIfNecessary(value, springValue.getTargetType(), springValue.getField());</span><br><span class="line">      &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        value = <span class="keyword">this</span>.typeConverter.convertIfNecessary(value, springValue.getTargetType());</span><br><span class="line">      &#125;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      <span class="comment">// 2. 如果类型为 Method</span></span><br><span class="line">      value = <span class="keyword">this</span>.typeConverter.convertIfNecessary(value, springValue.getTargetType(),</span><br><span class="line">                                                    springValue.getMethodParameter());</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> value;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="java配置"><a href="#java配置" class="headerlink" title="java配置"></a>java配置</h1><h2 id="EnableApolloConfig"><a href="#EnableApolloConfig" class="headerlink" title="@EnableApolloConfig"></a>@EnableApolloConfig</h2><p><code>com.ctrip.framework.apollo.spring.annotation.@EnableApolloConfig</code> <strong>注解</strong>，可以使用它声明使用的 Apollo Namespace ，和 Apollo XML 配置的 <code>&lt;apollo:config /&gt;</code> 等价。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Retention</span>(RetentionPolicy.RUNTIME)</span><br><span class="line"><span class="meta">@Target</span>(ElementType.TYPE)</span><br><span class="line"><span class="meta">@Documented</span></span><br><span class="line"><span class="meta">@Import</span>(ApolloConfigRegistrar<span class="class">.<span class="keyword">class</span>)</span></span><br><span class="line"><span class="class"><span class="title">public</span> @<span class="title">interface</span> <span class="title">EnableApolloConfig</span> </span>&#123;</span><br><span class="line">  <span class="comment">/**</span></span><br><span class="line"><span class="comment">   * Apollo namespaces to inject configuration into Spring Property Sources.</span></span><br><span class="line"><span class="comment">   */</span></span><br><span class="line">  String[] value() <span class="keyword">default</span> &#123;ConfigConsts.NAMESPACE_APPLICATION&#125;;</span><br><span class="line">  <span class="function"><span class="keyword">int</span> <span class="title">order</span><span class="params">()</span> <span class="keyword">default</span> Ordered.LOWEST_PRECEDENCE</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="ApolloConfigRegistrar"><a href="#ApolloConfigRegistrar" class="headerlink" title="ApolloConfigRegistrar"></a>ApolloConfigRegistrar</h4><p><code>com.ctrip.framework.apollo.spring.annotation.ApolloConfigRegistrar</code> ，实现 ImportBeanDefinitionRegistrar 接口，Apollo Spring Java Config 注册器。</p>
+<blockquote>
+<p>ImportBeanDefinitionRegistrar:Spring官方在动态注册bean时，大部分套路其实是使用ImportBeanDefinitionRegistrar接口。所有实现了该接口的类的都会被ConfigurationClassPostProcessor处理，ConfigurationClassPostProcessor实现了BeanFactoryPostProcessor接口，所以ImportBeanDefinitionRegistrar中动态注册的bean是优先与依赖其的bean初始化的，也能被aop、validator等机制处理。</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ApolloConfigRegistrar</span> <span class="keyword">implements</span> <span class="title">ImportBeanDefinitionRegistrar</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">private</span> ApolloConfigRegistrarHelper helper = ServiceBootstrap.loadPrimary(ApolloConfigRegistrarHelper<span class="class">.<span class="keyword">class</span>)</span>;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@Override</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">registerBeanDefinitions</span><span class="params">(AnnotationMetadata importingClassMetadata, BeanDefinitionRegistry registry)</span> </span>&#123;</span><br><span class="line">    helper.registerBeanDefinitions(importingClassMetadata, registry);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">registerBeanDefinitions</span><span class="params">(AnnotationMetadata importingClassMetadata, BeanDefinitionRegistry registry)</span> </span>&#123;</span><br><span class="line">  <span class="comment">// 解析 @EnableApolloConfig 注解,并把解析的namespace添加到PropertySourcesProcessor</span></span><br><span class="line">  AnnotationAttributes attributes = AnnotationAttributes</span><br><span class="line">    .fromMap(importingClassMetadata.getAnnotationAttributes(EnableApolloConfig<span class="class">.<span class="keyword">class</span>.<span class="title">getName</span>()))</span>;</span><br><span class="line">  String[] namespaces = attributes.getStringArray(<span class="string">"value"</span>);</span><br><span class="line">  <span class="keyword">int</span> order = attributes.getNumber(<span class="string">"order"</span>);</span><br><span class="line">  PropertySourcesProcessor.addNamespaces(Lists.newArrayList(namespaces), order);</span><br><span class="line"></span><br><span class="line">  Map&lt;String, Object&gt; propertySourcesPlaceholderPropertyValues = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">  <span class="comment">// to make sure the default PropertySourcesPlaceholderConfigurer's priority is higher than PropertyPlaceholderConfigurer</span></span><br><span class="line">  propertySourcesPlaceholderPropertyValues.put(<span class="string">"order"</span>, <span class="number">0</span>);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 注册 PropertySourcesPlaceholderConfigurer 到 BeanDefinitionRegistry 中，替换 PlaceHolder 为对应的属性值</span></span><br><span class="line">  BeanRegistrationUtil.registerBeanDefinitionIfNotExists(registry, PropertySourcesPlaceholderConfigurer<span class="class">.<span class="keyword">class</span>.<span class="title">getName</span>(),</span></span><br><span class="line"><span class="class">                                                         <span class="title">PropertySourcesPlaceholderConfigurer</span>.<span class="title">class</span>, <span class="title">propertySourcesPlaceholderPropertyValues</span>)</span>;</span><br><span class="line">  <span class="comment">// 注册 PropertySourcesProcessor 到 BeanDefinitionRegistry 中，因为可能存在 XML 配置的 Bean ，用于 PlaceHolder 自动更新机制</span></span><br><span class="line">  BeanRegistrationUtil.registerBeanDefinitionIfNotExists(registry, PropertySourcesProcessor<span class="class">.<span class="keyword">class</span>.<span class="title">getName</span>(),</span></span><br><span class="line"><span class="class">                                                         <span class="title">PropertySourcesProcessor</span>.<span class="title">class</span>)</span>;</span><br><span class="line">  <span class="comment">// 注册 ApolloAnnotationProcessor 到 BeanDefinitionRegistry 中，解析 @ApolloConfig 和 @ApolloConfigChangeListener 注解。</span></span><br><span class="line">  BeanRegistrationUtil.registerBeanDefinitionIfNotExists(registry, ApolloAnnotationProcessor<span class="class">.<span class="keyword">class</span>.<span class="title">getName</span>(),</span></span><br><span class="line"><span class="class">                                                         <span class="title">ApolloAnnotationProcessor</span>.<span class="title">class</span>)</span>;</span><br><span class="line">  <span class="comment">// 注册 SpringValueProcessor 到 BeanDefinitionRegistry 中，用于 PlaceHolder 自动更新机制</span></span><br><span class="line">  BeanRegistrationUtil.registerBeanDefinitionIfNotExists(registry, SpringValueProcessor<span class="class">.<span class="keyword">class</span>.<span class="title">getName</span>(),</span></span><br><span class="line"><span class="class">                                                         <span class="title">SpringValueProcessor</span>.<span class="title">class</span>)</span>;</span><br><span class="line">  <span class="comment">// 注册 SpringValueDefinitionProcessor 到 BeanDefinitionRegistry 中，因为可能存在 XML 配置的 Bean ，用于 PlaceHolder 自动更新机制</span></span><br><span class="line">  BeanRegistrationUtil.registerBeanDefinitionIfNotExists(registry, SpringValueDefinitionProcessor<span class="class">.<span class="keyword">class</span>.<span class="title">getName</span>(),</span></span><br><span class="line"><span class="class">                                                         <span class="title">SpringValueDefinitionProcessor</span>.<span class="title">class</span>)</span>;</span><br><span class="line">  <span class="comment">// 注册 ApolloJsonValueProcessor 到 BeanDefinitionRegistry 中，解析 @ApolloJsonValue 注解。</span></span><br><span class="line">  BeanRegistrationUtil.registerBeanDefinitionIfNotExists(registry, ApolloJsonValueProcessor<span class="class">.<span class="keyword">class</span>.<span class="title">getName</span>(),</span></span><br><span class="line"><span class="class">                                                         <span class="title">ApolloJsonValueProcessor</span>.<span class="title">class</span>)</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="其他Annotation"><a href="#其他Annotation" class="headerlink" title="其他Annotation"></a>其他Annotation</h2><h3 id="ApolloJsonValue"><a href="#ApolloJsonValue" class="headerlink" title="@ApolloJsonValue"></a>@ApolloJsonValue</h3><p><code>com.ctrip.framework.apollo.spring.annotation.@ApolloJsonValue</code> 注解，将 Apollo 的<strong>一个 JSON 格式的属性</strong>进行注入，例如：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Inject the json property value for type SomeObject.</span></span><br><span class="line"><span class="comment">// Suppose SomeObject has 2 properties, someString and someInt, then the possible config</span></span><br><span class="line"><span class="comment">// in Apollo is someJsonPropertyKey=&#123;"someString":"someValue", "someInt":10&#125;.</span></span><br><span class="line"><span class="meta">@ApolloJsonValue</span>(<span class="string">"$&#123;someJsonPropertyKey:someDefaultValue&#125;"</span>)</span><br><span class="line"><span class="keyword">private</span> SomeObject someObject;</span><br></pre></td></tr></table></figure>
+<p>将 Apollo <strong>任意格式</strong>的 Namespace 的<strong>一个 Item</strong> 配置项，解析成对应类型的对象，注入到 <code>@ApolloJsonValue</code> 的对象中。</p>
+<h3 id="ApolloConfig"><a href="#ApolloConfig" class="headerlink" title="@ApolloConfig"></a>@ApolloConfig</h3><p><code>com.ctrip.framework.apollo.spring.annotation.@ApolloConfig</code> 注解，将 Apollo Config 对象注入，例如：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Inject the config for "someNamespace"</span></span><br><span class="line"><span class="meta">@ApolloConfig</span>(<span class="string">"someNamespace"</span>)</span><br><span class="line"><span class="keyword">private</span> Config config;</span><br></pre></td></tr></table></figure>
+<h3 id="ApolloConfigChangeListener"><a href="#ApolloConfigChangeListener" class="headerlink" title="@ApolloConfigChangeListener"></a>@ApolloConfigChangeListener</h3><p><code>com.ctrip.framework.apollo.spring.annotation.@ApolloConfigChangeListener</code> 注解，将被注解的方法，向指定的 Apollo Config 发起配置变更<strong>监听</strong>，例如：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Listener on namespaces of "someNamespace" and "anotherNamespace"</span></span><br><span class="line"><span class="meta">@ApolloConfigChangeListener</span>(&#123;<span class="string">"someNamespace"</span>,<span class="string">"anotherNamespace"</span>&#125;)</span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">onChange</span><span class="params">(ConfigChangeEvent changeEvent)</span> </span>&#123;</span><br><span class="line">   <span class="comment">// handle change event</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="其他配置"><a href="#其他配置" class="headerlink" title="其他配置"></a>其他配置</h1><p>使用上述两种方式的配置形式( <em>基于 XML 的配置和基于Java的配置</em> )后，Apollo 会在 Spring 的 <strong>postProcessBeanFactory</strong> 阶段注入配置到 Spring 的 Environment中，早于 bean 的初始化阶段，所以对于普通的 bean 注入配置场景已经能很好的满足。</p>
+<p>不过 Spring Boot 有一些场景需要配置在更早的阶段注入，比如使用 <code>@ConditionalOnProperty</code> 的场景或者是有一些 <code>spring-boot-starter</code> 在启动阶段就需要读取配置做一些事情（ 如 <a href="https://github.com/teaey/spring-boot-starter-dubbo" target="_blank" rel="noopener"><code>spring-boot-starter-dubbo</code></a> )，所以对于 Spring Boot 环境建议通过以下方式来接入 Apollo ( 需要0.10.0及以上版本 ）。<br>使用方式很简单，只需要在 <code>application.properties/bootstrap.properties</code> 中按照如下样例配置即可。</p>
+<p> 1、在 bootstrap 阶段注入默认 <code>&quot;application&quot;</code> namespace 的配置示例：</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"> </span><br><span class="line"># will inject &apos;application&apos; namespace in bootstrap phase</span><br><span class="line">apollo.bootstrap.enabled = true</span><br></pre></td></tr></table></figure>
+<p>2、在 bootstrap 阶段注入<strong>非默认</strong> <code>&quot;application&quot;</code> namespace 或多个 namespace 的配置示例</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">apollo.bootstrap.enabled = true</span><br><span class="line"># will inject &apos;application&apos; and &apos;FX.apollo&apos; namespaces in bootstrap phase</span><br><span class="line">apollo.bootstrap.namespaces = application,FX.apollo</span><br></pre></td></tr></table></figure>
+<p>下面，让我们来看看具体的代码实现。<br>spring.factories<br>Apollo 在 <code>apollo-client</code> 的 <code>META-INF/spring.factories</code>定义如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">org.springframework.boot.autoconfigure.EnableAutoConfiguration=\</span><br><span class="line">com.ctrip.framework.apollo.spring.boot.ApolloAutoConfiguration</span><br><span class="line">org.springframework.context.ApplicationContextInitializer=\</span><br><span class="line">com.ctrip.framework.apollo.spring.boot.ApolloApplicationContextInitializer</span><br></pre></td></tr></table></figure>
+<h3 id="ApolloAutoConfiguration"><a href="#ApolloAutoConfiguration" class="headerlink" title="ApolloAutoConfiguration"></a>ApolloAutoConfiguration</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="comment">// String APOLLO_BOOTSTRAP_ENABLED = "apollo.bootstrap.enabled";</span></span><br><span class="line"><span class="meta">@ConditionalOnProperty</span>(PropertySourcesConstants.APOLLO_BOOTSTRAP_ENABLED)</span><br><span class="line"><span class="meta">@ConditionalOnMissingBean</span>(PropertySourcesProcessor<span class="class">.<span class="keyword">class</span>)</span></span><br><span class="line"><span class="class"><span class="title">public</span> <span class="title">class</span> <span class="title">ApolloAutoConfiguration</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@Bean</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> ConfigPropertySourcesProcessor <span class="title">configPropertySourcesProcessor</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> ConfigPropertySourcesProcessor();</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="ApolloApplicationContextInitializer"><a href="#ApolloApplicationContextInitializer" class="headerlink" title="ApolloApplicationContextInitializer"></a>ApolloApplicationContextInitializer</h3><p><code>com.ctrip.framework.apollo.spring.boot.ApolloApplicationContextInitializer</code> ，实现 ApplicationContextInitializer 接口，在 Spring Boot 启动阶段( <strong>bootstrap phase</strong> )，注入<strong>配置</strong>的 Apollo Config 对象们。</p>
+<p>实现代码上，和 PropertySourcesProcessor 一样实现了注入<strong>配置</strong>的 Apollo Config 对象们，差别在于处于 Spring 的不同阶段。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">initialize</span><span class="params">(ConfigurableApplicationContext context)</span> </span>&#123;</span><br><span class="line">  ConfigurableEnvironment environment = context.getEnvironment();</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 获得 "apollo.bootstrap.enabled" 配置项</span></span><br><span class="line">  <span class="keyword">if</span> (!environment.getProperty(PropertySourcesConstants.APOLLO_BOOTSTRAP_ENABLED, Boolean<span class="class">.<span class="keyword">class</span>, <span class="title">false</span>)) </span>&#123;</span><br><span class="line">    logger.debug(<span class="string">"Apollo bootstrap config is not enabled for context &#123;&#125;, see property: $&#123;&#123;&#125;&#125;"</span>, context, PropertySourcesConstants.APOLLO_BOOTSTRAP_ENABLED);</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  logger.debug(<span class="string">"Apollo bootstrap config is enabled for context &#123;&#125;"</span>, context);</span><br><span class="line"></span><br><span class="line">  initialize(environment);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">initialize</span><span class="params">(ConfigurableEnvironment environment)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 若已经有 APOLLO_BOOTSTRAP_PROPERTY_SOURCE_NAME 的 PropertySource，就不再加载配置</span></span><br><span class="line">  <span class="keyword">if</span> (environment.getPropertySources().contains(PropertySourcesConstants.APOLLO_BOOTSTRAP_PROPERTY_SOURCE_NAME)) &#123;</span><br><span class="line">    <span class="comment">//already initialized</span></span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 获得 "apollo.bootstrap.namespaces" 配置项</span></span><br><span class="line">  String namespaces = environment.getProperty(PropertySourcesConstants.APOLLO_BOOTSTRAP_NAMESPACES, ConfigConsts.NAMESPACE_APPLICATION);</span><br><span class="line">  logger.debug(<span class="string">"Apollo bootstrap namespaces: &#123;&#125;"</span>, namespaces);</span><br><span class="line">  List&lt;String&gt; namespaceList = NAMESPACE_SPLITTER.splitToList(namespaces);</span><br><span class="line"></span><br><span class="line">  CompositePropertySource composite = <span class="keyword">new</span> CompositePropertySource(PropertySourcesConstants.APOLLO_BOOTSTRAP_PROPERTY_SOURCE_NAME);</span><br><span class="line">  <span class="comment">// 按照优先级，顺序遍历 Namespace</span></span><br><span class="line">  <span class="keyword">for</span> (String namespace : namespaceList) &#123;</span><br><span class="line">    Config config = ConfigService.getConfig(namespace);</span><br><span class="line">		<span class="comment">// 创建 Namespace 对应的 ConfigPropertySource 对象，添加到 `composite` 中。</span></span><br><span class="line">    composite.addPropertySource(configPropertySourceFactory.getConfigPropertySource(namespace, config));</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  environment.getPropertySources().addFirst(composite);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="备注"><a href="#备注" class="headerlink" title="备注"></a>备注</h1><p><a href="http://www.iocoder.cn/categories/Apollo/" target="_blank" rel="noopener">apollo 源码分析</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div></div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.jpg" alt="zch 微信支付">
+        <p>微信支付</p>
+      </div>
+    
+
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/apollo/" rel="tag"># apollo</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/11/25/apollo/apollo--客户端设计/" rel="next" title="apollo--客户端设计">
+                <i class="fa fa-chevron-left"></i> apollo--客户端设计
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2021/01/05/spring_boot/SpringBoot系列--启动过程/" rel="prev" title="SpringBoot--启动流程">
+                SpringBoot--启动流程 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        
+  <div class="bdsharebuttonbox">
+    <a href="#" class="bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+    <a href="#" class="bds_douban" data-cmd="douban" title="分享到豆瓣网"></a>
+    <a href="#" class="bds_sqq" data-cmd="sqq" title="分享到QQ好友"></a>
+    <a href="#" class="bds_qzone" data-cmd="qzone" title="分享到QQ空间"></a>
+    <a href="#" class="bds_weixin" data-cmd="weixin" title="分享到微信"></a>
+    <a href="#" class="bds_tieba" data-cmd="tieba" title="分享到百度贴吧"></a>
+    <a href="#" class="bds_twi" data-cmd="twi" title="分享到Twitter"></a>
+    <a href="#" class="bds_fbook" data-cmd="fbook" title="分享到Facebook"></a>
+    <a href="#" class="bds_more" data-cmd="more"></a>
+    <a class="bds_count" data-cmd="count"></a>
+  </div>
+  <script>
+    window._bd_share_config = {
+      "common": {
+        "bdText": "",
+        "bdMini": "2",
+        "bdMiniList": false,
+        "bdPic": ""
+      },
+      "share": {
+        "bdSize": "16",
+        "bdStyle": "0"
+      },
+      "image": {
+        "viewList": ["tsina", "douban", "sqq", "qzone", "weixin", "twi", "fbook"],
+        "viewText": "分享到：",
+        "viewSize": "16"
+      }
+    }
+  </script>
+
+<script>
+  with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='//bdimg.share.baidu.com/static/api/js/share.js?cdnversion='+~(-new Date()/36e5)];
+</script>
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar.png" alt="zch">
+            
+              <p class="site-author-name" itemprop="name">zch</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">160</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">29</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">117</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#启动过程"><span class="nav-number">1.</span> <span class="nav-text">启动过程</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#UML"><span class="nav-number">2.</span> <span class="nav-text">UML</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#XML配置"><span class="nav-number">3.</span> <span class="nav-text">XML配置</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#NamespaceHandler"><span class="nav-number">3.1.</span> <span class="nav-text">NamespaceHandler</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ConfigPropertySourcesProcessor"><span class="nav-number">3.2.</span> <span class="nav-text">ConfigPropertySourcesProcessor</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#postProcessBeanDefinitionRegistry"><span class="nav-number">3.2.1.</span> <span class="nav-text">postProcessBeanDefinitionRegistry</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#SpringValueDefinitionProcessor"><span class="nav-number">3.3.</span> <span class="nav-text">SpringValueDefinitionProcessor</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#SpringValueDefinition"><span class="nav-number">3.3.1.</span> <span class="nav-text">SpringValueDefinition</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#postProcessBeanDefinitionRegistry-1"><span class="nav-number">3.3.2.</span> <span class="nav-text">postProcessBeanDefinitionRegistry</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#PropertySourcesProcessor"><span class="nav-number">3.4.</span> <span class="nav-text">PropertySourcesProcessor</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#postProcessBeanFactory"><span class="nav-number">3.4.0.1.</span> <span class="nav-text">postProcessBeanFactory</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#初始化PropertySource"><span class="nav-number">3.4.0.1.1.</span> <span class="nav-text">初始化PropertySource</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#初始化AutoUpdateConfigChangeListener"><span class="nav-number">3.4.0.1.2.</span> <span class="nav-text">初始化AutoUpdateConfigChangeListener</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ApolloProcessor"><span class="nav-number">3.5.</span> <span class="nav-text">ApolloProcessor</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#SpringValueProcessor"><span class="nav-number">3.5.1.</span> <span class="nav-text">SpringValueProcessor</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#SpringValue"><span class="nav-number">3.5.1.1.</span> <span class="nav-text">SpringValue</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#SpringValueRegistry"><span class="nav-number">3.5.1.2.</span> <span class="nav-text">SpringValueRegistry</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#postProcessBeanFactory-1"><span class="nav-number">3.5.1.3.</span> <span class="nav-text">postProcessBeanFactory</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#postProcessBeforeInitialization"><span class="nav-number">3.5.1.4.</span> <span class="nav-text">postProcessBeforeInitialization</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#processField"><span class="nav-number">3.5.1.5.</span> <span class="nav-text">processField</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#processMethod"><span class="nav-number">3.5.1.6.</span> <span class="nav-text">processMethod</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#AutoUpdateConfigChangeListener"><span class="nav-number">3.6.</span> <span class="nav-text">AutoUpdateConfigChangeListener</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#onChange"><span class="nav-number">3.6.1.</span> <span class="nav-text">onChange</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#updateSpringValue"><span class="nav-number">3.6.2.</span> <span class="nav-text">updateSpringValue</span></a></li></ol></li></ol><li class="nav-item nav-level-1"><a class="nav-link" href="#java配置"><span class="nav-number">4.</span> <span class="nav-text">java配置</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#EnableApolloConfig"><span class="nav-number">4.1.</span> <span class="nav-text">@EnableApolloConfig</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#ApolloConfigRegistrar"><span class="nav-number">4.1.0.1.</span> <span class="nav-text">ApolloConfigRegistrar</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#其他Annotation"><span class="nav-number">4.2.</span> <span class="nav-text">其他Annotation</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#ApolloJsonValue"><span class="nav-number">4.2.1.</span> <span class="nav-text">@ApolloJsonValue</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ApolloConfig"><span class="nav-number">4.2.2.</span> <span class="nav-text">@ApolloConfig</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ApolloConfigChangeListener"><span class="nav-number">4.2.3.</span> <span class="nav-text">@ApolloConfigChangeListener</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#其他配置"><span class="nav-number">5.</span> <span class="nav-text">其他配置</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#ApolloAutoConfiguration"><span class="nav-number">5.0.1.</span> <span class="nav-text">ApolloAutoConfiguration</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ApolloApplicationContextInitializer"><span class="nav-number">5.0.2.</span> <span class="nav-text">ApolloApplicationContextInitializer</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#备注"><span class="nav-number">6.</span> <span class="nav-text">备注</span></a></li></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<div class="copyright">&copy; <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">zch</span>
+
+  
+</div>
+
+
+  <div class="powered-by">个人学习和工作中总结的笔记</div>
+  <i class="fa fa-user-md"></i>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+<script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? "https://" : "http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1276375036'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s5.cnzz.com/z_stat.php%3Fid%3D1276375036%26online%3D1%26show%3Dline' type='text/javascript'%3E%3C/script%3E"));</script>
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/three/three.min.js"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/three/canvas_sphere.min.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+  
+  <script type="text/javascript">
+    var GUEST = ['nick','mail','link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item=>{
+      return GUEST.indexOf(item)>-1;
+    });
+    new Valine({
+        el: '#comments' ,
+        verify: true,
+        notify: true,
+        appId: 'qlLpITiuRGP5wGRRqD1TTe7y-gzGzoHsz',
+        appKey: 'Xu6NC8eq2DCotEgOrHgbA2St',
+        placeholder: 'ヾﾉ≧∀≦)o来啊，快活啊!',
+        avatar:'mm',
+        guest_info:guest,
+        pageSize:'10' || 10,
+    });
+  </script>
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

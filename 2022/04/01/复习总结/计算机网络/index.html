@@ -1,0 +1,1754 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+<meta name="google-site-verification" content="6pSprQE3BiN_wM4uIQnTSoO5EAKab52jQ86zdl_VH84">
+<meta name="google-site-verification" content="pa5VzMThwxpvSOgHS15kDjiLdeww7kHG5LcJjH6EQko">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/science-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/science-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="计算机网络,">
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="ZCH NOTES" type="application/atom+xml">
+
+
+
+
+
+
+<meta name="description" content="什么是计算机网络定义        通信技术+计算机技术        互连、自治的计算机集合 计算机网络体系结构OSI参考模型(7层模型)&quot;  物理层接口特性：机械特性、电气特性、功能特性、规程特性传输模式：单工，半双工，全双工  数据链路层：节点-节点数据传输以帧为单位数据传输物理寻址：在帧头中增加发送端和/或接收端的物理地址标识数据帧的发送端和/或接收端流量控制：匹配发送端和接收端的速度差错">
+<meta name="keywords" content="计算机网络">
+<meta property="og:type" content="article">
+<meta property="og:title" content="计算机网络">
+<meta property="og:url" content="http://yoursite.com/2022/04/01/复习总结/计算机网络/index.html">
+<meta property="og:site_name" content="ZCH NOTES">
+<meta property="og:description" content="什么是计算机网络定义        通信技术+计算机技术        互连、自治的计算机集合 计算机网络体系结构OSI参考模型(7层模型)&quot;  物理层接口特性：机械特性、电气特性、功能特性、规程特性传输模式：单工，半双工，全双工  数据链路层：节点-节点数据传输以帧为单位数据传输物理寻址：在帧头中增加发送端和/或接收端的物理地址标识数据帧的发送端和/或接收端流量控制：匹配发送端和接收端的速度差错">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/images/image-20220404152839428.png">
+<meta property="og:image" content="http://yoursite.com/images/image-20220404153002018.png">
+<meta property="og:image" content="http://yoursite.com/images/image-20220404153609943.png">
+<meta property="og:image" content="http://yoursite.com/images/image-20220404154346510.png">
+<meta property="og:image" content="http://yoursite.com/images/image-20220404165626326.png">
+<meta property="og:image" content="http://yoursite.com/images/image-20220404170305807.png">
+<meta property="og:image" content="http://yoursite.com/images/image-20220404170403016.png">
+<meta property="og:image" content="http://yoursite.com/images/image-20220404174649781.png">
+<meta property="og:image" content="http://yoursite.com/images/image-20220404174521393.png">
+<meta property="og:image" content="http://yoursite.com/images/image-20220404174509500.png">
+<meta property="og:image" content="http://yoursite.com/images/image-20220404193932622.png">
+<meta property="og:image" content="http://yoursite.com/images/image-20220404194327793.png">
+<meta property="og:image" content="http://yoursite.com/images/image-20220404194644193.png">
+<meta property="og:image" content="http://yoursite.com/images/image-20220404194847934.png">
+<meta property="og:image" content="http://yoursite.com/images/image-20220404194904497.png">
+<meta property="og:image" content="http://yoursite.com/images/image-20220404195259854.png">
+<meta property="og:image" content="http://yoursite.com/images/image-20220405162244966.png">
+<meta property="og:image" content="http://yoursite.com/images/image-20220405162634122.png">
+<meta property="og:image" content="http://yoursite.com/images/image-20220405163428153.png">
+<meta property="og:image" content="http://yoursite.com/images/image-20220405163903549.png">
+<meta property="og:image" content="http://yoursite.com/images/image-20220405163934437.png">
+<meta property="og:image" content="http://yoursite.com/images/image-20220405165215596.png">
+<meta property="og:image" content="http://yoursite.com/images/image-20220405165638487.png">
+<meta property="og:image" content="http://yoursite.com/images/image-20220405170522992.png">
+<meta property="og:image" content="http://yoursite.com/images/image-20220405174155179.png">
+<meta property="og:image" content="http://yoursite.com/images/image-20220405174256487.png">
+<meta property="og:image" content="http://yoursite.com/images/image-20220405222803394.png">
+<meta property="og:image" content="http://yoursite.com/images/image-20220405222825789.png">
+<meta property="og:image" content="http://yoursite.com/images/image-20220405222854169.png">
+<meta property="og:image" content="http://yoursite.com/images/image-20220405223036425.png">
+<meta property="og:image" content="http://yoursite.com/images/image-20220405223104623.png">
+<meta property="og:image" content="http://yoursite.com/images/image-20220405223125267.png">
+<meta property="og:image" content="http://yoursite.com/images/image-20220405231001160.png">
+<meta property="og:image" content="http://yoursite.com/images/image-20220405231143971.png">
+<meta property="og:image" content="http://yoursite.com/images/image-20220405231229580.png">
+<meta property="og:image" content="http://yoursite.com/images/image-20220405231252517.png">
+<meta property="og:image" content="http://yoursite.com/images/image-20220405231306650.png">
+<meta property="og:image" content="http://yoursite.com/images/image-20220405231328909.png">
+<meta property="og:image" content="http://yoursite.com/images/image-20220406173931415.png">
+<meta property="og:image" content="http://yoursite.com/images/image-20220406174034924.png">
+<meta property="og:image" content="http://yoursite.com/images/image-20220406180157623.png">
+<meta property="og:image" content="http://yoursite.com/images/image-20220406180503984.png">
+<meta property="og:image" content="http://yoursite.com/images/image-20220406205121912.png">
+<meta property="og:image" content="http://yoursite.com/images/image-20220406205338128.png">
+<meta property="og:image" content="http://yoursite.com/images/image-20220406205352230.png">
+<meta property="og:image" content="http://yoursite.com/images/image-20220406215658732.png">
+<meta property="og:image" content="http://yoursite.com/images/image-20220406215740162.png">
+<meta property="og:image" content="http://yoursite.com/images/image-20220406215919243.png">
+<meta property="og:image" content="http://yoursite.com/images/image-20220406220906607.png">
+<meta property="og:image" content="http://yoursite.com/images/image-20220406220920057.png">
+<meta property="og:image" content="http://yoursite.com/images/image-20220406221300617.png">
+<meta property="og:image" content="http://yoursite.com/images/image-20220406223307074.png">
+<meta property="og:image" content="http://yoursite.com/images/image-20220406224436184.png">
+<meta property="og:image" content="http://yoursite.com/images/image-20220407095842072.png">
+<meta property="og:image" content="http://yoursite.com/images/image-20220407102900426.png">
+<meta property="og:image" content="http://yoursite.com/images/image-20220407102923439.png">
+<meta property="og:image" content="http://yoursite.com/images/image-20220407115513413.png">
+<meta property="og:image" content="http://yoursite.com/images/image-20220407115951369.png">
+<meta property="og:image" content="http://yoursite.com/images/image-20220407120659615.png">
+<meta property="og:image" content="http://yoursite.com/images/image-20220407133624778.png">
+<meta property="og:image" content="http://yoursite.com/images/image-20220407133641636.png">
+<meta property="og:image" content="http://yoursite.com/images/image-20220407135014366.png">
+<meta property="og:image" content="http://yoursite.com/images/image-20220407135031282.png">
+<meta property="og:image" content="http://yoursite.com/images/image-20220407135314138.png">
+<meta property="og:image" content="http://yoursite.com/images/image-20220407135504603.png">
+<meta property="og:image" content="http://yoursite.com/images/image-20220407135536910.png">
+<meta property="og:image" content="http://yoursite.com/images/image-20220407140222539.png">
+<meta property="og:image" content="http://yoursite.com/images/image-20220407140435383.png">
+<meta property="og:image" content="http://yoursite.com/images/image-20220407141206424.png">
+<meta property="og:image" content="http://yoursite.com/images/image-20220407141327627.png">
+<meta property="og:image" content="http://yoursite.com/images/image-20220407141450119.png">
+<meta property="og:image" content="http://yoursite.com/images/image-20220407141548016.png">
+<meta property="og:image" content="http://yoursite.com/images/image-20220407141906629.png">
+<meta property="og:image" content="http://yoursite.com/images/image-20220407141926498.png">
+<meta property="og:image" content="http://yoursite.com/images/image-20220407142036244.png">
+<meta property="og:image" content="http://yoursite.com/2022/04/01/复习总结/计算机网络/images/image-20220407142102512.png">
+<meta property="og:updated_time" content="2022-04-07T13:53:36.646Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="计算机网络">
+<meta name="twitter:description" content="什么是计算机网络定义        通信技术+计算机技术        互连、自治的计算机集合 计算机网络体系结构OSI参考模型(7层模型)&quot;  物理层接口特性：机械特性、电气特性、功能特性、规程特性传输模式：单工，半双工，全双工  数据链路层：节点-节点数据传输以帧为单位数据传输物理寻址：在帧头中增加发送端和/或接收端的物理地址标识数据帧的发送端和/或接收端流量控制：匹配发送端和接收端的速度差错">
+<meta name="twitter:image" content="http://yoursite.com/images/image-20220404152839428.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"right","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2022/04/01/复习总结/计算机网络/">
+
+
+
+
+
+  <title>计算机网络 | ZCH NOTES</title><meta name="robots" content="noindex">
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-right page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">ZCH NOTES</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <h1 class="site-subtitle" itemprop="description">博学笃志 切问近思</h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404.html" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br>
+            
+            公益404
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2022/04/01/复习总结/计算机网络/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="zch">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ZCH NOTES">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">计算机网络</h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2022-04-01T00:00:00+08:00">
+                2022-04-01
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/复习/" itemprop="url" rel="index">
+                    <span itemprop="name">复习</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2022/04/01/复习总结/计算机网络/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2022/04/01/复习总结/计算机网络/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="什么是计算机网络"><a href="#什么是计算机网络" class="headerlink" title="什么是计算机网络"></a>什么是计算机网络</h1><p>定义<br>        通信技术+计算机技术<br>        互连、自治的计算机集合</p>
+<h2 id="计算机网络体系结构"><a href="#计算机网络体系结构" class="headerlink" title="计算机网络体系结构"></a>计算机网络体系结构</h2><h3 id="OSI参考模型-7层模型"><a href="#OSI参考模型-7层模型" class="headerlink" title="OSI参考模型(7层模型)"></a>OSI参考模型(7层模型)</h3><p><img src="/images/image-20220404152839428.png" alt="image-20220404152839428" style="zoom:33%;"></p>"
+<ol>
+<li><p>物理层<br>接口特性：机械特性、电气特性、功能特性、规程特性<br>传输模式：单工，半双工，全双工</p>
+</li>
+<li><p>数据链路层：节点-节点数据传输<br>以帧为单位数据传输<br>物理寻址：在帧头中增加发送端和/或接收端的物理地址标识数据帧的发送端和/或接收端<br>流量控制：匹配发送端和接收端的速度<br>差错控制<br>访问/接入控制</p>
+</li>
+<li><p>网络层：源主机到目的主机数据分组（package）交付<br>逻辑寻址：全局唯一逻辑地址，确保数据分组被送达目的主机，如IP地址<br>路由<br>分组转发</p>
+</li>
+<li><p>传输层：源-目的（端-端）（进程间）完整报文传输<br>分段与重组<br>SAP寻址：确保完整报文交给正确的进程/端口<br>连接控制，流量控制，差错控制</p>
+</li>
+<li><p>会话层：会话控制<br>同步</p>
+</li>
+<li><p>表示层：数据表示转化<br>加密/解密<br>压缩/解压缩</p>
+</li>
+<li><p>应用层：支持用户通过用户代理/网络接口使用网络/服务</p>
+</li>
+</ol>
+<h3 id="TCP-IP参考模型（4层）"><a href="#TCP-IP参考模型（4层）" class="headerlink" title="TCP/IP参考模型（4层）"></a>TCP/IP参考模型（4层）</h3><p>所用应用基于ip</p>
+<p><img src="/images/image-20220404153002018.png" alt="image-20220404153002018" style="zoom: 50%;"><br>网络接口层<br>网际层：IP<br>运输层：TCP、UDP<br>应用层</p>"
+<h3 id="5层参考模型"><a href="#5层参考模型" class="headerlink" title="5层参考模型"></a>5层参考模型</h3><p>物理层<br>数据链路层<br>网络层<br>传输层<br>应用层</p>
+<h1 id="应用层"><a href="#应用层" class="headerlink" title="应用层"></a>应用层</h1><h2 id="Internet传输层服务模型"><a href="#Internet传输层服务模型" class="headerlink" title="Internet传输层服务模型"></a>Internet传输层服务模型</h2><p>TCP与UDP</p>
+<p><img src="/images/image-20220404153609943.png" alt="image-20220404153609943" style="zoom:50%;"></p>"
+<h2 id="特定网络应用及协议"><a href="#特定网络应用及协议" class="headerlink" title="特定网络应用及协议"></a>特定网络应用及协议</h2><h3 id="HTTP"><a href="#HTTP" class="headerlink" title="HTTP"></a>HTTP</h3><h3 id="cookie技术"><a href="#cookie技术" class="headerlink" title="cookie技术"></a>cookie技术</h3><ul>
+<li><p>Cookie的组件</p>
+<ol>
+<li>HTTP响应消息的cookie头部行</li>
+<li>HTTP请求消息的cookie头部行 </li>
+<li>保存在客户端主机上的cookie文件，由浏览器管理</li>
+<li>Web服务器端的后台数据库</li>
+</ol>
+</li>
+<li><p>原理</p>
+<p><img src="/images/image-20220404154346510.png" alt="image-20220404154346510" style="zoom:50%;"></p>"
+</li>
+</ul>
+<h3 id="email应用"><a href="#email应用" class="headerlink" title="email应用"></a>email应用</h3><ul>
+<li><p>构成</p>
+<ol>
+<li>邮件客户端</li>
+<li>邮件服务器</li>
+<li>SMTP协议（simple mail transfer protocol）<br>邮件服务器之间传递消息所使用的协议<br>持久性连接<br>命令/响应交互模式（命令(command): ASCII文本，响应(response): 状态代码和语句）<br>要求消息必须由7位ASCII码构成：简单的文本传输</li>
+</ol>
+</li>
+<li><p>多媒体扩展<br>通过在邮件头部增加额外的行以声明MIME的内容类型<br><img src="/images/image-20220404165626326.png" alt="image-20220404165626326" style="zoom:50%;"></p>"
+</li>
+<li><p>邮件访问协议：客户端从服务器获取邮件<br>SMTP协议：是服务器之间传输的协议<br>POP<br>IMAP<br>HTTP</p>
+</li>
+</ul>
+<h3 id="DNS"><a href="#DNS" class="headerlink" title="DNS"></a>DNS</h3><p>Internet上主机/路由器的识别问题：域名和ip之间的映射</p>
+<h5 id="分布式层次式数据库"><a href="#分布式层次式数据库" class="headerlink" title="分布式层次式数据库"></a>分布式层次式数据库</h5><ol>
+<li><p>本地域名服务器<br>不严格属于层级体系，每个ISP有一个本地域名服务器。当主机进行DNS查询时，查询被发送到本地域名服务器。作为代理(proxy)，将查询转发给（层级式）域名解析服务器系统</p>
+</li>
+<li><p>根域名服务器</p>
+</li>
+<li><p>顶级域名服务器 (TLD, top-level domain)：负责com, org, net,edu等顶级域名和国家顶级域名</p>
+</li>
+<li><p>权威域名服务器：组织的域名解析服务器，提供组织内部服务器的解析服务</p>
+</li>
+</ol>
+<h5 id="查询"><a href="#查询" class="headerlink" title="查询"></a>查询</h5><ul>
+<li><p>迭代查询<br> <img src="/images/image-20220404170305807.png" alt="image-20220404170305807" style="zoom:50%;"></p>"
+</li>
+<li><p>递归查询<br> <img src="/images/image-20220404170403016.png" alt="image-20220404170403016" style="zoom:50%;"></p>"
+</li>
+</ul>
+<h5 id="缓存和更新"><a href="#缓存和更新" class="headerlink" title="缓存和更新"></a>缓存和更新</h5><ol>
+<li><p>一段时间过后，缓存条目失效（删除）</p>
+</li>
+<li><p>本地域名服务器一般会缓存顶级域名服务器的映射，因此根域名服务器不经常被访问</p>
+</li>
+</ol>
+<h5 id="记录和消息格式"><a href="#记录和消息格式" class="headerlink" title="记录和消息格式"></a>记录和消息格式</h5><ul>
+<li><p>DNS记录</p>
+<ul>
+<li><p>资源记录(RR, resource records)</p>
+<p><img src="/images/image-20220404174649781.png" alt="image-20220404174649781" style="zoom:50%;"></p>"
+</li>
+<li><p>type</p>
+</li>
+</ul>
+<p><img src="/images/image-20220404174521393.png" alt="image-20220404174521393" style="zoom:50%;"></p>"
+</li>
+<li><p>DNS协议<br>如何注册域名<br><img src="/images/image-20220404174509500.png" alt="image-20220404174509500" style="zoom:50%;"></p>"
+</li>
+</ul>
+<h3 id="Socket编程"><a href="#Socket编程" class="headerlink" title="Socket编程"></a>Socket编程</h3><h4 id="socket的抽象"><a href="#socket的抽象" class="headerlink" title="socket的抽象"></a>socket的抽象</h4><p><img src="/images/image-20220404193932622.png" alt="image-20220404193932622" style="zoom:50%;"></p>"
+<h4 id="api函数"><a href="#api函数" class="headerlink" title="api函数"></a>api函数</h4><h5 id="listen"><a href="#listen" class="headerlink" title="listen"></a>listen</h5><ul>
+<li><p>置服务器端的流套接字处于监听状态：仅服务器端调用，仅用于面向连接的流套接字</p>
+</li>
+<li><p>设置连接请求队列大小（queuesize）</p>
+<p><img src="/images/image-20220404194327793.png" alt="image-20220404194327793" style="zoom:50%;"></p>"
+</li>
+</ul>
+<h5 id="connect"><a href="#connect" class="headerlink" title="connect"></a>connect</h5><p>客户程序调用connect函数来使客户套接字（ sd）与特定计算机的特定端口（ saddr）的套接字（服务）进行连接<br> <img src="/images/image-20220404194644193.png" alt="image-20220404194644193" style="zoom:50%;"></p>"
+<h5 id="accept"><a href="#accept" class="headerlink" title="accept"></a>accept</h5><ol>
+<li>服务程序调用accept函数从处于监听状态的流套接字sd 的客户连接请求队列中取出排在最前的一个客户请求，并且创建一个新的套接字来与客户套接字创建连接通道（仅用于TCP套接字，仅用于服务器）</li>
+<li>利用新创建的套接字（ newsock)与客户通信<br><img src="/images/image-20220404194847934.png" alt="image-20220404194847934" style="zoom:50%;"></li>"
+</ol>
+<p><img src="/images/image-20220404194904497.png" alt="image-20220404194904497" style="zoom:50%;"></p>"
+<h1 id="传输层"><a href="#传输层" class="headerlink" title="传输层"></a>传输层</h1><p>基本单位：Segment</p>
+<h2 id="基本理论和基本机制"><a href="#基本理论和基本机制" class="headerlink" title="基本理论和基本机制"></a>基本理论和基本机制</h2><h3 id="多路复用-分用"><a href="#多路复用-分用" class="headerlink" title="多路复用/分用"></a>多路复用/分用</h3><p><img src="/images/image-20220404195259854.png" alt="image-20220404195259854" style="zoom:50%;"></p>"
+<h3 id="可靠数据传输机制"><a href="#可靠数据传输机制" class="headerlink" title="可靠数据传输机制"></a>可靠数据传输机制</h3><p>什么是可靠：不错、不丢、不乱</p>
+<h3 id="rdt-可靠数据传输"><a href="#rdt-可靠数据传输" class="headerlink" title="rdt(可靠数据传输)"></a>rdt(可靠数据传输)</h3><h4 id="rdt1-0-可靠信道上的可靠数据传输"><a href="#rdt1-0-可靠信道上的可靠数据传输" class="headerlink" title="rdt1.0 可靠信道上的可靠数据传输"></a>rdt1.0 可靠信道上的可靠数据传输</h4><h4 id="rdt2-0-产生位错误的信道"><a href="#rdt2-0-产生位错误的信道" class="headerlink" title="rdt2.0 产生位错误的信道"></a>rdt2.0 产生位错误的信道</h4><ul>
+<li><p>利用校验和检测错误</p>
+</li>
+<li><p>如何从错误中恢复</p>
+<ol>
+<li><p>确认机制（ACK）： 接收方显式地告知发送方分组已正确接收</p>
+</li>
+<li><p>NAK：接收方显式地告知发送方分组有错误</p>
+</li>
+<li><p>发送方收到NAK时后，重传分组<br>这种重传的机制成为：ARQ（Automatic Repeat reQuest）</p>
+</li>
+</ol>
+</li>
+</ul>
+<h4 id="rdt2-1"><a href="#rdt2-1" class="headerlink" title="rdt2.1"></a>rdt2.1</h4><p>rdt2.0缺陷：如果ACK/NAK 发成错误<br>如果发成ACK/NAK坏掉，发送方重传，但是，会产生重复分组问题</p>
+<ul>
+<li><p>如何解决重复分组问题(如何实现幂等)</p>
+<ul>
+<li><p>发送方给每个分组增加序列号（Sequence number)</p>
+</li>
+<li><p>接收方丢弃重复分组</p>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="rdt2-2（取消NAK消息协议）"><a href="#rdt2-2（取消NAK消息协议）" class="headerlink" title="rdt2.2（取消NAK消息协议）"></a>rdt2.2（取消NAK消息协议）</h4><p>ack+序列号</p>
+<ol>
+<li><p>接收方通过ACK告知最后一个被正确接收的分组</p>
+</li>
+<li><p>在ACK消息中显式地加入被确认分组的序列号</p>
+</li>
+</ol>
+<h4 id="rdt3-0-信道既可能发成错误也可能丢失"><a href="#rdt3-0-信道既可能发成错误也可能丢失" class="headerlink" title="rdt3.0 信道既可能发成错误也可能丢失"></a>rdt3.0 信道既可能发成错误也可能丢失</h4><ul>
+<li><p>如果发生丢失的处理方法<br>发送方等待合理的时间（需要定时器）<br>没有收到ack，重传</p>
+</li>
+<li><p>能正确工作，但是性能差（停等操作引起的）</p>
+</li>
+</ul>
+<h4 id="流水线机制与滑动窗口协议"><a href="#流水线机制与滑动窗口协议" class="headerlink" title="流水线机制与滑动窗口协议"></a>流水线机制与滑动窗口协议</h4><p>解决rdt3.0由于停等操作引起的性能差的问题</p>
+<h5 id="流水线机制"><a href="#流水线机制" class="headerlink" title="流水线机制"></a>流水线机制</h5><p>允许发送方在收到ACK前连续发送多个分组</p>
+<ol>
+<li><p>更大的序列号范围</p>
+</li>
+<li><p>发送方和/或接收方需要更大的存储空间以缓存分组</p>
+</li>
+</ol>
+<h5 id="滑动窗口协议"><a href="#滑动窗口协议" class="headerlink" title="滑动窗口协议"></a>滑动窗口协议</h5><p>目的：为了实现流水线机制，需要滑动窗口协议</p>
+<ul>
+<li><p>窗口</p>
+<ol>
+<li>允许使用的序列号范围</li>
+<li>窗口尺寸为N：最多有N个等待确认的消息</li>
+</ol>
+</li>
+<li><p>滑动窗口<br>随着协议的运行，窗口在序列号空间内向前滑动<br>管理发出去还没有确认的分组+允许使用的序列号范围</p>
+<p><img src="/images/image-20220405162244966.png" alt="image-20220405162244966" style="zoom:50%;"></p>"
+</li>
+</ul>
+<h6 id="GBN（go-back-n）"><a href="#GBN（go-back-n）" class="headerlink" title="GBN（go-back-n）"></a>GBN（go-back-n）</h6><p><img src="/images/image-20220405162634122.png" alt="image-20220405162634122" style="zoom:50%;"></p>"
+<ul>
+<li><p>FSM(状态机)</p>
+<ul>
+<li><p>发送方</p>
+<p><img src="/images/image-20220405163428153.png" alt="image-20220405163428153" style="zoom:50%;"></p>"
+</li>
+</ul>
+</li>
+</ul>
+<h6 id="SR-selective-repeat"><a href="#SR-selective-repeat" class="headerlink" title="SR(selective repeat)"></a>SR(selective repeat)</h6><p><img src="/images/image-20220405163903549.png" alt="image-20220405163903549" style="zoom:40%;"></p>"
+<ul>
+<li><p>sr优化点</p>
+<p><img src="/images/image-20220405163934437.png" alt="image-20220405163934437" style="zoom: 33%;"></p>"
+</li>
+<li><p>sr协议</p>
+<p><img src="/images/image-20220405165215596.png" alt="image-20220405165215596" style="zoom:30%;"></p>"
+</li>
+<li><p>困境</p>
+<p>序列号空间大小与窗口大小的关系</p>
+<p><img src="/images/image-20220405165638487.png" alt="image-20220405165638487" style="zoom:33%;"></p>"
+<p>流量控制机制<br>拥塞控制机制</p>
+</li>
+</ul>
+<h3 id="UDP"><a href="#UDP" class="headerlink" title="UDP"></a>UDP</h3><ul>
+<li>特点<br>基于IP协议<br>“尽力而为”的不可靠服务：Best Efort 服务<br>无连接：UDP发送方和接收方之间不需要握手，每个UDP段的处理独立于其他段</li>
+<li>优点<br><img src="/images/image-20220405170522992.png" alt="image-20220405170522992" style="zoom:50%;"></li>"
+<li>应用<br>流媒体<br>DNS</li>
+</ul>
+<h3 id="TCP"><a href="#TCP" class="headerlink" title="TCP"></a>TCP</h3><ul>
+<li>概述<br>TCP在IP层提供的不可靠服务基础上实现可靠数据传输服务（全双工）<br>流水线机制（发送方/接收方缓存，既不是GBN，也不是SR）<br>累计确认<br>TCP使用单一重传定时器<br>重传时间（定时器超时，收到重复ack（快速重传机制））</li>
+</ul>
+<h4 id="可靠、按序的交付服务"><a href="#可靠、按序的交付服务" class="headerlink" title="可靠、按序的交付服务"></a>可靠、按序的交付服务</h4><ul>
+<li><p>序列号</p>
+<ol>
+<li>序列号指的是segment中第一个字节的编号，而不是segment的编号</li>
+<li>建立TCP连接时，双方随机选择序列号</li>
+</ol>
+</li>
+<li><p>ACK</p>
+<ol>
+<li>希望接收到的下一个字节的序列号</li>
+<li>累计确认：该序列号之前的所有字节均已被正确接收到</li>
+</ol>
+</li>
+</ul>
+<h5 id="流水线机制-1"><a href="#流水线机制-1" class="headerlink" title="流水线机制"></a>流水线机制</h5><ul>
+<li><p>发送方</p>
+<p><img src="/images/image-20220405174155179.png" alt="image-20220405174155179" style="zoom:50%;"></p>"
+</li>
+<li><p>接收方</p>
+<p>  <img src="/images/image-20220405174256487.png" alt="image-20220405174256487" style="zoom:50%;"></p>"
+<ol>
+<li><p>有序的段，延迟500ms ack。如果500ms内有下一个段，一起发送；否则，不一起发送</p>
+</li>
+<li><p>有序的段，当前存在pending的ack，立即ack</p>
+</li>
+<li><p>乱序的段（比当前期望的序号大），发送duplicate ack，ack序号为期望的序号</p>
+</li>
+</ol>
+</li>
+</ul>
+<h5 id="快速重传机制"><a href="#快速重传机制" class="headerlink" title="快速重传机制"></a>快速重传机制</h5><p>在超时之前，3次收到相同的ack，就重传</p>
+<h4 id="面向连接"><a href="#面向连接" class="headerlink" title="面向连接"></a>面向连接</h4><h5 id="3次握手"><a href="#3次握手" class="headerlink" title="3次握手"></a>3次握手</h5><ul>
+<li><p>3次握手</p>
+<p> <img src="/images/image-20220405222803394.png" alt="image-20220405222803394" style="zoom: 33%;">                    </p>"
+<p><img src="/images/image-20220405222825789.png" alt="image-20220405222825789" style="zoom: 33%;"></p>"
+<p><img src="/images/image-20220405222854169.png" alt="image-20220405222854169" style="zoom: 50%;"></p>"
+<p>1、第一次握手：客户端给服务端发一个 SYN 报文，并指明客户端的初始化序列号 <strong>SN(c)</strong>。此时客户端处于 <strong>SYN_Send</strong> 状态。</p>
+<p>2、第二次握手：服务器收到客户端的 SYN 报文之后，会以自己的 SYN 报文作为应答，并且也是指定了自己的初始化序列号 ISN(s)，同时会把客户端的 ISN + 1 作为 ACK 的值，表示自己已经收到了客户端的 SYN，此时服务器处于 <strong><strong>SYN_REVD\</strong></strong> 的状态。</p>
+<p>3、第三次握手：客户端收到 SYN 报文之后，会发送一个 ACK 报文，当然，也是一样把服务器的 ISN + 1 作为 ACK 的值，表示已经收到了服务端的 SYN 报文，此时客户端处于 <strong>establised</strong> 状态。</p>
+</li>
+<li><p>为什么3次握手</p>
+<p>作用是为了确认双方的接收与发送能力是否正常</p>
+<p><a href="https://juejin.cn/post/6978733203062915103" target="_blank" rel="noopener">https://juejin.cn/post/6978733203062915103</a></p>
+</li>
+<li><p>其他问题</p>
+<p><strong>（ISN）是固定的吗</strong></p>
+<p>三次握手的一个重要功能是客户端和服务端交换ISN(Initial Sequence Number), 以便让对方知道接下来接收数据的时候如何按序列号组装数据。</p>
+<p>如果ISN是固定的，攻击者很容易猜出后续的确认号，因此 ISN 是动态生成的。</p>
+<p><strong>什么是半连接队列</strong></p>
+<p>服务器第一次收到客户端的 SYN 之后，就会处于 SYN_RCVD 状态，此时双方还没有完全建立其连接，服务器会把此种状态下请求连接放在一个队列里，我们把这种队列称之为<strong>半连接队列</strong>。当然还有一个<strong>全连接队列</strong>，就是已经完成三次握手，建立起连接的就会放在全连接队列中。如果队列满了就有可能会出现丢包现象。</p>
+<p><strong>三次握手过程中可以携带数据吗</strong></p>
+<p>很多人可能会认为三次握手都不能携带数据，其实第三次握手的时候，是可以携带数据的。也就是说，第一次、第二次握手不可以携带数据，而第三次握手是可以携带数据的。</p>
+<p>为什么这样呢？大家可以想一个问题，假如第一次握手可以携带数据的话，如果有人要恶意攻击服务器，那他每次都在第一次握手中的 SYN 报文中放入大量的数据（<a href="https://juejin.cn/post/6978733203062915103）" target="_blank" rel="noopener">https://juejin.cn/post/6978733203062915103）</a></p>
+</li>
+</ul>
+<h5 id="4次挥手"><a href="#4次挥手" class="headerlink" title="4次挥手"></a>4次挥手</h5><p><img src="/images/image-20220405223036425.png" alt="image-20220405223036425" style="zoom: 33%;"> </p>"
+<p><img src="/images/image-20220405223104623.png" alt="image-20220405223104623" style="zoom:33%;">  </p>"
+<p><img src="/images/image-20220405223125267.png" alt="image-20220405223125267" style="zoom:50%;">                          </p>"
+<ol>
+<li><p>第一次挥手</p>
+<pre><code>若A认为数据发送完成，则它需要向B发送连接释放请求。该请求只有报文头，头中携带的主要参数为： FIN=1，seq=u。此时，A将进入FIN-WAIT-1状态。
+     PS1：FIN=1表示该报文段是一个连接释放请求。
+     PS2：seq=u，u-1是A向B发送的最后一个字节的序号。
+</code></pre></li>
+<li><p>第二次挥手</p>
+<pre><code>B收到连接释放请求后，会通知相应的应用程序，告诉它A向B这个方向的连接已经释放。此时B进入CLOSE-WAIT状态，并向A发送连接释放的应答，其报文头包含： ACK=1，seq=v，ack=u+1。
+     PS1：ACK=1：除TCP连接请求报文段以外，TCP通信过程中所有数据报的ACK都为1，表示应答。
+     PS2：seq=v，v-1是B向A发送的最后一个字节的序号。
+     PS3：ack=u+1表示希望收到从第u+1个字节开始的报文段，并且已经成功接收了前u个字节。
+</code></pre><p>A收到该应答，进入FIN-WAIT-2状态，等待B发送连接释放请求。<br>第二次挥手完成后，A到B方向的连接已经释放，B不会再接收数据，A也不会再发送数据。但B到A方向的连接仍然存在，B可以继续向A发送数据。</p>
+</li>
+<li><p>第三次挥手<br>当B向A发完所有数据后，向A发送连接释放请求，请求头：FIN=1，ACK=1，seq=w，ack=u+1。B便进入LAST-ACK状态。</p>
+</li>
+<li>第四次挥手<br>A收到释放请求后，向B发送确认应答，此时A进入TIME-WAIT状态。该状态会持续2MSL时间，若该时间段内没有B的重发请求的话，就进入CLOSED状态，撤销TCB。当B收到确认应答后，也便进入CLOSED状态，撤销TCB。</li>
+</ol>
+<h4 id="流量控制机制"><a href="#流量控制机制" class="headerlink" title="流量控制机制"></a>流量控制机制</h4><p>发送方和接收方速度匹配的机制</p>
+<ol>
+<li><p>接收方为tcp连接分配buffer</p>
+<pre><code>&lt;img src=&quot;images/image-20220405225952552.png&quot; alt=&quot;image-20220405225952552&quot; style=&quot;zoom: 33%;&quot; /&gt;
+</code></pre></li>
+<li><p>Receiver通过在segment的头部字段将剩余空间RcvWindow大小告诉sender</p>
+</li>
+<li><p>当剩余空间RcvWindow==0时，sender会发送很小的段</p>
+</li>
+</ol>
+<h4 id="TCP拥塞控制"><a href="#TCP拥塞控制" class="headerlink" title="TCP拥塞控制"></a>TCP拥塞控制</h4><h5 id="拥塞控制基本原理"><a href="#拥塞控制基本原理" class="headerlink" title="拥塞控制基本原理"></a>拥塞控制基本原理</h5><p>太多发送主机发送了太多数据或者发送速度太快以至于网络无法处理<br>流量控制是：接收方无法处理；拥塞控制是：网络无法处理</p>
+<h5 id="TCP拥塞控制原理"><a href="#TCP拥塞控制原理" class="headerlink" title="TCP拥塞控制原理"></a>TCP拥塞控制原理</h5><p>端系统通过观察loss，delay等网络行为判断是否发生拥塞</p>
+<ul>
+<li>CongWin是拥塞窗口</li>
+</ul>
+<p><img src="/images/image-20220405231001160.png" alt="image-20220405231001160" style="zoom:50%;">                    </p>"
+<ul>
+<li><p>AIMD（加性增，乘性减）<br><img src="/images/image-20220405231143971.png" alt="image-20220405231143971" style="zoom:50%;"></p>"
+</li>
+<li><p>SS（慢启动）</p>
+<ul>
+<li><p>ss(慢启动)指数增长</p>
+<p><img src="/images/image-20220405231229580.png" alt="image-20220405231229580" style="zoom:50%;"></p>"
+<p><img src="/images/image-20220405231252517.png" alt="image-20220405231252517" style="zoom:50%;"></p>"
+</li>
+<li><p>threshold变量</p>
+<p><img src="/images/image-20220405231306650.png" alt="image-20220405231306650" style="zoom:50%;"></p>"
+</li>
+<li><p>Loss事件处理</p>
+<p><img src="/images/image-20220405231328909.png" alt="image-20220405231328909" style="zoom:50%;"></p>"
+</li>
+</ul>
+<h1 id="网络层"><a href="#网络层" class="headerlink" title="网络层"></a>网络层</h1><p>核心功能：转发+路由<br>转发：将分组从路由器的输入端口转移到合适的输出端口<br>路由：确定分组从源到目的经过的路径<br>无连接服务（不事先确定传输路径），数据报网络</p>
+<p><img src="/images/image-20220406173931415.png" alt="image-20220406173931415" style="zoom: 40%;"></p>"
+</li>
+</ul>
+<h2 id="ip协议"><a href="#ip协议" class="headerlink" title="ip协议"></a>ip协议</h2><ul>
+<li><p>格式</p>
+<p><img src="/images/image-20220406174034924.png" alt="image-20220406174034924" style="zoom:40%;">          </p>"
+</li>
+<li><p>分片</p>
+<ul>
+<li>网络层存在最大传输单元-MTU</li>
+<li>大MTU向小的MTU转发时-分片与重组</li>
+</ul>
+</li>
+</ul>
+<h3 id="编址"><a href="#编址" class="headerlink" title="编址"></a>编址</h3><ul>
+<li><p>哪些设备需要编址？实现网络功能的接口（主机一个或2个，路由器通常有多个）</p>
+</li>
+<li><p>怎么编址<br>ip子网</p>
+<p><img src="/images/image-20220406180157623.png" alt="image-20220406180157623" style="zoom:50%;"></p>"
+</li>
+</ul>
+<h3 id="分类"><a href="#分类" class="headerlink" title="分类"></a>分类</h3><p>  <img src="/images/image-20220406180503984.png" alt="image-20220406180503984" style="zoom:50%;"></p>"
+<h3 id="子网划分"><a href="#子网划分" class="headerlink" title="子网划分"></a>子网划分</h3><ul>
+<li><p>如何划分一个比IP子网更小范围网络？子网划分</p>
+<p><img src="/images/image-20220406205121912.png" alt="image-20220406205121912" style="zoom:50%;"></p>"
+</li>
+<li><p>如何确定是否划分了子网？子网掩码</p>
+<p><img src="/images/image-20220406205338128.png" alt="image-20220406205338128" style="zoom:50%;"></p>"
+<p><img src="/images/image-20220406205352230.png" alt="image-20220406205352230" style="zoom:50%;"></p>"
+</li>
+</ul>
+<h3 id="路由聚合"><a href="#路由聚合" class="headerlink" title="路由聚合"></a>路由聚合</h3><h4 id="CIDR"><a href="#CIDR" class="headerlink" title="CIDR"></a>CIDR</h4><p><img src="/images/image-20220406215658732.png" alt="image-20220406215658732" style="zoom:50%;"></p>"
+<ul>
+<li><p>优点</p>
+<ul>
+<li>路由转发效率提高</li>
+</ul>
+<p><img src="/images/image-20220406215740162.png" alt="image-20220406215740162" style="zoom:50%;"></p>"
+<ul>
+<li>路由通过效率提高</li>
+</ul>
+</li>
+<li><p>怎么解决网络黑洞？最长前缀匹配</p>
+<p><img src="/images/image-20220406215919243.png" alt="image-20220406215919243" style="zoom:50%;"></p>"
+</li>
+</ul>
+<h2 id="主机如何获取ip-DHCP"><a href="#主机如何获取ip-DHCP" class="headerlink" title="主机如何获取ip?(DHCP)"></a>主机如何获取ip?(DHCP)</h2><h3 id="dhcp"><a href="#dhcp" class="headerlink" title="dhcp"></a>dhcp</h3><p>从服务器动态获取：</p>
+<ul>
+<li>ip地址</li>
+<li>子网掩码</li>
+<li>默认网关地址（当数据报要离开子网时，通过默认网关转发）</li>
+<li>DNS服务器名称与ip地址</li>
+</ul>
+<h3 id="dhcp工作过程"><a href="#dhcp工作过程" class="headerlink" title="dhcp工作过程"></a>dhcp工作过程</h3><p>dhcp服务器内嵌于路由器中</p>
+<p><img src="/images/image-20220406220906607.png" alt="image-20220406220906607" style="zoom:50%;"></p>"
+<p><img src="/images/image-20220406220920057.png" alt="image-20220406220920057" style="zoom:50%;"></p>"
+<h2 id="如何保证私有地址在公共互联网通信？NAT"><a href="#如何保证私有地址在公共互联网通信？NAT" class="headerlink" title="如何保证私有地址在公共互联网通信？NAT"></a>如何保证私有地址在公共互联网通信？NAT</h2><h3 id="NAT"><a href="#NAT" class="headerlink" title="NAT"></a>NAT</h3><p><img src="/images/image-20220406221300617.png" alt="image-20220406221300617" style="zoom:50%;"></p>"
+<ul>
+<li><p>好处</p>
+<ul>
+<li>只需从ISP申请一个ip</li>
+<li>内部网络设备对外界网络不可见（安全）</li>
+</ul>
+</li>
+<li><p>实现</p>
+<p><img src="/images/image-20220406223307074.png" alt="image-20220406223307074" style="zoom:50%;"></p>"
+<p><img src="/images/image-20220406224436184.png" alt="image-20220406224436184" style="zoom:50%;"></p>"
+</li>
+<li><p>NAT穿透问题</p>
+<ol>
+<li><p>静态配置</p>
+<p><img src="/images/image-20220407095842072.png" alt="image-20220407095842072" style="zoom:50%;"></p>"
+</li>
+<li><p>UpnP</p>
+<p><img src="/images/image-20220407102900426.png" alt="image-20220407102900426" style="zoom:40%;"></p>"
+</li>
+<li><p>中继</p>
+<p><img src="/images/image-20220407102923439.png" alt="image-20220407102923439" style="zoom:40%;"></p>"
+</li>
+</ol>
+</li>
+</ul>
+<h2 id="ip报文的差错处理-ICMP"><a href="#ip报文的差错处理-ICMP" class="headerlink" title="ip报文的差错处理-ICMP"></a>ip报文的差错处理-ICMP</h2><ul>
+<li><p>ICMP（互联网控制报文协议：Internet Control Message Protocol）支持主机或路由器：</p>
+<ul>
+<li><p>差错或异常报告</p>
+</li>
+<li><p>网络探寻</p>
+</li>
+</ul>
+</li>
+<li><p>ICMP报文</p>
+</li>
+</ul>
+<p><img src="/images/image-20220407115513413.png" alt="image-20220407115513413" style="zoom:50%;"></p>"
+<ul>
+<li><p>例外情况</p>
+<ul>
+<li>对icmp差错报文报告不再发送icmp差错报文报告</li>
+<li>除第一个ip数据报分片外，后续分片均不发送icmp报文</li>
+<li>对多播ip数据报分片均不发送icmp报文</li>
+<li>对特殊地址不发送（eg：127.0.0.1，0.0.0.0）不发送icmp报文    </li>
+</ul>
+</li>
+<li><p>报文格式</p>
+<p><img src="/images/image-20220407115951369.png" alt="image-20220407115951369" style="zoom:50%;"></p>"
+</li>
+</ul>
+<h2 id="转发表是怎么来的？路由算法"><a href="#转发表是怎么来的？路由算法" class="headerlink" title="转发表是怎么来的？路由算法"></a>转发表是怎么来的？路由算法</h2><p><img src="/images/image-20220407120659615.png" alt="image-20220407120659615" style="zoom:50%;"></p>"
+<ul>
+<li><p>链路状态路由算法</p>
+<p><img src="/images/image-20220407133624778.png" alt="image-20220407133624778" style="zoom:50%;"></p>"
+<p><img src="/images/image-20220407133641636.png" alt="image-20220407133641636" style="zoom:50%;"></p>"
+</li>
+<li><p>rip</p>
+<ul>
+<li><p>rip协议</p>
+<p>是一种距离向量路由算法</p>
+<p><img src="/images/image-20220407135014366.png" alt="image-20220407135014366" style="zoom:50%;"></p>"
+<p><img src="/images/image-20220407135031282.png" alt="image-20220407135031282" style="zoom:50%;"></p>"
+</li>
+</ul>
+</li>
+</ul>
+<pre><code>- 失效与恢复
+
+  &lt;img src=&quot;images/image-20220407135057454.png&quot; alt=&quot;image-20220407135057454&quot; style=&quot;zoom:50%;&quot; /&gt;
+</code></pre><ul>
+<li>ospf<br>链路状态路由算法，利用Dijkstra算法计算路由</li>
+</ul>
+<h1 id="数据链路层"><a href="#数据链路层" class="headerlink" title="数据链路层"></a>数据链路层</h1><p><img src="/images/image-20220407135314138.png" alt="image-20220407135314138" style="zoom:50%;"></p>"
+<p>  ​    实现？网卡</p>
+<h2 id="多路访问控制-MAC协议"><a href="#多路访问控制-MAC协议" class="headerlink" title="多路访问控制-MAC协议"></a>多路访问控制-MAC协议</h2><h3 id="解决了什么问题？怎么共享信道"><a href="#解决了什么问题？怎么共享信道" class="headerlink" title="解决了什么问题？怎么共享信道"></a>解决了什么问题？怎么共享信道</h3><p><img src="/images/image-20220407135504603.png" alt="image-20220407135504603" style="zoom:50%;"></p>"
+<h3 id="分类-1"><a href="#分类-1" class="headerlink" title="分类"></a>分类</h3><p><img src="/images/image-20220407135536910.png" alt="image-20220407135536910" style="zoom:50%;"></p>"
+<p>  ​        总结</p>
+<h2 id="局域网"><a href="#局域网" class="headerlink" title="局域网"></a>局域网</h2><h3 id="ARP协议"><a href="#ARP协议" class="headerlink" title="ARP协议"></a>ARP协议</h3><ul>
+<li><p>电脑的身份证？MAC地址</p>
+</li>
+<li><p>ip怎么映射成mac？ARP表</p>
+<p><img src="/images/image-20220407140222539.png" alt="image-20220407140222539" style="zoom:50%;"></p>"
+</li>
+<li><p>在同一局域网内，怎么转换？</p>
+<p><img src="/images/image-20220407140435383.png" alt="image-20220407140435383" style="zoom:50%;"></p>"
+</li>
+<li><p>不在一个局域网内，怎么转换？</p>
+<ol>
+<li><p>获取默认网关的mac地址，发送给默认网关</p>
+</li>
+<li><p>默认网关发送下一条的mac</p>
+</li>
+<li><p>到达另一个局域网的默认网关，通过arp协议获取到目的主机的mac地址，发送给目的主机</p>
+</li>
+</ol>
+</li>
+</ul>
+<h2 id="以太网"><a href="#以太网" class="headerlink" title="以太网"></a>以太网</h2><ul>
+<li><p>不可靠，无连接</p>
+<p><img src="/images/image-20220407141206424.png" alt="image-20220407141206424" style="zoom:50%;"></p>"
+</li>
+<li><p>采用的是什么MAC协议？CSMA/CD</p>
+<p><img src="/images/image-20220407141327627.png" alt="image-20220407141327627" style="zoom:50%;"></p>"
+<h3 id="交换机"><a href="#交换机" class="headerlink" title="交换机"></a>交换机</h3></li>
+</ul>
+<p><img src="/images/image-20220407141450119.png" alt="image-20220407141450119" style="zoom:50%;"></p>"
+<ul>
+<li><p>怎么解决冲突域问题？多端口同时传输</p>
+<p> <img src="/images/image-20220407141548016.png" alt="image-20220407141548016" style="zoom:50%;"></p>"
+</li>
+<li><p>怎么知道转发到哪个接口？交换表</p>
+</li>
+<li><p>路由表怎么创建与维护？自学习</p>
+</li>
+<li><p>过滤/转发</p>
+<p> <img src="/images/image-20220407141906629.png" alt="image-20220407141906629" style="zoom:50%;"></p>"
+<p> <img src="/images/image-20220407141926498.png" alt="image-20220407141926498" style="zoom:50%;"></p>"
+</li>
+<li><p>设备对比<br> <img src="/images/image-20220407142036244.png" alt="image-20220407142036244" style="zoom:50%;"><br> <img src="images/image-20220407142102512.png" alt="image-20220407142102512" style="zoom:50%;"></p>"
+</li>
+</ul>
+<!-- flag of hidden posts -->
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div></div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.jpg" alt="zch 微信支付">
+        <p>微信支付</p>
+      </div>
+    
+
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/计算机网络/" rel="tag"># 计算机网络</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        
+  <div class="bdsharebuttonbox">
+    <a href="#" class="bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+    <a href="#" class="bds_douban" data-cmd="douban" title="分享到豆瓣网"></a>
+    <a href="#" class="bds_sqq" data-cmd="sqq" title="分享到QQ好友"></a>
+    <a href="#" class="bds_qzone" data-cmd="qzone" title="分享到QQ空间"></a>
+    <a href="#" class="bds_weixin" data-cmd="weixin" title="分享到微信"></a>
+    <a href="#" class="bds_tieba" data-cmd="tieba" title="分享到百度贴吧"></a>
+    <a href="#" class="bds_twi" data-cmd="twi" title="分享到Twitter"></a>
+    <a href="#" class="bds_fbook" data-cmd="fbook" title="分享到Facebook"></a>
+    <a href="#" class="bds_more" data-cmd="more"></a>
+    <a class="bds_count" data-cmd="count"></a>
+  </div>
+  <script>
+    window._bd_share_config = {
+      "common": {
+        "bdText": "",
+        "bdMini": "2",
+        "bdMiniList": false,
+        "bdPic": ""
+      },
+      "share": {
+        "bdSize": "16",
+        "bdStyle": "0"
+      },
+      "image": {
+        "viewList": ["tsina", "douban", "sqq", "qzone", "weixin", "twi", "fbook"],
+        "viewText": "分享到：",
+        "viewSize": "16"
+      }
+    }
+  </script>
+
+<script>
+  with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='//bdimg.share.baidu.com/static/api/js/share.js?cdnversion='+~(-new Date()/36e5)];
+</script>
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar.png" alt="zch">
+            
+              <p class="site-author-name" itemprop="name">zch</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">160</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">29</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">117</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#什么是计算机网络"><span class="nav-number">1.</span> <span class="nav-text">什么是计算机网络</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#计算机网络体系结构"><span class="nav-number">1.1.</span> <span class="nav-text">计算机网络体系结构</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#OSI参考模型-7层模型"><span class="nav-number">1.1.1.</span> <span class="nav-text">OSI参考模型(7层模型)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#TCP-IP参考模型（4层）"><span class="nav-number">1.1.2.</span> <span class="nav-text">TCP/IP参考模型（4层）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5层参考模型"><span class="nav-number">1.1.3.</span> <span class="nav-text">5层参考模型</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#应用层"><span class="nav-number">2.</span> <span class="nav-text">应用层</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Internet传输层服务模型"><span class="nav-number">2.1.</span> <span class="nav-text">Internet传输层服务模型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#特定网络应用及协议"><span class="nav-number">2.2.</span> <span class="nav-text">特定网络应用及协议</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#HTTP"><span class="nav-number">2.2.1.</span> <span class="nav-text">HTTP</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#cookie技术"><span class="nav-number">2.2.2.</span> <span class="nav-text">cookie技术</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#email应用"><span class="nav-number">2.2.3.</span> <span class="nav-text">email应用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#DNS"><span class="nav-number">2.2.4.</span> <span class="nav-text">DNS</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#分布式层次式数据库"><span class="nav-number">2.2.4.0.1.</span> <span class="nav-text">分布式层次式数据库</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#查询"><span class="nav-number">2.2.4.0.2.</span> <span class="nav-text">查询</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#缓存和更新"><span class="nav-number">2.2.4.0.3.</span> <span class="nav-text">缓存和更新</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#记录和消息格式"><span class="nav-number">2.2.4.0.4.</span> <span class="nav-text">记录和消息格式</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Socket编程"><span class="nav-number">2.2.5.</span> <span class="nav-text">Socket编程</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#socket的抽象"><span class="nav-number">2.2.5.1.</span> <span class="nav-text">socket的抽象</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#api函数"><span class="nav-number">2.2.5.2.</span> <span class="nav-text">api函数</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#listen"><span class="nav-number">2.2.5.2.1.</span> <span class="nav-text">listen</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#connect"><span class="nav-number">2.2.5.2.2.</span> <span class="nav-text">connect</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#accept"><span class="nav-number">2.2.5.2.3.</span> <span class="nav-text">accept</span></a></li></ol></li></ol></li></ol></li></ol><li class="nav-item nav-level-1"><a class="nav-link" href="#传输层"><span class="nav-number">3.</span> <span class="nav-text">传输层</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#基本理论和基本机制"><span class="nav-number">3.1.</span> <span class="nav-text">基本理论和基本机制</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#多路复用-分用"><span class="nav-number">3.1.1.</span> <span class="nav-text">多路复用/分用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#可靠数据传输机制"><span class="nav-number">3.1.2.</span> <span class="nav-text">可靠数据传输机制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#rdt-可靠数据传输"><span class="nav-number">3.1.3.</span> <span class="nav-text">rdt(可靠数据传输)</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#rdt1-0-可靠信道上的可靠数据传输"><span class="nav-number">3.1.3.1.</span> <span class="nav-text">rdt1.0 可靠信道上的可靠数据传输</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#rdt2-0-产生位错误的信道"><span class="nav-number">3.1.3.2.</span> <span class="nav-text">rdt2.0 产生位错误的信道</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#rdt2-1"><span class="nav-number">3.1.3.3.</span> <span class="nav-text">rdt2.1</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#rdt2-2（取消NAK消息协议）"><span class="nav-number">3.1.3.4.</span> <span class="nav-text">rdt2.2（取消NAK消息协议）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#rdt3-0-信道既可能发成错误也可能丢失"><span class="nav-number">3.1.3.5.</span> <span class="nav-text">rdt3.0 信道既可能发成错误也可能丢失</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#流水线机制与滑动窗口协议"><span class="nav-number">3.1.3.6.</span> <span class="nav-text">流水线机制与滑动窗口协议</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#流水线机制"><span class="nav-number">3.1.3.6.1.</span> <span class="nav-text">流水线机制</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#滑动窗口协议"><span class="nav-number">3.1.3.6.2.</span> <span class="nav-text">滑动窗口协议</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#GBN（go-back-n）"><span class="nav-number">3.1.3.6.2.1.</span> <span class="nav-text">GBN（go-back-n）</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#SR-selective-repeat"><span class="nav-number">3.1.3.6.2.2.</span> <span class="nav-text">SR(selective repeat)</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#UDP"><span class="nav-number">3.1.4.</span> <span class="nav-text">UDP</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#TCP"><span class="nav-number">3.1.5.</span> <span class="nav-text">TCP</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#可靠、按序的交付服务"><span class="nav-number">3.1.5.1.</span> <span class="nav-text">可靠、按序的交付服务</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#流水线机制-1"><span class="nav-number">3.1.5.1.1.</span> <span class="nav-text">流水线机制</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#快速重传机制"><span class="nav-number">3.1.5.1.2.</span> <span class="nav-text">快速重传机制</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#面向连接"><span class="nav-number">3.1.5.2.</span> <span class="nav-text">面向连接</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#3次握手"><span class="nav-number">3.1.5.2.1.</span> <span class="nav-text">3次握手</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#4次挥手"><span class="nav-number">3.1.5.2.2.</span> <span class="nav-text">4次挥手</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#流量控制机制"><span class="nav-number">3.1.5.3.</span> <span class="nav-text">流量控制机制</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#TCP拥塞控制"><span class="nav-number">3.1.5.4.</span> <span class="nav-text">TCP拥塞控制</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#拥塞控制基本原理"><span class="nav-number">3.1.5.4.1.</span> <span class="nav-text">拥塞控制基本原理</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#TCP拥塞控制原理"><span class="nav-number">3.1.5.4.2.</span> <span class="nav-text">TCP拥塞控制原理</span></a></li></ol></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#网络层"><span class="nav-number">4.</span> <span class="nav-text">网络层</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#ip协议"><span class="nav-number">4.1.</span> <span class="nav-text">ip协议</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#编址"><span class="nav-number">4.1.1.</span> <span class="nav-text">编址</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#分类"><span class="nav-number">4.1.2.</span> <span class="nav-text">分类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#子网划分"><span class="nav-number">4.1.3.</span> <span class="nav-text">子网划分</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#路由聚合"><span class="nav-number">4.1.4.</span> <span class="nav-text">路由聚合</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#CIDR"><span class="nav-number">4.1.4.1.</span> <span class="nav-text">CIDR</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#主机如何获取ip-DHCP"><span class="nav-number">4.2.</span> <span class="nav-text">主机如何获取ip?(DHCP)</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#dhcp"><span class="nav-number">4.2.1.</span> <span class="nav-text">dhcp</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#dhcp工作过程"><span class="nav-number">4.2.2.</span> <span class="nav-text">dhcp工作过程</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#如何保证私有地址在公共互联网通信？NAT"><span class="nav-number">4.3.</span> <span class="nav-text">如何保证私有地址在公共互联网通信？NAT</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#NAT"><span class="nav-number">4.3.1.</span> <span class="nav-text">NAT</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ip报文的差错处理-ICMP"><span class="nav-number">4.4.</span> <span class="nav-text">ip报文的差错处理-ICMP</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#转发表是怎么来的？路由算法"><span class="nav-number">4.5.</span> <span class="nav-text">转发表是怎么来的？路由算法</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#数据链路层"><span class="nav-number">5.</span> <span class="nav-text">数据链路层</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#多路访问控制-MAC协议"><span class="nav-number">5.1.</span> <span class="nav-text">多路访问控制-MAC协议</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#解决了什么问题？怎么共享信道"><span class="nav-number">5.1.1.</span> <span class="nav-text">解决了什么问题？怎么共享信道</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#分类-1"><span class="nav-number">5.1.2.</span> <span class="nav-text">分类</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#局域网"><span class="nav-number">5.2.</span> <span class="nav-text">局域网</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#ARP协议"><span class="nav-number">5.2.1.</span> <span class="nav-text">ARP协议</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#以太网"><span class="nav-number">5.3.</span> <span class="nav-text">以太网</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#交换机"><span class="nav-number">5.3.1.</span> <span class="nav-text">交换机</span></a></li></ol></li></ol></li></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<div class="copyright">&copy; <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">zch</span>
+
+  
+</div>
+
+
+  <div class="powered-by">个人学习和工作中总结的笔记</div>
+  <i class="fa fa-user-md"></i>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+<script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? "https://" : "http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1276375036'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s5.cnzz.com/z_stat.php%3Fid%3D1276375036%26online%3D1%26show%3Dline' type='text/javascript'%3E%3C/script%3E"));</script>
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/three/three.min.js"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/three/canvas_sphere.min.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+  
+  <script type="text/javascript">
+    var GUEST = ['nick','mail','link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item=>{
+      return GUEST.indexOf(item)>-1;
+    });
+    new Valine({
+        el: '#comments' ,
+        verify: true,
+        notify: true,
+        appId: 'qlLpITiuRGP5wGRRqD1TTe7y-gzGzoHsz',
+        appKey: 'Xu6NC8eq2DCotEgOrHgbA2St',
+        placeholder: 'ヾﾉ≧∀≦)o来啊，快活啊!',
+        avatar:'mm',
+        guest_info:guest,
+        pageSize:'10' || 10,
+    });
+  </script>
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

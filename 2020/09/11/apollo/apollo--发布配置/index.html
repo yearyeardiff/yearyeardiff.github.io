@@ -1,0 +1,1242 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+<meta name="google-site-verification" content="6pSprQE3BiN_wM4uIQnTSoO5EAKab52jQ86zdl_VH84">
+<meta name="google-site-verification" content="pa5VzMThwxpvSOgHS15kDjiLdeww7kHG5LcJjH6EQko">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/science-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/science-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="apollo,">
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="ZCH NOTES" type="application/atom+xml">
+
+
+
+
+
+
+<meta name="description" content="1. 流程图&quot; 2. 发布配置apiadmin service发布配置api。先发布配置，再发送发布消息 1234567891011121314151617181920212223242526272829303132@Transactional@RequestMapping(path = &quot;/apps/&amp;#123;appId&amp;#125;/clusters/&amp;#123;clusterName&amp;#12">
+<meta name="keywords" content="apollo">
+<meta property="og:type" content="article">
+<meta property="og:title" content="apollo--发布配置">
+<meta property="og:url" content="http://yoursite.com/2020/09/11/apollo/apollo--发布配置/index.html">
+<meta property="og:site_name" content="ZCH NOTES">
+<meta property="og:description" content="1. 流程图&quot; 2. 发布配置apiadmin service发布配置api。先发布配置，再发送发布消息 1234567891011121314151617181920212223242526272829303132@Transactional@RequestMapping(path = &quot;/apps/&amp;#123;appId&amp;#125;/clusters/&amp;#123;clusterName&amp;#12">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/images/image-20200924224935805.png">
+<meta property="og:updated_time" content="2022-04-07T09:49:40.079Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="apollo--发布配置">
+<meta name="twitter:description" content="1. 流程图&quot; 2. 发布配置apiadmin service发布配置api。先发布配置，再发送发布消息 1234567891011121314151617181920212223242526272829303132@Transactional@RequestMapping(path = &quot;/apps/&amp;#123;appId&amp;#125;/clusters/&amp;#123;clusterName&amp;#12">
+<meta name="twitter:image" content="http://yoursite.com/images/image-20200924224935805.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"right","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2020/09/11/apollo/apollo--发布配置/">
+
+
+
+
+
+  <title>apollo--发布配置 | ZCH NOTES</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-right page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">ZCH NOTES</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <h1 class="site-subtitle" itemprop="description">博学笃志 切问近思</h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404.html" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br>
+            
+            公益404
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/09/11/apollo/apollo--发布配置/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="zch">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ZCH NOTES">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">apollo--发布配置</h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-09-11T17:17:11+08:00">
+                2020-09-11
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/apollo/" itemprop="url" rel="index">
+                    <span itemprop="name">apollo</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2020/09/11/apollo/apollo--发布配置/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2020/09/11/apollo/apollo--发布配置/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="1-流程图"><a href="#1-流程图" class="headerlink" title="1. 流程图"></a>1. 流程图</h1><p><img src="/images/image-20200924224935805.png" alt="image-20200924224935805"></p>"
+<h1 id="2-发布配置api"><a href="#2-发布配置api" class="headerlink" title="2. 发布配置api"></a>2. 发布配置api</h1><p><code>admin service</code>发布配置api。先发布配置，再发送发布消息</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Transactional</span></span><br><span class="line"><span class="meta">@RequestMapping</span>(path = <span class="string">"/apps/&#123;appId&#125;/clusters/&#123;clusterName&#125;/namespaces/&#123;namespaceName&#125;/releases"</span>, method = RequestMethod.POST)</span><br><span class="line"><span class="function"><span class="keyword">public</span> ReleaseDTO <span class="title">publish</span><span class="params">(@PathVariable(<span class="string">"appId"</span>)</span> String appId,</span></span><br><span class="line"><span class="function">                          @<span class="title">PathVariable</span><span class="params">(<span class="string">"clusterName"</span>)</span> String clusterName,</span></span><br><span class="line"><span class="function">                          @<span class="title">PathVariable</span><span class="params">(<span class="string">"namespaceName"</span>)</span> String namespaceName,</span></span><br><span class="line"><span class="function">                          @<span class="title">RequestParam</span><span class="params">(<span class="string">"name"</span>)</span> String releaseName,</span></span><br><span class="line"><span class="function">                          @<span class="title">RequestParam</span><span class="params">(name = <span class="string">"comment"</span>, required = <span class="keyword">false</span>)</span> String releaseComment,</span></span><br><span class="line"><span class="function">                          @<span class="title">RequestParam</span><span class="params">(<span class="string">"operator"</span>)</span> String operator,</span></span><br><span class="line"><span class="function">                          @<span class="title">RequestParam</span><span class="params">(name = <span class="string">"isEmergencyPublish"</span>, defaultValue = <span class="string">"false"</span>)</span> <span class="keyword">boolean</span> isEmergencyPublish) </span>&#123;</span><br><span class="line">    <span class="comment">// 校验对应的 Namespace 对象是否存在。若不存在，抛出 NotFoundException 异常</span></span><br><span class="line">    Namespace namespace = namespaceService.findOne(appId, clusterName, namespaceName);</span><br><span class="line">    <span class="keyword">if</span> (namespace == <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> NotFoundException(String.format(<span class="string">"Could not find namespace for %s %s %s"</span>, appId, clusterName, namespaceName));</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 发布 Namespace 的配置</span></span><br><span class="line">    Release release = releaseService.publish(namespace, releaseName, releaseComment, operator, isEmergencyPublish);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// send release message</span></span><br><span class="line">    <span class="comment">// 获得 Cluster 名</span></span><br><span class="line">    Namespace parentNamespace = namespaceService.findParentNamespace(namespace);</span><br><span class="line">    String messageCluster;</span><br><span class="line">    <span class="keyword">if</span> (parentNamespace != <span class="keyword">null</span>) &#123; <span class="comment">// 灰度发布</span></span><br><span class="line">        messageCluster = parentNamespace.getClusterName();</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        messageCluster = clusterName; <span class="comment">// 使用请求的 ClusterName</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 发送 Release 消息</span></span><br><span class="line">    messageSender.sendMessage(ReleaseMessageKeyGenerator.generate(appId, messageCluster, namespaceName), Topics.APOLLO_RELEASE_TOPIC);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 将 Release 转换成 ReleaseDTO 对象</span></span><br><span class="line">    <span class="keyword">return</span> BeanUtils.transfrom(ReleaseDTO<span class="class">.<span class="keyword">class</span>, <span class="title">release</span>)</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="3-发布配置"><a href="#3-发布配置" class="headerlink" title="3. 发布配置"></a>3. 发布配置</h1><p>根据是否存在父Namespace，判断是否走灰度发布还是主干发布</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//ReleaseService</span></span><br><span class="line"><span class="meta">@Transactional</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> Release <span class="title">publish</span><span class="params">(Namespace namespace, String releaseName, String releaseComment, String operator, <span class="keyword">boolean</span> isEmergencyPublish)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 校验NamespaceLock</span></span><br><span class="line">    checkLock(namespace, isEmergencyPublish, operator);</span><br><span class="line">    <span class="comment">// 获得 Namespace 的配置</span></span><br><span class="line">    Map&lt;String, String&gt; operateNamespaceItems = getNamespaceItems(namespace);</span><br><span class="line">    <span class="comment">// 获得父 Namespace</span></span><br><span class="line">    Namespace parentNamespace = namespaceService.findParentNamespace(namespace);</span><br><span class="line">    <span class="comment">// 若有父 Namespace ，说明当前是灰度发布，即branch release</span></span><br><span class="line">    <span class="keyword">if</span> (parentNamespace != <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> publishBranchNamespace(parentNamespace, namespace, operateNamespaceItems, releaseName, releaseComment, operator, isEmergencyPublish);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 运行到这，说明当前不是灰度发布。此时尝试获得子 Namespace 对象</span></span><br><span class="line">    Namespace childNamespace = namespaceService.findChildNamespace(namespace);</span><br><span class="line">    <span class="comment">// 如果有子Namespace,说明存在灰度配置。此时缓存一份主干分支上次的 Release 对象</span></span><br><span class="line">    Release previousRelease = <span class="keyword">null</span>;</span><br><span class="line">    <span class="keyword">if</span> (childNamespace != <span class="keyword">null</span>) &#123;</span><br><span class="line">        previousRelease = findLatestActiveRelease(namespace);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 创建操作 Context,记录到发布历史记录表中</span></span><br><span class="line">    Map&lt;String, Object&gt; operationContext = Maps.newHashMap();</span><br><span class="line">    operationContext.put(ReleaseOperationContext.IS_EMERGENCY_PUBLISH, isEmergencyPublish);</span><br><span class="line">    <span class="comment">// 主干发布，即master release</span></span><br><span class="line">    Release release = masterRelease(namespace, releaseName, releaseComment, operateNamespaceItems, operator, ReleaseOperation.NORMAL_RELEASE, operationContext); <span class="comment">// 是否紧急发布。</span></span><br><span class="line">    <span class="comment">// 若有子 Namespace 时，自动将主干合并到子 Namespace ，并进行一次子 Namespace 的发布(merge to branch and auto release)</span></span><br><span class="line">    <span class="keyword">if</span> (childNamespace != <span class="keyword">null</span>) &#123;</span><br><span class="line">        mergeFromMasterAndPublishBranch(namespace, childNamespace, operateNamespaceItems,</span><br><span class="line">                releaseName, releaseComment, operator, previousRelease,</span><br><span class="line">                release, isEmergencyPublish);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> release;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="3-1-灰度发布"><a href="#3-1-灰度发布" class="headerlink" title="3.1 灰度发布"></a>3.1 灰度发布</h2><blockquote>
+<ul>
+<li><p>灰度命名空间就是一个集群的子集群对应的命名空间,灰度命名空间的appId，appNamespace与父命名空间的appId，appNamespace一致。</p>
+</li>
+<li><p>灰度key就是灰度命名空间对应配置的key,即子Namespace的Item表中的key</p>
+<p>灰度发布其实就是：发布“灰度key的配置和主干分支的配置合并后的配置”</p>
+</li>
+</ul>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> Release <span class="title">publishBranchNamespace</span><span class="params">(Namespace parentNamespace, Namespace childNamespace,</span></span></span><br><span class="line"><span class="function"><span class="params">                                       Map&lt;String, String&gt; childNamespaceItems,</span></span></span><br><span class="line"><span class="function"><span class="params">                                       String releaseName, String releaseComment,</span></span></span><br><span class="line"><span class="function"><span class="params">                                       String operator, <span class="keyword">boolean</span> isEmergencyPublish, Set&lt;String&gt; grayDelKeys)</span> </span>&#123;</span><br><span class="line">  <span class="comment">// 获得父 Namespace 的最近一次有效 Release 对象</span></span><br><span class="line">  Release parentLatestRelease = findLatestActiveRelease(parentNamespace);</span><br><span class="line">  <span class="comment">// 获得父 Namespace 的配置项</span></span><br><span class="line">  Map&lt;String, String&gt; parentConfigurations = parentLatestRelease != <span class="keyword">null</span> ?</span><br><span class="line">          GSON.fromJson(parentLatestRelease.getConfigurations(),</span><br><span class="line">                        GsonType.CONFIG) : <span class="keyword">new</span> LinkedHashMap&lt;&gt;();</span><br><span class="line">  <span class="comment">// 获得父 Namespace 的 releaseId 属性</span></span><br><span class="line">  <span class="keyword">long</span> baseReleaseId = parentLatestRelease == <span class="keyword">null</span> ? <span class="number">0</span> : parentLatestRelease.getId();</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 合并配置。合并父配置与本次灰度发布的配置，如果有冲突，已灰度发布的配置为准</span></span><br><span class="line">  Map&lt;String, String&gt; configsToPublish = mergeConfiguration(parentConfigurations, childNamespaceItems);</span><br><span class="line">  <span class="keyword">if</span>(!(grayDelKeys == <span class="keyword">null</span> || grayDelKeys.size()==<span class="number">0</span>))&#123;</span><br><span class="line">    <span class="keyword">for</span> (String key : grayDelKeys)&#123;</span><br><span class="line">      configsToPublish.remove(key);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 发布子 Namespace 的配置，发布的配置是：合并后的配置</span></span><br><span class="line">  <span class="keyword">return</span> branchRelease(parentNamespace, childNamespace, releaseName, releaseComment,</span><br><span class="line">      configsToPublish, baseReleaseId, operator, ReleaseOperation.GRAY_RELEASE, isEmergencyPublish,</span><br><span class="line">      childNamespaceItems.keySet());</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">* 2个map合并。（合并父配置配置与灰度的配置）</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> Map&lt;String, String&gt; <span class="title">mergeConfiguration</span><span class="params">(Map&lt;String, String&gt; baseConfigurations, Map&lt;String, String&gt; coverConfigurations)</span> </span>&#123;</span><br><span class="line">    Map&lt;String, String&gt; result = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">    <span class="comment">// 父 Namespace 的配置项</span></span><br><span class="line">    <span class="keyword">for</span> (Map.Entry&lt;String, String&gt; entry : baseConfigurations.entrySet()) &#123;</span><br><span class="line">        result.put(entry.getKey(), entry.getValue());</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 子 Namespace 的配置项</span></span><br><span class="line">    <span class="keyword">for</span> (Map.Entry&lt;String, String&gt; entry : coverConfigurations.entrySet()) &#123;</span><br><span class="line">        result.put(entry.getKey(), entry.getValue());</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 返回合并后的配置项</span></span><br><span class="line">    <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">* 发布灰度版本。1.插入一条release记录；2：更新GrayReleaseRule的发布id；3：插入一条release发布的历史记录</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> Release <span class="title">branchRelease</span><span class="params">(Namespace parentNamespace, Namespace childNamespace,</span></span></span><br><span class="line"><span class="function"><span class="params">                              String releaseName, String releaseComment,</span></span></span><br><span class="line"><span class="function"><span class="params">                              Map&lt;String, String&gt; configurations, <span class="keyword">long</span> baseReleaseId,</span></span></span><br><span class="line"><span class="function"><span class="params">                              String operator, <span class="keyword">int</span> releaseOperation, <span class="keyword">boolean</span> isEmergencyPublish, Collection&lt;String&gt; branchReleaseKeys)</span> </span>&#123;</span><br><span class="line">  </span><br><span class="line">  <span class="comment">// 获得父 Namespace 最后有效的 Release 对象</span></span><br><span class="line">  Release previousRelease = findLatestActiveRelease(childNamespace.getAppId(),</span><br><span class="line">                                                    childNamespace.getClusterName(),</span><br><span class="line">                                                    childNamespace.getNamespaceName());</span><br><span class="line">  <span class="comment">// 获得父 Namespace 最后有效的 Release 对象的编号</span></span><br><span class="line">  <span class="keyword">long</span> previousReleaseId = previousRelease == <span class="keyword">null</span> ? <span class="number">0</span> : previousRelease.getId();</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 创建 Map ，用于 ReleaseHistory 对象的 `operationContext` 属性。</span></span><br><span class="line">  Map&lt;String, Object&gt; releaseOperationContext = Maps.newLinkedHashMap();</span><br><span class="line">  releaseOperationContext.put(ReleaseOperationContext.BASE_RELEASE_ID, baseReleaseId);</span><br><span class="line">  releaseOperationContext.put(ReleaseOperationContext.IS_EMERGENCY_PUBLISH, isEmergencyPublish);</span><br><span class="line">		  <span class="comment">// 此处记录灰度分支中的灰度key</span></span><br><span class="line">  releaseOperationContext.put(ReleaseOperationContext.BRANCH_RELEASE_KEYS, branchReleaseKeys);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 创建子 Namespace 的 Release 对象，并保存</span></span><br><span class="line">  Release release =</span><br><span class="line">      createRelease(childNamespace, releaseName, releaseComment, configurations, operator);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 更新 GrayReleaseRule 的 releaseId 属性</span></span><br><span class="line">  GrayReleaseRule grayReleaseRule = namespaceBranchService.updateRulesReleaseId(childNamespace.getAppId(),parentNamespace.getClusterName(),childNamespace.getNamespaceName(),childNamespace.getClusterName(),release.getId(), operator);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 创建 ReleaseHistory 对象，并保存</span></span><br><span class="line">  <span class="keyword">if</span> (grayReleaseRule != <span class="keyword">null</span>) &#123;</span><br><span class="line">    releaseOperationContext.put(ReleaseOperationContext.RULES, GrayReleaseRuleItemTransformer.batchTransformFromJSON(grayReleaseRule.getRules()));</span><br><span class="line">  &#125;</span><br><span class="line">  releaseHistoryService.createReleaseHistory(parentNamespace.getAppId(), parentNamespace.getClusterName(),parentNamespace.getNamespaceName(), childNamespace.getClusterName(),release.getId(),previousReleaseId, releaseOperation, releaseOperationContext, operator);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> release;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="3-2-主干发布"><a href="#3-2-主干发布" class="headerlink" title="3.2 主干发布"></a>3.2 主干发布</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> Release <span class="title">masterRelease</span><span class="params">(Namespace namespace, String releaseName, String releaseComment,</span></span></span><br><span class="line"><span class="function"><span class="params">                              Map&lt;String, String&gt; configurations, String operator,</span></span></span><br><span class="line"><span class="function"><span class="params">                              <span class="keyword">int</span> releaseOperation, Map&lt;String, Object&gt; operationContext)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 获得最后有效的 Release 对象</span></span><br><span class="line">    Release lastActiveRelease = findLatestActiveRelease(namespace);</span><br><span class="line">    <span class="keyword">long</span> previousReleaseId = lastActiveRelease == <span class="keyword">null</span> ? <span class="number">0</span> : lastActiveRelease.getId();</span><br><span class="line">    <span class="comment">// 创建 Release 对象，并保存</span></span><br><span class="line">    Release release = createRelease(namespace, releaseName, releaseComment, configurations, operator);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 创建 ReleaseHistory 对象，并保存</span></span><br><span class="line">    releaseHistoryService.createReleaseHistory(namespace.getAppId(), namespace.getClusterName(),</span><br><span class="line">            namespace.getNamespaceName(), namespace.getClusterName(),</span><br><span class="line">            release.getId(), previousReleaseId, releaseOperation,</span><br><span class="line">            operationContext, operator);</span><br><span class="line">    <span class="keyword">return</span> release;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">* 创建一条发布对象</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> Release <span class="title">createRelease</span><span class="params">(Namespace namespace, String name, String comment,</span></span></span><br><span class="line"><span class="function"><span class="params">                              Map&lt;String, String&gt; configurations, String operator)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 创建 Release 对象</span></span><br><span class="line">    Release release = <span class="keyword">new</span> Release();</span><br><span class="line">    release.setReleaseKey(ReleaseKeyGenerator.generateReleaseKey(namespace)); </span><br><span class="line">    release.setDataChangeCreatedTime(<span class="keyword">new</span> Date());</span><br><span class="line">    release.setDataChangeCreatedBy(operator);</span><br><span class="line">    release.setDataChangeLastModifiedBy(operator);</span><br><span class="line">    release.setName(name);</span><br><span class="line">    release.setComment(comment);</span><br><span class="line">    release.setAppId(namespace.getAppId());</span><br><span class="line">    release.setClusterName(namespace.getClusterName());</span><br><span class="line">    release.setNamespaceName(namespace.getNamespaceName());</span><br><span class="line">    release.setConfigurations(gson.toJson(configurations)); <span class="comment">// 使用 Gson ，将配置 Map 格式化成字符串。</span></span><br><span class="line">    <span class="comment">// 保存 Release 对象</span></span><br><span class="line">    release = releaseRepository.save(release);</span><br><span class="line">    <span class="comment">// 释放 NamespaceLock</span></span><br><span class="line">    namespaceLockService.unlock(namespace.getId());</span><br><span class="line">    <span class="comment">// 记录 Audit 到数据库中</span></span><br><span class="line">    auditService.audit(Release<span class="class">.<span class="keyword">class</span>.<span class="title">getSimpleName</span>(), <span class="title">release</span>.<span class="title">getId</span>(), <span class="title">Audit</span>.<span class="title">OP</span>.<span class="title">INSERT</span>, <span class="title">release</span>.<span class="title">getDataChangeCreatedBy</span>())</span>;</span><br><span class="line">    <span class="keyword">return</span> release;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">* 记录发布历史</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="meta">@Transactional</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> ReleaseHistory <span class="title">createReleaseHistory</span><span class="params">(String appId, String clusterName, String</span></span></span><br><span class="line"><span class="function"><span class="params">    namespaceName, String branchName, <span class="keyword">long</span> releaseId, <span class="keyword">long</span> previousReleaseId, <span class="keyword">int</span> operation,</span></span></span><br><span class="line"><span class="function"><span class="params">                                           Map&lt;String, Object&gt; operationContext, String operator)</span> </span>&#123;</span><br><span class="line">  <span class="comment">// 创建 ReleaseHistory 对象</span></span><br><span class="line">  ReleaseHistory releaseHistory = <span class="keyword">new</span> ReleaseHistory();</span><br><span class="line">  releaseHistory.setAppId(appId);</span><br><span class="line">  releaseHistory.setClusterName(clusterName);</span><br><span class="line">  releaseHistory.setNamespaceName(namespaceName);</span><br><span class="line">  releaseHistory.setBranchName(branchName);</span><br><span class="line">  releaseHistory.setReleaseId(releaseId);</span><br><span class="line">  releaseHistory.setPreviousReleaseId(previousReleaseId);</span><br><span class="line">  releaseHistory.setOperation(operation);</span><br><span class="line">  <span class="keyword">if</span> (operationContext == <span class="keyword">null</span>) &#123;</span><br><span class="line">    releaseHistory.setOperationContext(<span class="string">"&#123;&#125;"</span>); <span class="comment">//default empty object</span></span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    releaseHistory.setOperationContext(GSON.toJson(operationContext));</span><br><span class="line">  &#125;</span><br><span class="line">  releaseHistory.setDataChangeCreatedTime(<span class="keyword">new</span> Date());</span><br><span class="line">  releaseHistory.setDataChangeCreatedBy(operator);</span><br><span class="line">  releaseHistory.setDataChangeLastModifiedBy(operator);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 保存 ReleaseHistory 对象</span></span><br><span class="line">  releaseHistoryRepository.save(releaseHistory);</span><br><span class="line"></span><br><span class="line">  auditService.audit(ReleaseHistory<span class="class">.<span class="keyword">class</span>.<span class="title">getSimpleName</span>(), <span class="title">releaseHistory</span>.<span class="title">getId</span>(),</span></span><br><span class="line"><span class="class">                     <span class="title">Audit</span>.<span class="title">OP</span>.<span class="title">INSERT</span>, <span class="title">releaseHistory</span>.<span class="title">getDataChangeCreatedBy</span>())</span>;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> releaseHistory;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="合并分支"><a href="#合并分支" class="headerlink" title="合并分支"></a>合并分支</h4><p>主干分支发布的时候，会把主干分支的配置合并到灰度分支的配置。如果合并后的配置与灰度分支的配置不同，那么把合并后的配置发布到灰度分支。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">mergeFromMasterAndPublishBranch</span><span class="params">(Namespace parentNamespace, Namespace childNamespace,</span></span></span><br><span class="line"><span class="function"><span class="params">                                             Map&lt;String, String&gt; parentNamespaceItems,</span></span></span><br><span class="line"><span class="function"><span class="params">                                             String releaseName, String releaseComment,</span></span></span><br><span class="line"><span class="function"><span class="params">                                             String operator, Release masterPreviousRelease,</span></span></span><br><span class="line"><span class="function"><span class="params">                                             Release parentRelease, <span class="keyword">boolean</span> isEmergencyPublish)</span> </span>&#123;</span><br><span class="line">  <span class="comment">// 获得子 Namespace 的配置</span></span><br><span class="line">  Release childNamespaceLatestActiveRelease = findLatestActiveRelease(childNamespace);</span><br><span class="line"></span><br><span class="line">  Map&lt;String, String&gt; childReleaseConfiguration;</span><br><span class="line">  Collection&lt;String&gt; branchReleaseKeys;</span><br><span class="line">  <span class="keyword">if</span> (childNamespaceLatestActiveRelease != <span class="keyword">null</span>) &#123;</span><br><span class="line">    childReleaseConfiguration = GSON.fromJson(childNamespaceLatestActiveRelease.getConfigurations(), GsonType.CONFIG);</span><br><span class="line">    branchReleaseKeys = getBranchReleaseKeys(childNamespaceLatestActiveRelease.getId());</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    childReleaseConfiguration = Collections.emptyMap();</span><br><span class="line">    branchReleaseKeys = <span class="keyword">null</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 获得父 Namespace 的配置</span></span><br><span class="line">  Map&lt;String, String&gt; parentNamespaceOldConfiguration = masterPreviousRelease == <span class="keyword">null</span> ?</span><br><span class="line">                                                        <span class="keyword">null</span> : GSON.fromJson(masterPreviousRelease.getConfigurations(),</span><br><span class="line">                                                                             GsonType.CONFIG);</span><br><span class="line">	<span class="comment">// 合并主干分支的配置和灰度分支的配置</span></span><br><span class="line">  Map&lt;String, String&gt; childNamespaceToPublishConfigs =</span><br><span class="line">      calculateChildNamespaceToPublishConfiguration(parentNamespaceOldConfiguration, parentNamespaceItems,</span><br><span class="line">          childReleaseConfiguration, branchReleaseKeys);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 若配置发生了变化，则进行一次子 Namespace 的发布</span></span><br><span class="line">  <span class="keyword">if</span> (!childNamespaceToPublishConfigs.equals(childReleaseConfiguration)) &#123;</span><br><span class="line">    branchRelease(parentNamespace, childNamespace, releaseName, releaseComment,</span><br><span class="line">                  childNamespaceToPublishConfigs, parentRelease.getId(), operator,</span><br><span class="line">                  ReleaseOperation.MASTER_NORMAL_RELEASE_MERGE_TO_GRAY, isEmergencyPublish, branchReleaseKeys);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">* 合并分支</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> Map&lt;String, String&gt; <span class="title">calculateChildNamespaceToPublishConfiguration</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">    Map&lt;String, String&gt; parentNamespaceOldConfiguration, Map&lt;String, String&gt; parentNamespaceNewConfiguration,</span></span></span><br><span class="line"><span class="function"><span class="params">    Map&lt;String, String&gt; childNamespaceLatestActiveConfiguration, Collection&lt;String&gt; branchReleaseKeys)</span> </span>&#123;</span><br><span class="line">  </span><br><span class="line">  <span class="comment">//first. calculate child namespace modified configs</span></span><br><span class="line">  <span class="comment">// 1. 找到灰度分支中灰度key对应的配置。灰度key在灰度发布的时候有记录（可以查看灰度发布章节）</span></span><br><span class="line">  Map&lt;String, String&gt; childNamespaceModifiedConfiguration = calculateBranchModifiedItemsAccordingToRelease(</span><br><span class="line">      parentNamespaceOldConfiguration, childNamespaceLatestActiveConfiguration, branchReleaseKeys);</span><br><span class="line"></span><br><span class="line">  <span class="comment">//second. append child namespace modified configs to parent namespace new latest configuration</span></span><br><span class="line">  <span class="comment">// 2. 主分支配置合并灰度配置。冲突的配置，以灰度配置为准</span></span><br><span class="line">  <span class="keyword">return</span> mergeConfiguration(parentNamespaceNewConfiguration, childNamespaceModifiedConfiguration);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">* 计算出灰度分支中的灰度配置(此处是，被灰度的key对应的配置)</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> Map&lt;String, String&gt; <span class="title">calculateBranchModifiedItemsAccordingToRelease</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">    Map&lt;String, String&gt; masterReleaseConfigs, Map&lt;String, String&gt; branchReleaseConfigs,</span></span></span><br><span class="line"><span class="function"><span class="params">    Collection&lt;String&gt; branchReleaseKeys)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">  Map&lt;String, String&gt; modifiedConfigs = <span class="keyword">new</span> LinkedHashMap&lt;&gt;();</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (CollectionUtils.isEmpty(branchReleaseConfigs)) &#123;</span><br><span class="line">    <span class="keyword">return</span> modifiedConfigs;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// new logic, retrieve modified configurations based on branch release keys</span></span><br><span class="line">  <span class="comment">// 新逻辑，获取灰度key对应的配置</span></span><br><span class="line">  <span class="keyword">if</span> (branchReleaseKeys != <span class="keyword">null</span>) &#123;</span><br><span class="line">    <span class="keyword">for</span> (String branchReleaseKey : branchReleaseKeys) &#123;</span><br><span class="line">      <span class="keyword">if</span> (branchReleaseConfigs.containsKey(branchReleaseKey)) &#123;</span><br><span class="line">        modifiedConfigs.put(branchReleaseKey, branchReleaseConfigs.get(branchReleaseKey));</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> modifiedConfigs;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// old logic, retrieve modified configurations by comparing branchReleaseConfigs with masterReleaseConfigs</span></span><br><span class="line">  <span class="comment">// 此处是为了兼容老逻辑。可以不看</span></span><br><span class="line">  <span class="keyword">if</span> (CollectionUtils.isEmpty(masterReleaseConfigs)) &#123;</span><br><span class="line">    <span class="keyword">return</span> branchReleaseConfigs;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">for</span> (Map.Entry&lt;String, String&gt; entry : branchReleaseConfigs.entrySet()) &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (!Objects.equals(entry.getValue(), masterReleaseConfigs.get(entry.getKey()))) &#123;</span><br><span class="line">      modifiedConfigs.put(entry.getKey(), entry.getValue());</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> modifiedConfigs;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">* map合并</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> Map&lt;String, String&gt; <span class="title">mergeConfiguration</span><span class="params">(Map&lt;String, String&gt; baseConfigurations,</span></span></span><br><span class="line"><span class="function"><span class="params">                                               Map&lt;String, String&gt; coverConfigurations)</span> </span>&#123;</span><br><span class="line">  Map&lt;String, String&gt; result = <span class="keyword">new</span> LinkedHashMap&lt;&gt;();</span><br><span class="line">  <span class="comment">//copy base configuration</span></span><br><span class="line">  <span class="keyword">for</span> (Map.Entry&lt;String, String&gt; entry : baseConfigurations.entrySet()) &#123;</span><br><span class="line">    result.put(entry.getKey(), entry.getValue());</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">//update and publish</span></span><br><span class="line">  <span class="keyword">for</span> (Map.Entry&lt;String, String&gt; entry : coverConfigurations.entrySet()) &#123;</span><br><span class="line">    result.put(entry.getKey(), entry.getValue());</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="4-发送发布消息"><a href="#4-发送发布消息" class="headerlink" title="4. 发送发布消息"></a>4. 发送发布消息</h1><p>发布配置后，会生产一条ReleaseMessage记录到表中</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">// ReleaseController</span></span><br><span class="line"><span class="comment">// send release message</span></span><br><span class="line"><span class="comment">// 获得 Cluster 名</span></span><br><span class="line">Namespace parentNamespace = namespaceService.findParentNamespace(namespace);</span><br><span class="line">String messageCluster;</span><br><span class="line"><span class="keyword">if</span> (parentNamespace != <span class="keyword">null</span>) &#123; </span><br><span class="line">    <span class="comment">//  有父 Namespace ，说明是灰度发布，使用父 Namespace 的集群名</span></span><br><span class="line">    messageCluster = parentNamespace.getClusterName();</span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">  	<span class="comment">// 使用请求的 ClusterName</span></span><br><span class="line">    messageCluster = clusterName; </span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 发送 Release 消息</span></span><br><span class="line">messageSender.sendMessage(ReleaseMessageKeyGenerator.generate(appId, messageCluster, namespaceName), Topics.APOLLO_RELEASE_TOPIC);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">* DatabaseMessageSender</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="keyword">private</span> BlockingQueue&lt;Long&gt; toClean = Queues.newLinkedBlockingQueue(CLEAN_QUEUE_MAX_SIZE);</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">sendMessage</span><span class="params">(String message, String channel)</span> </span>&#123;</span><br><span class="line">    logger.info(<span class="string">"Sending message &#123;&#125; to channel &#123;&#125;"</span>, message, channel);</span><br><span class="line">    <span class="comment">// 仅允许发送 APOLLO_RELEASE_TOPIC</span></span><br><span class="line">    <span class="keyword">if</span> (!Objects.equals(channel, Topics.APOLLO_RELEASE_TOPIC)) &#123;</span><br><span class="line">        logger.warn(<span class="string">"Channel &#123;&#125; not supported by DatabaseMessageSender!"</span>);</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line"> 		</span><br><span class="line">    Tracer.logEvent(<span class="string">"Apollo.AdminService.ReleaseMessage"</span>, message);</span><br><span class="line">    Transaction transaction = Tracer.newTransaction(<span class="string">"Apollo.AdminService"</span>, <span class="string">"sendMessage"</span>);</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="comment">// 保存 ReleaseMessage 对象</span></span><br><span class="line">        ReleaseMessage newMessage = releaseMessageRepository.save(<span class="keyword">new</span> ReleaseMessage(message));</span><br><span class="line">        <span class="comment">// 添加到清理 Message 队列。若队列已满，添加失败，不阻塞等待。</span></span><br><span class="line">        toClean.offer(newMessage.getId());</span><br><span class="line"></span><br><span class="line">        transaction.setStatus(Transaction.SUCCESS);</span><br><span class="line">    &#125; <span class="keyword">catch</span> (Throwable ex) &#123;</span><br><span class="line">        logger.error(<span class="string">"Sending message to database failed"</span>, ex);</span><br><span class="line">        transaction.setStatus(ex);</span><br><span class="line">        <span class="keyword">throw</span> ex;</span><br><span class="line">    &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">        transaction.complete();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">* 初始化一个定时器，定时清理旧的发布消息。</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="meta">@PostConstruct</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">initialize</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  cleanExecutorService.submit(() -&gt; &#123;</span><br><span class="line">    <span class="keyword">while</span> (!cleanStopped.get() &amp;&amp; !Thread.currentThread().isInterrupted()) &#123;</span><br><span class="line">      <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="comment">// 从队列中拉取最新的发布消息</span></span><br><span class="line">        Long rm = toClean.poll(<span class="number">1</span>, TimeUnit.SECONDS);</span><br><span class="line">        <span class="keyword">if</span> (rm != <span class="keyword">null</span>) &#123;</span><br><span class="line">          <span class="comment">// 清理旧的发布消息</span></span><br><span class="line">          cleanMessage(rm);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">          TimeUnit.SECONDS.sleep(<span class="number">5</span>);</span><br><span class="line">        &#125;</span><br><span class="line">      &#125; <span class="keyword">catch</span> (Throwable ex) &#123;</span><br><span class="line">        Tracer.logError(ex);</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">* 清理发布消息</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">cleanMessage</span><span class="params">(Long id)</span> </span>&#123;</span><br><span class="line">  <span class="comment">//double check in case the release message is rolled back</span></span><br><span class="line">  ReleaseMessage releaseMessage = releaseMessageRepository.findById(id).orElse(<span class="keyword">null</span>);</span><br><span class="line">  <span class="keyword">if</span> (releaseMessage == <span class="keyword">null</span>) &#123;</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">boolean</span> hasMore = <span class="keyword">true</span>;</span><br><span class="line">  <span class="keyword">while</span> (hasMore &amp;&amp; !Thread.currentThread().isInterrupted()) &#123;</span><br><span class="line">    <span class="comment">// 删除比当前releaseId小的记录</span></span><br><span class="line">    List&lt;ReleaseMessage&gt; messages = releaseMessageRepository.findFirst100ByMessageAndIdLessThanOrderByIdAsc(</span><br><span class="line">        releaseMessage.getMessage(), releaseMessage.getId());</span><br><span class="line"></span><br><span class="line">    releaseMessageRepository.deleteAll(messages);</span><br><span class="line">    hasMore = messages.size() == <span class="number">100</span>;</span><br><span class="line"></span><br><span class="line">    messages.forEach(toRemove -&gt; Tracer.logEvent(</span><br><span class="line">        String.format(<span class="string">"ReleaseMessage.Clean.%s"</span>, toRemove.getMessage()), String.valueOf(toRemove.getId())));</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><ul>
+<li><a href="http://www.iocoder.cn/categories/Apollo/" target="_blank" rel="noopener">apollo源码分析</a></li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div></div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.jpg" alt="zch 微信支付">
+        <p>微信支付</p>
+      </div>
+    
+
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/apollo/" rel="tag"># apollo</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/08/31/apollo/apollo--配置加锁:NamespaceLock/" rel="next" title="apollo--NamespaceLock">
+                <i class="fa fa-chevron-left"></i> apollo--NamespaceLock
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/09/14/apollo/apollo--拉取配置/" rel="prev" title="apollo--拉取配置">
+                apollo--拉取配置 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        
+  <div class="bdsharebuttonbox">
+    <a href="#" class="bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+    <a href="#" class="bds_douban" data-cmd="douban" title="分享到豆瓣网"></a>
+    <a href="#" class="bds_sqq" data-cmd="sqq" title="分享到QQ好友"></a>
+    <a href="#" class="bds_qzone" data-cmd="qzone" title="分享到QQ空间"></a>
+    <a href="#" class="bds_weixin" data-cmd="weixin" title="分享到微信"></a>
+    <a href="#" class="bds_tieba" data-cmd="tieba" title="分享到百度贴吧"></a>
+    <a href="#" class="bds_twi" data-cmd="twi" title="分享到Twitter"></a>
+    <a href="#" class="bds_fbook" data-cmd="fbook" title="分享到Facebook"></a>
+    <a href="#" class="bds_more" data-cmd="more"></a>
+    <a class="bds_count" data-cmd="count"></a>
+  </div>
+  <script>
+    window._bd_share_config = {
+      "common": {
+        "bdText": "",
+        "bdMini": "2",
+        "bdMiniList": false,
+        "bdPic": ""
+      },
+      "share": {
+        "bdSize": "16",
+        "bdStyle": "0"
+      },
+      "image": {
+        "viewList": ["tsina", "douban", "sqq", "qzone", "weixin", "twi", "fbook"],
+        "viewText": "分享到：",
+        "viewSize": "16"
+      }
+    }
+  </script>
+
+<script>
+  with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='//bdimg.share.baidu.com/static/api/js/share.js?cdnversion='+~(-new Date()/36e5)];
+</script>
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar.png" alt="zch">
+            
+              <p class="site-author-name" itemprop="name">zch</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">160</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">29</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">117</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-流程图"><span class="nav-number">1.</span> <span class="nav-text">1. 流程图</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-发布配置api"><span class="nav-number">2.</span> <span class="nav-text">2. 发布配置api</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-发布配置"><span class="nav-number">3.</span> <span class="nav-text">3. 发布配置</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#3-1-灰度发布"><span class="nav-number">3.1.</span> <span class="nav-text">3.1 灰度发布</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-2-主干发布"><span class="nav-number">3.2.</span> <span class="nav-text">3.2 主干发布</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#合并分支"><span class="nav-number">3.2.0.1.</span> <span class="nav-text">合并分支</span></a></li></ol></li></ol></li></ol><li class="nav-item nav-level-1"><a class="nav-link" href="#4-发送发布消息"><span class="nav-number">4.</span> <span class="nav-text">4. 发送发布消息</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考"><span class="nav-number">5.</span> <span class="nav-text">参考</span></a></li></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<div class="copyright">&copy; <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">zch</span>
+
+  
+</div>
+
+
+  <div class="powered-by">个人学习和工作中总结的笔记</div>
+  <i class="fa fa-user-md"></i>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+<script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? "https://" : "http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1276375036'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s5.cnzz.com/z_stat.php%3Fid%3D1276375036%26online%3D1%26show%3Dline' type='text/javascript'%3E%3C/script%3E"));</script>
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/three/three.min.js"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/three/canvas_sphere.min.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+  
+  <script type="text/javascript">
+    var GUEST = ['nick','mail','link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item=>{
+      return GUEST.indexOf(item)>-1;
+    });
+    new Valine({
+        el: '#comments' ,
+        verify: true,
+        notify: true,
+        appId: 'qlLpITiuRGP5wGRRqD1TTe7y-gzGzoHsz',
+        appKey: 'Xu6NC8eq2DCotEgOrHgbA2St',
+        placeholder: 'ヾﾉ≧∀≦)o来啊，快活啊!',
+        avatar:'mm',
+        guest_info:guest,
+        pageSize:'10' || 10,
+    });
+  </script>
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
