@@ -85,7 +85,7 @@
 
 <meta property="og:type" content="website">
 <meta property="og:title" content="ZCH NOTES">
-<meta property="og:url" content="http://yoursite.com/tags/Paxos/index.html">
+<meta property="og:url" content="http://yoursite.com/tags/paxos/index.html">
 <meta property="og:site_name" content="ZCH NOTES">
 <meta property="og:locale" content="zh-Hans">
 <meta name="twitter:card" content="summary">
@@ -119,13 +119,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/tags/Paxos/">
+  <link rel="canonical" href="http://yoursite.com/tags/paxos/">
 
 
 
 
 
-  <title>标签: Paxos | ZCH NOTES</title>
+  <title>标签: paxos | ZCH NOTES</title>
   
 
 
@@ -297,7 +297,7 @@
 
     <div id="posts" class="posts-collapse">
       <div class="collection-title">
-        <h2>Paxos<small>标签</small>
+        <h2>paxos<small>标签</small>
         </h2>
       </div>
 
@@ -309,43 +309,17 @@
 
       <h3 class="post-title">
         
-            <a class="post-title-link" href="/2020/07/25/分布式/图解 Paxos 一致性协议/" itemprop="url">
+            <a class="post-title-link" href="/2022/05/03/复习总结/ZooKeeper分布式一致性原理与实践/" itemprop="url">
               
-                <span itemprop="name">图解 Paxos 一致性协议</span>
-              
-            </a>
-        
-      </h3>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated" datetime="2020-07-25T16:52:41+08:00" content="2020-07-25">
-          07-25
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-      
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h3 class="post-title">
-        
-            <a class="post-title-link" href="/2020/07/25/分布式/分布式--Paxos/" itemprop="url">
-              
-                <span itemprop="name">分布式--Paxos</span>
+                <span itemprop="name">从Paxos到Zookeeper分布式一致性原理与实践</span>
               
             </a>
         
       </h3>
 
       <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated" datetime="2020-07-25T16:52:41+08:00" content="2020-07-25">
-          07-25
+        <time class="post-time" itemprop="dateCreated" datetime="2022-05-03T00:00:00+08:00" content="2022-05-03">
+          05-03
         </time>
       </div>
 
@@ -407,7 +381,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">160</span>
+                  <span class="site-state-item-count">163</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -429,7 +403,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">117</span>
+                  <span class="site-state-item-count">119</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
@@ -967,6 +941,48 @@
     // handle and trigger popup window;
     $('.popup-trigger').click(function(e) {
       e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
+stopPropagation();
       if (isfetched === false) {
         searchFunc(path, 'local-search-input', 'local-search-result');
       } else {

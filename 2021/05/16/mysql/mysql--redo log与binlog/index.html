@@ -95,7 +95,7 @@
 <meta property="og:image" content="http://yoursite.com/images/image-20210516105316792.png">
 <meta property="og:image" content="http://yoursite.com/images/image-20210516105339524.png">
 <meta property="og:image" content="http://yoursite.com/images/image-20210516105352324.png">
-<meta property="og:updated_time" content="2021-05-16T02:57:11.814Z">
+<meta property="og:updated_time" content="2022-04-18T05:36:17.334Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="mysql--redo log与binlog">
 <meta name="twitter:description" content="之前我们了解了一条查询语句的执行流程，并介绍了执行过程中涉及的处理模块。一条查询语句的执行过程一般是经过连接器、分析器、优化器、执行器等功能模块，最后到达存储引擎。 那么，一条 SQL 更新语句的执行流程又是怎样的呢？ 首先我们创建一个表 user_info，主键为 id，创建语句如下： 12345CopyCREATE TABLE `T` (  `ID` int(11) NOT NULL,  `c">
@@ -445,7 +445,7 @@
 <p>其中将 redo log 的写入拆成了两个步骤：prepare 和 commit，这就是两阶段提交（2PC）。</p>
 <h1 id="两阶段提交（2PC）"><a href="#两阶段提交（2PC）" class="headerlink" title="两阶段提交（2PC）"></a>两阶段提交（2PC）</h1><p>MySQL 使用两阶段提交主要解决 binlog 和 redo log 的数据一致性的问题。</p>
 <p>redo log 和 binlog 都可以用于表示事务的提交状态，而两阶段提交就是让这两个状态保持逻辑上的一致。下图为 MySQL 二阶段提交简图：</p>
-<p><img src="/images/image-20210516105352324.png" alt="image-20210516105352324"></p>"
+<p><img src="/images/image-20210516105352324.png" alt="image-20210516105352324" style="zoom: 33%;"></p>"
 <p>两阶段提交原理描述:</p>
 <ol>
 <li>InnoDB redo log 写盘，InnoDB 事务进入 prepare 状态。</li>
@@ -674,7 +674,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">160</span>
+                  <span class="site-state-item-count">163</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -696,7 +696,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">117</span>
+                  <span class="site-state-item-count">119</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
